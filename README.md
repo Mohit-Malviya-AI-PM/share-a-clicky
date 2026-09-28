@@ -55,7 +55,7 @@ Smaller ones: the New Clicky screen can't use connectors, and routines repeat on
 | Invite & Earn launched Sep 24: a friend gets 25% off their first month, the sharer earns 25% of what they pay for up to 12 months | Changelog v1.0.52 |
 | Agent messages are the metered part of every plan: Free 25, Pro 150, Max 1,000 a month | heyclicky.com pricing |
 
-**Metrics I'd watch:** share page views to installs, installs to first routine run, 7-day retention of shared Clickys vs onboarding Clickys, invite signups per shared Clicky, and Free-to-Pro upgrades from Clickys marked "needs Pro."
+**How I'd measure it.** North star: shared Clickys still running a week after install, compared with Clickys made in onboarding. Inputs: page views to copies, copies to created, created to routine turned on (a separate step, likely the biggest drop), invite signups per shared Clicky, and Free-to-Pro upgrades within 14 days of a "needs Pro" install. Guardrails: fewer surprise agent-limit hits, and few shared Clickys archived or reported in week one. Tracking needs a small "installed from a share" tag on each new Clicky.
 
 Job Hunter is the Clicky I built for my own job search. The other two are labeled as examples.
 
