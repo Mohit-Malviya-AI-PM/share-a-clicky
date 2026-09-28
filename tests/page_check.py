@@ -70,7 +70,7 @@ CONTRAST_JS = """
 }
 """
 # Small text that must reach WCAG AA (4.5:1) in both themes.
-SMALL_TEXT = "footer span, .tag, .chip, .eyebrow, .step .n, .finding .k, .shot figcaption, .muted, .top-right a"
+SMALL_TEXT = "footer span, .tag, .chip, .eyebrow, .step .n, .finding .k, .demo figcaption, .proof figcaption, .muted, .top-right a, .howto .body > span, .kbd, .builder p"
 DETAIL_SMALL_TEXT = "dl.facts dt, .mac-note, .invite-note, .usage-row > span, .by, .back"
 
 
@@ -118,6 +118,13 @@ def main():
                 check(f"A6 small text contrast >= 4.5 on gallery (min {min(ratios):.2f}) [{tag}]", min(ratios) >= 4.5)
                 check(f"first Tab lands on the header, not past it [{tag}]",
                       page.evaluate("document.activeElement === document.body"))
+                check(f"demo video has mp4 source and captions [{tag}]",
+                      page.locator("#demo video source[type='video/mp4']").count() == 1
+                      and page.locator("#demo video track[kind='captions']").count() == 1)
+                if label == "desktop":
+                    one_line = page.evaluate("""[...document.querySelectorAll('.finding b')].every(b => {
+                        const lh = parseFloat(getComputedStyle(b).lineHeight) || 24; return b.getBoundingClientRect().height < lh * 1.5; })""")
+                    check(f"finding titles fit on one line [{tag}]", one_line)
                 if shots:
                     page.screenshot(path=os.path.join(shots, f"gallery-{scheme}-{label}.png"), full_page=True)
 
