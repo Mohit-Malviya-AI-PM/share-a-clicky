@@ -282,7 +282,9 @@
   .note-body { padding: 26px 30px 28px; display: grid; grid-template-columns: 64px 1fr; gap: 20px; }
   .avatar { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 21px; color: #fff; background: linear-gradient(135deg, var(--coral), var(--sun)); }
   .note-body h3 { color: var(--paper-ink); font-size: 20px; }
-  .role { display: inline-block; margin: 2px 0 12px; font-size: 13px; font-weight: 600; color: #7a3e12; background: #fbe3c4; border-radius: 999px; padding: 3px 11px; }
+  .roles { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 12px; }
+  .role.alt { color: #7a1f1f; background: #f6d3d3; }
+  .role { display: inline-block; margin: 0; font-size: 13px; font-weight: 600; color: #7a3e12; background: #fbe3c4; border-radius: 999px; padding: 3px 11px; }
   .note-body p { margin: 0 0 12px; font-size: 15.5px; color: rgba(44,41,35,.88); }
   .skills { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 16px; }
   .skills span { font-size: 13px; font-weight: 500; background: rgba(44,41,35,.07); color: rgba(44,41,35,.88); border-radius: 999px; padding: 4px 11px; }
@@ -542,7 +544,7 @@
       el("section", { id: "findings" }, [
         sectionHead("found while testing it live", "what it taught me about HeyClicky", "Three things I only learned by shipping this into the real app."),
         el("div", { class: "findings" }, [
-          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "bug" }), el("b", { text: "Local connectors stop at message 2" }), el("span", { text: "A connector added with “Command on this Mac” answers the first message in a chat. The second one fails with “Transport closed.” The web connector here avoids it." })]),
+          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "bug" }), el("b", { text: "Local connectors stop at message 2" }), el("span", { text: "A connector added with “Command on this Mac” answers once, then fails with “Transport closed.” I built the web connector here as a working way around it. The real fix is inside HeyClicky: keep the local session open between messages." })]),
           el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "missing hook" }), el("b", { text: "A Clicky can't create a Clicky" }), el("span", { text: "So install is one paste, not one click. A create_clicky tool or a heyclicky://new link would close the gap." })]),
           el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "upgrade moment" }), el("b", { text: "Daily routines need Pro" }), el("span", { text: "Job Hunter uses about 30 agent messages a month, more than Free's 25. Saying so up front beats a surprise limit." })])
         ])
@@ -570,9 +572,9 @@
             el("div", { class: "avatar", "aria-hidden": "true", text: "MM" }),
             el("div", {}, [
               el("h3", { text: "Mohit Malviya" }),
-              el("span", { class: "role", text: "AI product manager who builds" }),
-              el("p", { text: "I started as a full-stack engineer at Wipro, then spent six years as a product manager in B2B SaaS, most recently on AI agents in Jira as a PM intern at Atlassian." }),
-              el("p", { text: "Share-a-Clicky is how I like to work: find the gap, make a bet, build it end to end, test it live, and say how I'd measure it." }),
+              el("div", { class: "roles" }, [el("span", { class: "role", text: "AI product manager who builds" }), el("span", { class: "role alt", text: "Cornell MBA" })]),
+              el("p", { text: "Most recently I led the beta of an AI triage agent in Jira during my PM internship at Atlassian. That sits on 6.5 years in product management across B2B SaaS, which started with me writing code as a full-stack product engineer at Wipro." }),
+              el("p", { text: "So think product engineer with product management depth. Share-a-Clicky is how I like to work: find the gap, make a bet, build it end to end, test it live, and say how I'd measure it." }),
               el("div", { class: "skills" }, ["product discovery", "metrics", "MCP", "Cloudflare Workers", "Python", "JavaScript", "testing"].map(function (s) { return el("span", { text: s }); })),
               el("div", { class: "sig", "aria-hidden": "true", text: "mohit" }),
               el("div", { class: "note-links" }, [

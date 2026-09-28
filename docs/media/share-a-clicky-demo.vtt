@@ -1,61 +1,61 @@
 WEBVTT
 
-00:00.600 --> 00:02.969
+00:00.600 --> 00:03.191
 I have a Clicky that keeps my job search moving.
 
-00:02.969 --> 00:04.809
+00:03.241 --> 00:05.190
 One short update, every morning.
 
-00:05.009 --> 00:07.947
+00:05.540 --> 00:08.724
 Then my friend got HeyClicky, and asked the big question.
 
-00:07.947 --> 00:10.684
+00:08.824 --> 00:11.690
 HeyClicky can build a Clicky from a few questions.
 
-00:10.684 --> 00:14.790
+00:11.690 --> 00:15.988
 But I already run one that does a real job, and there's no way to share it.
 
-00:15.390 --> 00:16.927
+00:16.638 --> 00:18.324
 So I built Share-a-Clicky!
 
-00:16.927 --> 00:18.061
+00:18.424 --> 00:19.642
 Pick a shared Clicky.
 
-00:18.061 --> 00:23.027
-See what it does, which apps it needs, and about how many agent messages it uses each month.
+00:19.642 --> 00:24.338
+See what it does, the apps it needs, and how many agent messages it uses a month.
 
-00:23.027 --> 00:26.476
+00:24.488 --> 00:28.080
 Job Hunter runs daily, so it says up front that it needs Pro.
 
-00:26.476 --> 00:29.930
+00:28.230 --> 00:31.946
 Copy the setup. Paste it into New Clicky. Connect the apps.
 
-00:29.930 --> 00:32.237
+00:32.046 --> 00:34.469
 About twenty seconds later, it's ready.
 
-00:32.237 --> 00:34.070
+00:34.469 --> 00:36.395
 And my invite link comes along.
 
-00:34.620 --> 00:38.239
-It also works inside HeyClicky, as a custom connector.
+00:37.045 --> 00:40.737
+It works inside HeyClicky too, as a custom connector.
 
-00:38.239 --> 00:39.378
-One URL, no code.
+00:40.737 --> 00:45.057
+One URL, no code, and any Clicky can hand over a shared setup.
 
-00:39.378 --> 00:43.600
-Then any Clicky can list shared Clickys and pass along a setup.
-
-00:44.200 --> 00:46.207
+00:45.707 --> 00:47.852
 Testing it live, I found two gaps.
 
-00:46.207 --> 00:48.931
+00:48.002 --> 00:50.822
 Local connectors stop after the first message.
 
-00:48.931 --> 00:51.293
+00:50.822 --> 00:53.274
+So I built a web connector that doesn't.
+
+00:53.424 --> 00:55.920
 And a Clicky can't create a Clicky yet.
 
-00:51.293 --> 00:53.654
+00:55.920 --> 00:58.416
 So install is one paste, not one click.
 
-00:54.254 --> 00:57.016
+00:59.066 --> 01:01.973
 Share-a-Clicky. Start with a Clicky that already works.

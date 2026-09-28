@@ -2,7 +2,7 @@
 
 **Start with a Clicky that already works.** Share a Clicky you've set up for a real job. A friend pastes its setup into HeyClicky, connects their apps, and starts from something that already works. Your invite link comes along.
 
-An unofficial prototype for [HeyClicky](https://www.heyclicky.com/), built by [Mohit Malviya](https://www.linkedin.com/in/malviyamohit/), an AI product manager who builds. Not affiliated with or endorsed by HeyClicky.
+An unofficial prototype for [HeyClicky](https://www.heyclicky.com/), built by [Mohit Malviya](https://www.linkedin.com/in/malviyamohit/), an AI product manager who builds (6.5 years in product management, Cornell MBA). Not affiliated with or endorsed by HeyClicky.
 
 <p align="center"><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo"><img src="docs/img/video-poster.jpg" width="640" alt="Watch the 1-minute demo"></a><br><sub>▶ Watch the 1-minute demo</sub></p>
 
@@ -38,7 +38,7 @@ I tested everything live in HeyClicky 1.0.52 on Sep 28, 2026.
 
 | What happened | What would fix it |
 |---|---|
-| **Local connectors stop after the first message.** A connector added with "Command on this Mac" answers once. The second message in the same chat fails with "Transport closed." The web-hosted connector here doesn't have this problem. | Keep the local connector's session open between messages, or restart it |
+| **Local connectors stop after the first message.** A connector added with "Command on this Mac" answers once. The second message in the same chat fails with "Transport closed." **What I built:** the web-hosted connector here, which works on every message (tested live). | Inside HeyClicky: keep the local connector's session open between messages, or restart it |
 | **A Clicky can't create a Clicky.** When I asked one to install a shared Clicky, it tried to click through HeyClicky's own screens and got stuck. So install is one paste, not one click. | A `create_clicky` tool, or a `heyclicky://new` link the share page's button could open |
 | **Daily routines need Pro.** Job Hunter runs every day and uses about 30 agent messages a month. Free includes 25. | Nothing to fix. The page says "needs Pro" up front instead of letting people hit a limit mid-month |
 
