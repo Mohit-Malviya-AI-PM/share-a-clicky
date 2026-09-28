@@ -15,7 +15,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Caveat:wght@700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #f5f5f5;
@@ -208,6 +208,107 @@
   footer { margin-top: 72px; padding-top: 22px; border-top: 1px solid var(--line); color: var(--text-3); font-size: 13px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
   footer a { color: var(--text-2); }
 
+  /* ---------- energy layer ---------- */
+  :root { --sun: #f2c14e; --coral: #e8744a; --mint: #5fae68; --sky: #1f6fe8; --pink: #f4a7b4; --paper: #fffaf0; --paper-ink: #2c2923; }
+  .hand { font-family: Caveat, cursive; }
+  .kicker { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 500; color: var(--text-2); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; margin-bottom: 22px; box-shadow: var(--shadow-sm); }
+  .kicker .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 0 4px rgba(95,174,104,.18); }
+  mark.hl { background: none; color: inherit; position: relative; white-space: nowrap; }
+  mark.hl::before { content: ""; position: absolute; left: -4px; right: -4px; bottom: 6%; height: 34%; background: var(--sun); opacity: .55; border-radius: 6px; z-index: -1; transform-origin: left; animation: swipe .9s .35s cubic-bezier(.2,.8,.2,1) both; }
+  h1 { position: relative; z-index: 0; }
+  @keyframes swipe { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .rotator { font-family: Caveat, cursive; font-size: clamp(26px, 3.6vw, 34px); color: var(--text-2); margin: -4px 0 18px; min-height: 1.3em; }
+  .rotator b { color: var(--coral); font-weight: 700; display: inline-block; animation: rot-in .45s cubic-bezier(.2,.9,.3,1.3) both; }
+  @keyframes rot-in { from { opacity: 0; transform: translateY(14px) rotate(-3deg); } to { opacity: 1; transform: none; } }
+  .sticker { position: absolute; z-index: 1; user-select: none; pointer-events: none; animation: bob 6s ease-in-out infinite; }
+  .sticker.tile { width: 58px; height: 58px; border-radius: 16px; display: grid; place-items: center; font-size: 30px; background: var(--paper); box-shadow: 0 10px 22px -8px rgba(0,0,0,.35), 0 1px 0 rgba(0,0,0,.06); }
+  .sticker.tag { font: 700 22px/1 Caveat, cursive; color: var(--paper-ink); background: var(--sun); padding: 8px 14px; border-radius: 8px; box-shadow: 0 10px 22px -10px rgba(0,0,0,.4); }
+  .sticker.spark { color: var(--sun); font-size: 26px; }
+  @keyframes bob { 0%,100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-12px) rotate(calc(var(--r, 0deg) + 4deg)); } }
+
+  /* video window */
+  .demo { margin: 40px auto 0; max-width: 900px; scroll-margin-top: 20px; }
+  .win-frame { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow-lg); }
+  .win-bar { display: flex; align-items: center; gap: 7px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+  .win-bar i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .win-bar span { margin-left: 10px; font: 500 12.5px var(--mono); color: var(--text-3); }
+  .demo video { width: 100%; height: auto; aspect-ratio: 16 / 9; display: block; background: #111; border-radius: 0; box-shadow: none; }
+
+  /* marquee */
+  .marquee { margin: 64px -20px 0; overflow: hidden; border-block: 1px solid var(--line); background: var(--surface); padding: 14px 0; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .marquee .track { display: flex; gap: 28px; width: max-content; animation: scroll 28s linear infinite; font-weight: 600; font-size: 17px; letter-spacing: -0.02em; color: var(--text); }
+  .marquee .track span { white-space: nowrap; }
+  .marquee .track em { font-style: normal; color: var(--coral); }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+
+  /* idea cards (product lens) */
+  .idea { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .idea-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow-sm); position: relative; }
+  .idea-card .badge { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px; font-size: 22px; margin-bottom: 12px; }
+  .idea-card b { display: block; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .idea-card span { color: var(--text-2); font-size: 15px; }
+
+  /* steps with connector line */
+  .steps { position: relative; }
+  .step .n { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #1a5fd0; color: #fff; font: 600 14px var(--mono); }
+  .step:nth-child(2) .n { background: #b9471f; }
+  .step:nth-child(3) .n { background: #2f7a45; }
+  .step b { font-size: 18px; margin-top: 12px; }
+
+  /* findings as sticky notes */
+  .findings { gap: 22px; }
+  .finding { border: 0; border-radius: 4px; padding: 22px 22px 26px; color: var(--paper-ink); box-shadow: 0 14px 28px -14px rgba(0,0,0,.45), 0 2px 0 rgba(0,0,0,.05); position: relative; transition: transform .2s ease; }
+  .finding:nth-child(1) { background: #f6d65a; transform: rotate(-1.2deg); }
+  .finding:nth-child(2) { background: #bfe0f5; transform: rotate(.8deg); }
+  .finding:nth-child(3) { background: #f7c3cc; transform: rotate(-.6deg); }
+  .finding:hover { transform: rotate(0) translateY(-4px); }
+  .finding::before { content: ""; position: absolute; top: -9px; left: 50%; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ff8a7a, #d8352a 60%, #9e1d15); box-shadow: 0 3px 5px rgba(0,0,0,.35); }
+  .finding .k { color: rgba(44,41,35,.78); }
+  .finding b { color: var(--paper-ink); }
+  .finding span { color: rgba(44,41,35,.86); }
+
+  /* metrics plan */
+  .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; counter-reset: m; }
+  .metric { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; position: relative; box-shadow: var(--shadow-sm); }
+  .metric .bar { height: 8px; border-radius: 999px; margin-bottom: 14px; background: linear-gradient(90deg, var(--sky), var(--mint)); transform-origin: left; }
+  .metric b { display: block; font-size: 15px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .metric span { font-size: 13.5px; color: var(--text-2); display: block; }
+  .flow-note { text-align: center; color: var(--text-3); font-size: 13.5px; margin-top: 14px; }
+
+  /* builder note */
+  .note-card { max-width: 760px; margin: 0 auto; background: var(--paper); color: var(--paper-ink); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow-lg); }
+  .note-card .win-bar { border-bottom-color: rgba(0,0,0,.08); }
+  .note-card .win-bar span { color: rgba(44,41,35,.7); }
+  .note-body { padding: 26px 30px 28px; display: grid; grid-template-columns: 64px 1fr; gap: 20px; }
+  .avatar { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 21px; color: #fff; background: linear-gradient(135deg, var(--coral), var(--sun)); }
+  .note-body h3 { color: var(--paper-ink); font-size: 20px; }
+  .role { display: inline-block; margin: 2px 0 12px; font-size: 13px; font-weight: 600; color: #7a3e12; background: #fbe3c4; border-radius: 999px; padding: 3px 11px; }
+  .note-body p { margin: 0 0 12px; font-size: 15.5px; color: rgba(44,41,35,.88); }
+  .skills { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 16px; }
+  .skills span { font-size: 13px; font-weight: 500; background: rgba(44,41,35,.07); color: rgba(44,41,35,.88); border-radius: 999px; padding: 4px 11px; }
+  .sig { font: 700 34px/1 Caveat, cursive; color: var(--paper-ink); margin: 6px 0 14px; }
+  .note-links { display: flex; flex-wrap: wrap; gap: 10px; }
+  .note-links a { font-size: 14.5px; font-weight: 600; color: #fff; background: #1f2937; border-radius: 999px; padding: 9px 16px; }
+  .note-links a.alt { background: transparent; color: var(--paper-ink); box-shadow: inset 0 0 0 1.5px rgba(44,41,35,.25); }
+  .note-links a:hover { text-decoration: none; filter: brightness(1.1); }
+
+  /* scroll reveal */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  .card { transition: transform .25s cubic-bezier(.2,.9,.3,1.3), box-shadow .2s ease; }
+  .card:hover { transform: translateY(-6px) rotate(-.6deg); }
+  .card:nth-child(2):hover { transform: translateY(-6px) rotate(.6deg); }
+  #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
+  section .section-head h2 { text-wrap: balance; }
+
+  @media (max-width: 900px) { .flow { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 700px) { .sticker, .sticker.tile, .sticker.tag { display: none; } }
+  @media (max-width: 640px) { .flow { grid-template-columns: 1fr; } .note-body { grid-template-columns: 1fr; } .marquee { margin-inline: -20px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .sticker, .marquee .track, mark.hl::before, .rotator b { animation: none; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+
   @media (max-width: 640px) {
     .kaomoji { display: none; }
     .top-right .hide-sm { display: none; }
@@ -235,7 +336,7 @@
   </main>
   <footer>
     <span>An unofficial prototype by Mohit Malviya for <a href="https://www.heyclicky.com/" rel="noopener">HeyClicky</a>. Not affiliated with or endorsed by HeyClicky.</span>
-    <span>Message counts are estimates: about one agent message per routine run; retries can add more. Routines run while your Mac is on and HeyClicky is open.</span>
+    <span>Message counts are estimates: about one agent message per routine run; retries can add more. Routines run only while the Mac is awake and HeyClicky is open.</span>
   </footer>
 </div>
 <script>
@@ -324,6 +425,14 @@
     ]);
   }
 
+  function sectionHead(eyebrow, title, text) {
+    return el("div", { class: "section-head reveal" }, [
+      el("div", { class: "eyebrow", text: eyebrow }),
+      el("h2", { text: title }),
+      text ? el("p", { text: text }) : null
+    ]);
+  }
+
   function renderGallery(data) {
     document.title = "share-a-clicky";
     var connectorStatus = el("div", { class: "status", role: "status" });
@@ -331,50 +440,79 @@
     var copyConnector = el("button", { class: "btn secondary", type: "button", text: "Copy URL" });
     copyConnector.addEventListener("click", function () {
       copyWithFallback(data.connector_url, connectorStatus, "Copied. Paste it as the Server URL in HeyClicky's Add custom connector.", connectorCode);
+      celebrate(copyConnector);
     });
+    var rotating = el("b", { text: "job hunting" });
+    var marqueeItems = ["share a Clicky", "copy the setup", "paste into New Clicky", "ready in about 20 seconds", "invite link rides along", "works as a connector", "start with one that works"];
+    function marqueeRow() { var out = []; marqueeItems.forEach(function (m) { out.push(el("span", { text: m })); out.push(el("span", {}, [el("em", { text: "✦" })])); }); return out; }
 
     app.replaceChildren(
+      // ---- hero ----
       el("div", { class: "hero" }, [
-        el("span", { class: "kaomoji", style: "left:2%;top:12px", "aria-hidden": "true", text: "(•ᴗ•)" }),
-        el("span", { class: "kaomoji", style: "right:3%;top:22px", "aria-hidden": "true", text: "(＾▽＾)/" }),
-        el("span", { class: "kaomoji", style: "left:4%;top:300px", "aria-hidden": "true", text: "ʕ•ᴥ•ʔ" }),
-        el("span", { class: "kaomoji", style: "right:5%;top:320px", "aria-hidden": "true", text: "(ᵔᴥᵔ)" }),
-        el("h1", {}, [el("span", { class: "line", text: "start with a clicky" }), " ", el("span", { class: "line", text: "that already works" })]),
-        el("p", { class: "sub", text: "Share a Clicky you've set up for a real job. A friend pastes its setup into HeyClicky, connects their apps, and starts from something that already works. Your invite link comes along." }),
+        el("span", { class: "sticker tile", style: "left:3%;top:40px;--r:-10deg", "aria-hidden": "true", text: "💼" }),
+        el("span", { class: "sticker tile", style: "right:5%;top:70px;--r:8deg;animation-delay:-2s", "aria-hidden": "true", text: "📬" }),
+        el("span", { class: "sticker tile", style: "left:5%;top:300px;--r:6deg;animation-delay:-4s", "aria-hidden": "true", text: "🏁" }),
+        el("span", { class: "sticker tag", style: "right:4%;top:170px;--r:-6deg;animation-delay:-1s", "aria-hidden": "true", text: "shared by @mohit" }),
+        el("span", { class: "sticker spark", style: "left:22%;top:14px;animation-delay:-3s", "aria-hidden": "true", text: "✦" }),
+        el("span", { class: "sticker spark", style: "right:24%;top:330px;animation-delay:-5s", "aria-hidden": "true", text: "✦" }),
+        el("span", { class: "kaomoji", style: "left:2%;top:360px", "aria-hidden": "true", text: "(•ᴗ•)" }),
+        el("span", { class: "kaomoji", style: "right:3%;top:20px", "aria-hidden": "true", text: "(＾▽＾)/" }),
+        el("div", { class: "kicker" }, [el("span", { class: "dot", "aria-hidden": "true" }), "a product bet for HeyClicky, built and tested live"]),
+        el("h1", {}, [el("span", { class: "line", text: "start with a clicky" }), " ", el("span", { class: "line" }, ["that ", el("mark", { class: "hl", text: "already works" })])]),
+        el("p", { class: "rotator", "aria-hidden": "true" }, ["a shared Clicky for ", rotating]),
+        el("p", { class: "sub", text: "Share a Clicky you've set up for a real job. A friend pastes its setup into HeyClicky, connects their apps, and starts from something that already works. The sharer's invite link comes along." }),
         el("div", { class: "cta" }, [
           el("a", { class: "btn", href: "#shared", text: "Browse shared Clickys" }),
-          el("a", { class: "btn secondary", href: "#connector", text: "Use it inside HeyClicky" })
+          el("a", { class: "btn secondary", href: "#demo", text: "▶ Watch the 1-minute demo" })
         ]),
         el("figure", { class: "demo", id: "demo" }, [
-          el("video", { controls: "", playsinline: "", preload: "metadata", poster: "img/video-poster.jpg", width: "1920", height: "1080",
-            "aria-label": "60-second demo of Share-a-Clicky" }, [
-            el("source", { src: "media/share-a-clicky-demo.mp4", type: "video/mp4" }),
-            el("track", { kind: "captions", src: "media/share-a-clicky-demo.vtt", srclang: "en", label: "English", default: "" })
+          el("div", { class: "win-frame" }, [
+            el("div", { class: "win-bar", "aria-hidden": "true" }, [el("i", { style: "background:#ff5f57" }), el("i", { style: "background:#febc2e" }), el("i", { style: "background:#28c840" }), el("span", { text: "share-a-clicky-demo.mov" })]),
+            el("video", { controls: "", playsinline: "", preload: "metadata", poster: "img/video-poster.jpg", width: "1920", height: "1080",
+              "aria-label": "One-minute demo of Share-a-Clicky" }, [
+              el("source", { src: "media/share-a-clicky-demo.mp4", type: "video/mp4" }),
+              el("track", { kind: "captions", src: "media/share-a-clicky-demo.vtt", srclang: "en", label: "English", default: "" })
+            ])
           ]),
-          el("figcaption", { text: "The idea in 60 seconds. Sound on, or turn on captions." })
+          el("figcaption", { text: "The whole idea in one minute. Sound on, or turn on captions." })
         ])
       ]),
+      el("div", { class: "marquee", "aria-hidden": "true" }, [el("div", { class: "track" }, marqueeRow().concat(marqueeRow()))]),
+
+      // ---- the idea (product lens) ----
+      el("section", { id: "idea" }, [
+        sectionHead("the idea", "why sharing, why now", "The product thinking behind the build: the gap, the bet, and why it fits where HeyClicky is headed."),
+        el("div", { class: "idea" }, [
+          el("div", { class: "idea-card reveal" }, [el("span", { class: "badge", style: "background:rgba(232,116,74,.16)", "aria-hidden": "true", text: "🧩" }), el("b", { text: "The gap" }),
+            el("span", { text: "A new Clicky comes from four onboarding questions or a short interview. There's no way to start from a Clicky a friend already runs for a real job." })]),
+          el("div", { class: "idea-card reveal" }, [el("span", { class: "badge", style: "background:rgba(31,111,232,.14)", "aria-hidden": "true", text: "🎯" }), el("b", { text: "The bet" }),
+            el("span", { text: "A Clicky shared by someone you trust, for a job they really have, is a strong first or second Clicky next to HeyClicky's own suggestions." })]),
+          el("div", { class: "idea-card reveal" }, [el("span", { class: "badge", style: "background:rgba(95,174,104,.16)", "aria-hidden": "true", text: "🚀" }), el("b", { text: "Why it fits now" }),
+            el("span", { text: "Invite & Earn (Sep 24) gives people a reason to share. A shared Clicky gives the invite link something specific to carry." })])
+        ])
+      ]),
+
+      // ---- gallery ----
       el("section", { id: "shared" }, [
-        el("div", { class: "section-head" }, [
-          el("div", { class: "eyebrow", text: "shared clickys" }),
-          el("h2", { text: "pick one, copy, paste" }),
-          el("p", { text: "Job Hunter is the one I built for my own job search. The other two are examples. Each shows an estimate of the agent messages its routine uses, so you know before you install whether it needs Pro." })
-        ]),
+        sectionHead("shared clickys", "pick one, copy, paste", "Job Hunter is the one I built for my own job search. The other two are examples. Each shows an estimate of the agent messages its routine uses, so it's clear before install whether it needs Pro."),
         el("div", { class: "grid" }, data.clickys.map(clickyCard))
       ]),
-      el("section", {}, [
+
+      // ---- how it works ----
+      el("section", { id: "how" }, [
+        sectionHead("how it works", "three steps, one paste"),
         el("div", { class: "steps" }, [
-          el("div", { class: "step" }, [el("span", { class: "n", text: "01" }), el("b", { text: "Pick" }), el("span", { text: "Open a Clicky someone shared." })]),
-          el("div", { class: "step" }, [el("span", { class: "n", text: "02" }), el("b", { text: "Copy" }), el("span", { text: "Click Copy setup." })]),
-          el("div", { class: "step" }, [el("span", { class: "n", text: "03" }), el("b", { text: "Paste" }), el("span", { text: "Click + (New Clicky), paste, connect its apps and let it set up its routine." })])
+          el("div", { class: "step reveal" }, [el("span", { class: "n", text: "1" }), el("b", { text: "Pick" }), el("span", { text: "Open a Clicky someone shared and see what it does, when it runs, and what it costs in messages." })]),
+          el("div", { class: "step reveal" }, [el("span", { class: "n", text: "2" }), el("b", { text: "Copy" }), el("span", { text: "Click Copy setup. The full text is on the page, so nothing is hidden." })]),
+          el("div", { class: "step reveal" }, [el("span", { class: "n", text: "3" }), el("b", { text: "Paste" }), el("span", { text: "Click + (New Clicky), paste, connect its apps, and let it set up its routine." })])
         ])
       ]),
+
+      // ---- connector ----
       el("section", { id: "connector" }, [
-        el("div", { class: "panel narrow" }, [
-          el("div", { class: "eyebrow", text: "inside heyclicky" }),
-          el("h2", { text: "ask any Clicky for shared Clickys" }),
-          el("p", { class: "muted", style: "margin:0", text: "Add the connector once. After that, any of your Clickys can list shared Clickys and hand you a setup." }),
-          el("ol", { class: "howto" }, [
+        sectionHead("inside heyclicky", "ask any Clicky for shared Clickys", "Add the connector once. After that, any Clicky can list shared Clickys and hand over a setup."),
+        el("div", { class: "panel narrow reveal" }, [
+          el("ol", { class: "howto", style: "margin-top:0" }, [
             el("li", {}, [el("span", { class: "num", "aria-hidden": "true", text: "1" }), el("div", { class: "body" }, [
               el("span", { text: "In HeyClicky, open" }),
               el("div", { class: "path" }, [
@@ -399,32 +537,96 @@
           ])
         ])
       ]),
-      el("section", {}, [
-        el("div", { class: "section-head" }, [
-          el("div", { class: "eyebrow", text: "found while building it" }),
-          el("h2", { text: "what it taught me about HeyClicky" })
-        ]),
+
+      // ---- findings ----
+      el("section", { id: "findings" }, [
+        sectionHead("found while testing it live", "what it taught me about HeyClicky", "Three things I only learned by shipping this into the real app."),
         el("div", { class: "findings" }, [
-          el("div", { class: "finding" }, [el("span", { class: "k", text: "bug" }), el("b", { text: "Mac connectors stop at message 2" }), el("span", { text: "A connector running on your Mac answers the first message in a chat. The second one fails with “Transport closed.” The web connector here avoids it." })]),
-          el("div", { class: "finding" }, [el("span", { class: "k", text: "missing hook" }), el("b", { text: "A Clicky can't create a Clicky" }), el("span", { text: "So install is one paste, not one click. A create_clicky tool or a heyclicky://new link would close the gap." })]),
-          el("div", { class: "finding" }, [el("span", { class: "k", text: "upgrade moment" }), el("b", { text: "Daily routines need Pro" }), el("span", { text: "Job Hunter uses about 30 agent messages a month, more than Free's 25. Saying so up front beats a surprise limit." })])
+          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "bug" }), el("b", { text: "Local connectors stop at message 2" }), el("span", { text: "A connector added with “Command on this Mac” answers the first message in a chat. The second one fails with “Transport closed.” The web connector here avoids it." })]),
+          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "missing hook" }), el("b", { text: "A Clicky can't create a Clicky" }), el("span", { text: "So install is one paste, not one click. A create_clicky tool or a heyclicky://new link would close the gap." })]),
+          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "upgrade moment" }), el("b", { text: "Daily routines need Pro" }), el("span", { text: "Job Hunter uses about 30 agent messages a month, more than Free's 25. Saying so up front beats a surprise limit." })])
         ])
       ]),
+
+      // ---- metrics ----
+      el("section", { id: "metrics" }, [
+        sectionHead("how I'd measure it", "is the bet working?", "The funnel I'd watch if this shipped, from first view to paid."),
+        el("div", { class: "flow" }, [
+          metric("Views to installs", "Does a shared Clicky make people want it?", 100),
+          metric("First routine run", "Did the install turn into real use?", 80),
+          metric("7-day retention", "Shared Clickys vs onboarding Clickys.", 62),
+          metric("Invite signups", "New users per shared Clicky.", 46),
+          metric("Free to Pro", "Upgrades from Clickys marked “needs Pro”.", 32)
+        ]),
+        el("p", { class: "flow-note reveal", text: "No real data yet. This is the plan, not a result." })
+      ]),
+
+      // ---- who built this ----
       el("section", { id: "builder" }, [
-        el("div", { class: "panel narrow builder" }, [
-          el("div", { class: "avatar", "aria-hidden": "true", text: "MM" }),
-          el("div", {}, [
-            el("div", { class: "eyebrow", text: "who built this" }),
-            el("h3", { text: "Mohit Malviya" }),
-            el("p", { text: "Product manager who builds. I started as a full-stack engineer at Wipro, spent six years in B2B SaaS product, and most recently worked on AI agents in Jira as a PM intern at Atlassian. I built this over a weekend to learn how Clickys work from the inside." }),
-            el("div", { class: "links" }, [
-              el("a", { href: "https://www.linkedin.com/in/malviyamohit/", rel: "noopener", text: "LinkedIn" }),
-              el("a", { href: "https://github.com/Mohit-Malviya-AI-PM/share-a-clicky", rel: "noopener", text: "Code on GitHub" })
+        sectionHead("who built this", "hi, I'm Mohit"),
+        el("div", { class: "note-card reveal" }, [
+          el("div", { class: "win-bar", "aria-hidden": "true" }, [el("i", { style: "background:#ff5f57" }), el("i", { style: "background:#febc2e" }), el("i", { style: "background:#28c840" }), el("span", { text: "note-from-mohit.txt" })]),
+          el("div", { class: "note-body" }, [
+            el("div", { class: "avatar", "aria-hidden": "true", text: "MM" }),
+            el("div", {}, [
+              el("h3", { text: "Mohit Malviya" }),
+              el("span", { class: "role", text: "AI product manager who builds" }),
+              el("p", { text: "I started as a full-stack engineer at Wipro, then spent six years as a product manager in B2B SaaS, most recently on AI agents in Jira as a PM intern at Atlassian." }),
+              el("p", { text: "Share-a-Clicky is how I like to work: find the gap, make a bet, build it end to end, test it live, and say how I'd measure it." }),
+              el("div", { class: "skills" }, ["product discovery", "metrics", "MCP", "Cloudflare Workers", "Python", "JavaScript", "testing"].map(function (s) { return el("span", { text: s }); })),
+              el("div", { class: "sig", "aria-hidden": "true", text: "mohit" }),
+              el("div", { class: "note-links" }, [
+                el("a", { href: "https://www.linkedin.com/in/malviyamohit/", rel: "noopener", text: "LinkedIn" }),
+                el("a", { class: "alt", href: "https://github.com/Mohit-Malviya-AI-PM/share-a-clicky", rel: "noopener", text: "Code on GitHub" })
+              ])
             ])
           ])
         ])
       ])
     );
+
+    var words = ["job hunting", "email follow-ups", "a weekly recap"], wi = 0;
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setInterval(function () { wi = (wi + 1) % words.length; var b = el("b", { text: words[wi] }); rotating.replaceWith(b); rotating = b; }, 2400);
+    }
+    setupReveal();
+  }
+
+  function metric(title, why, width) {
+    return el("div", { class: "metric reveal" }, [
+      el("div", { class: "bar", style: "width:" + width + "%", "aria-hidden": "true" }),
+      el("b", { text: title }), el("span", { text: why })
+    ]);
+  }
+
+  function setupReveal() {
+    var items = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      items.forEach(function (n) { n.classList.add("in"); }); return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    items.forEach(function (n, i) { n.style.transitionDelay = (i % 3) * 80 + "ms"; io.observe(n); });
+  }
+
+  // Small confetti burst from a button (skipped when reduced motion is on).
+  function celebrate(fromNode) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var canvas = document.getElementById("confetti-canvas");
+    if (!canvas) { canvas = el("canvas", { id: "confetti-canvas", "aria-hidden": "true" }); document.body.appendChild(canvas); }
+    var dpr = window.devicePixelRatio || 1; canvas.width = innerWidth * dpr; canvas.height = innerHeight * dpr;
+    var ctx = canvas.getContext("2d"); ctx.scale(dpr, dpr);
+    var r = fromNode.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    var colors = ["#e8744a", "#f2c14e", "#5fae68", "#1f6fe8", "#f4a7b4"], parts = [];
+    for (var i = 0; i < 70; i++) { var a = -Math.PI / 2 + (Math.random() - .5) * Math.PI * 1.2, v = 5 + Math.random() * 8;
+      parts.push({ x: cx, y: cy, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: Math.random() * 6, s: 5 + Math.random() * 6, c: colors[i % colors.length], life: 0 }); }
+    (function tick() {
+      ctx.clearRect(0, 0, innerWidth, innerHeight); var alive = false;
+      parts.forEach(function (p) { p.life++; p.vy += .28; p.vx *= .98; p.x += p.vx; p.y += p.vy; p.r += .2;
+        if (p.life < 90) { alive = true; ctx.save(); ctx.globalAlpha = Math.max(0, 1 - p.life / 90); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.s / 2, -p.s / 4, p.s, p.s / 2); ctx.restore(); } });
+      if (alive) requestAnimationFrame(tick); else ctx.clearRect(0, 0, innerWidth, innerHeight);
+    })();
   }
 
   function renderClicky(data, clicky) {
@@ -435,6 +637,7 @@
     var copyButton = el("button", { class: "btn", type: "button", text: "Copy setup" });
     copyButton.addEventListener("click", function () {
       copyWithFallback(clicky.setup_text, status, "Copied. Now click + (New Clicky) in HeyClicky and paste.", textarea);
+      celebrate(copyButton);
     });
 
     app.replaceChildren(
@@ -485,7 +688,7 @@
             : null,
           status,
           textarea,
-          el("p", { class: "mac-note", text: "HeyClicky runs on Mac. On your phone? Open this link on your Mac to install." })
+          el("p", { class: "mac-note", text: "HeyClicky is a Mac app. Reading this on a phone? Open the link on a Mac to install." })
         ])
       ])
     );

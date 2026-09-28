@@ -2,9 +2,9 @@
 
 **Start with a Clicky that already works.** Share a Clicky you've set up for a real job. A friend pastes its setup into HeyClicky, connects their apps, and starts from something that already works. Your invite link comes along.
 
-An unofficial prototype for [HeyClicky](https://www.heyclicky.com/), built by [Mohit Malviya](https://www.linkedin.com/in/malviyamohit/). Not affiliated with or endorsed by HeyClicky.
+An unofficial prototype for [HeyClicky](https://www.heyclicky.com/), built by [Mohit Malviya](https://www.linkedin.com/in/malviyamohit/), an AI product manager who builds. Not affiliated with or endorsed by HeyClicky.
 
-<p align="center"><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo"><img src="docs/img/video-poster.jpg" width="640" alt="Watch the 60-second demo"></a><br><sub>▶ Watch the 60-second demo</sub></p>
+<p align="center"><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo"><img src="docs/img/video-poster.jpg" width="640" alt="Watch the 1-minute demo"></a><br><sub>▶ Watch the 1-minute demo</sub></p>
 
 **Try it:** [share page](https://mohit-malviya-ai-pm.github.io/share-a-clicky/) · connector URL `https://share-a-clicky.malviyamohit58.workers.dev/mcp`
 
@@ -32,13 +32,13 @@ This is a bet, not a proven result. The metrics I'd use to test it are at the bo
 
 (A connector is a plug-in that lets a Clicky use an outside tool. This one can only read the list of shared Clickys.)
 
-## What I found while building it
+## What I found testing it live
 
 I tested everything live in HeyClicky 1.0.52 on Sep 28, 2026.
 
 | What happened | What would fix it |
 |---|---|
-| **Connectors that run on your Mac stop after the first message.** The second message in the same chat fails with "Transport closed." The web-hosted connector here doesn't have this problem. | Keep the Mac connector's session open between messages, or restart it |
+| **Local connectors stop after the first message.** A connector added with "Command on this Mac" answers once. The second message in the same chat fails with "Transport closed." The web-hosted connector here doesn't have this problem. | Keep the local connector's session open between messages, or restart it |
 | **A Clicky can't create a Clicky.** When I asked one to install a shared Clicky, it tried to click through HeyClicky's own screens and got stuck. So install is one paste, not one click. | A `create_clicky` tool, or a `heyclicky://new` link the share page's button could open |
 | **Daily routines need Pro.** Job Hunter runs every day and uses about 30 agent messages a month. Free includes 25. | Nothing to fix. The page says "needs Pro" up front instead of letting people hit a limit mid-month |
 
@@ -66,7 +66,7 @@ Job Hunter is the Clicky I built for my own job search. The other two are labele
 
 ```
 data/clickys.source.json  ──build.py──►  docs/clickys.json             (share page, GitHub Pages)
-   (single source of truth)          ├─►  connector/local/clickys.json  (Mac connector)
+   (single source of truth)          ├─►  connector/local/clickys.json  (local connector)
                                      └─►  connector/worker/worker.js    (web connector, data inlined)
 ```
 
@@ -85,11 +85,11 @@ data/clickys.source.json  ──build.py──►  docs/clickys.json            
 
 | Test | Result |
 |---|---|
-| Add the Mac connector as a custom connector | ✅ Connected |
+| Add the local connector as a custom connector | ✅ Connected |
 | A Clicky lists shared Clickys and returns a setup | ✅ 10 to 20 seconds, correct setup, told me to paste it into New Clicky |
 | Paste the setup into New Clicky | ✅ "Job Hunter" created with the right job and first tasks in about 20 seconds. Connecting apps and creating the routine are separate steps after that |
 | Ask a Clicky to create a new Clicky by itself | ❌ No tool for it. It tried to drive HeyClicky's UI and stalled. The connector now tells it to hand the setup over instead |
-| Second message in the same chat, Mac connector | ❌ "Transport closed," and HeyClicky never contacts the process again, though it's alive and idle |
+| Second message in the same chat, local connector | ❌ "Transport closed," and HeyClicky never contacts the process again, though it's alive and idle |
 | New Clicky screen uses a connector | ❌ The creation interview doesn't call tools |
 | Routine at a set weekday time | ⚠️ Routines repeat on an interval, so shared Clickys use "every 24 hours" style schedules |
 | Web connector, two messages in one chat | ✅ Both answered (10s and 17s) |
@@ -113,7 +113,7 @@ python3 build.py          # regenerate data for the page and both connectors
 ./run_tests.sh            # freshness check, connector tests, browser checks
 ```
 
-Mac connector in HeyClicky: Settings, Integrations, Add custom connector, Advanced, Command on this Mac. Command `python3`, arguments `/full/path/to/connector/local/share_a_clicky_mcp.py`. Logging is off by default; set `SHARE_A_CLICKY_LOG=/path/to/file` in the connector's environment to debug.
+Local connector in HeyClicky: Settings, Integrations, Add custom connector, Advanced, Command on this Mac. Command `python3`, arguments `/full/path/to/connector/local/share_a_clicky_mcp.py`. Logging is off by default; set `SHARE_A_CLICKY_LOG=/path/to/file` in the connector's environment to debug.
 
 Deploy the Worker: paste `connector/worker/worker.js` into a new Cloudflare Worker, or run `npx wrangler deploy` in `connector/worker`.
 

@@ -1,46 +1,61 @@
 WEBVTT
 
-00:00.800 --> 00:03.637
+00:00.600 --> 00:02.969
 I have a Clicky that keeps my job search moving.
 
-00:03.637 --> 00:05.899
+00:02.969 --> 00:04.809
 One short update, every morning.
 
-00:06.299 --> 00:09.737
-Then my friend got HeyClicky, and asked the obvious question.
+00:05.009 --> 00:07.947
+Then my friend got HeyClicky, and asked the big question.
 
-00:09.837 --> 00:14.868
-Today, a new Clicky starts from a few questions. Not from one a friend already runs.
+00:07.947 --> 00:10.684
+HeyClicky can build a Clicky from a few questions.
 
-00:15.768 --> 00:17.682
-So I built Share-a-Clicky.
+00:10.684 --> 00:14.790
+But I already run one that does a real job, and there's no way to share it.
 
-00:17.682 --> 00:22.150
-Each shared Clicky shows what it does, how often it runs, and the apps it needs.
+00:15.390 --> 00:16.927
+So I built Share-a-Clicky!
 
-00:22.200 --> 00:24.854
-Copy the setup. Paste it into New Clicky.
+00:16.927 --> 00:18.061
+Pick a shared Clicky.
 
-00:24.854 --> 00:27.276
+00:18.061 --> 00:23.027
+See what it does, which apps it needs, and about how many agent messages it uses each month.
+
+00:23.027 --> 00:26.476
+Job Hunter runs daily, so it says up front that it needs Pro.
+
+00:26.476 --> 00:29.930
+Copy the setup. Paste it into New Clicky. Connect the apps.
+
+00:29.930 --> 00:32.237
 About twenty seconds later, it's ready.
 
-00:27.476 --> 00:29.468
-Your invite link comes along.
+00:32.237 --> 00:34.070
+And my invite link comes along.
 
-00:29.468 --> 00:33.314
-And if a daily routine needs Pro, it says so before you install.
+00:34.620 --> 00:38.239
+It also works inside HeyClicky, as a custom connector.
 
-00:34.064 --> 00:39.764
-It works inside HeyClicky too. Add one connector, and any Clicky can hand you a shared setup.
+00:38.239 --> 00:39.378
+One URL, no code.
 
-00:40.514 --> 00:42.630
-Building it, I found two gaps.
+00:39.378 --> 00:43.600
+Then any Clicky can list shared Clickys and pass along a setup.
 
-00:42.630 --> 00:45.782
-Connectors on your Mac stop after the first message.
+00:44.200 --> 00:46.207
+Testing it live, I found two gaps.
 
-00:45.882 --> 00:50.688
-And a Clicky can't create a Clicky yet. So install is one paste, not one click.
+00:46.207 --> 00:48.931
+Local connectors stop after the first message.
 
-00:51.488 --> 00:54.459
+00:48.931 --> 00:51.293
+And a Clicky can't create a Clicky yet.
+
+00:51.293 --> 00:53.654
+So install is one paste, not one click.
+
+00:54.254 --> 00:57.016
 Share-a-Clicky. Start with a Clicky that already works.
