@@ -1,0 +1,80 @@
+{
+  "site_url": "https://mohit-malviya-ai-pm.github.io/share-a-clicky/",
+  "connector_url": "https://share-a-clicky.malviyamohit58.workers.dev/mcp",
+  "repo_url": "https://github.com/Mohit-Malviya-AI-PM/share-a-clicky",
+  "default_get_url": "https://www.heyclicky.com/",
+  "plans": {
+    "free": 25,
+    "pro": 150,
+    "max": 1000
+  },
+  "sharers": {
+    "@mohit": {
+      "invite_url": "https://www.heyclicky.com/@mohit-malviya-ai-pm"
+    }
+  },
+  "clickys": [
+    {
+      "slug": "job-hunter",
+      "name": "Job Hunter",
+      "emoji": "💼",
+      "shared_by": "@mohit",
+      "example": false,
+      "one_line_job": "Keeps my job search moving with one short update a day.",
+      "why_i_use_it": "I built this for my own job search, where replies, interview invites and follow-ups slip through. It puts them in one short daily update. A daily routine needs about 30 agent messages a month, so on Free it runs out before the month does. That's why every shared Clicky shows its cost.",
+      "personality": "Direct, encouraging, never wordy.",
+      "instructions": "Once a day, check my email for replies from companies or recruiters and list them with the next step for each. Flag any interview invites and propose times from my calendar. Suggest one follow-up email I should send today and draft it. Keep the whole update under 120 words. Never send an email without asking me first.",
+      "routine": {
+        "label": "Every 24 hours",
+        "runs_per_month": 30
+      },
+      "apps": [
+        "Gmail",
+        "Google Calendar"
+      ],
+      "agent_messages_per_run": 1,
+      "first_task": "Look at my inbox from the last 7 days and tell me where each application stands."
+    },
+    {
+      "slug": "follow-up-keeper",
+      "name": "Follow-up Keeper",
+      "emoji": "📬",
+      "shared_by": "@mohit",
+      "example": true,
+      "one_line_job": "Catches email threads where someone has waited more than 3 days for your reply.",
+      "why_i_use_it": "An example of a small, cheap routine: it runs every other day and only drafts, never sends.",
+      "personality": "Friendly, short, a little nudgy.",
+      "instructions": "Every other day, find email threads where someone is waiting on my reply for more than 3 days. List them oldest first with one line on what they need. Draft a short reply for the top two. Never send anything without asking me first.",
+      "routine": {
+        "label": "Every 48 hours",
+        "runs_per_month": 15
+      },
+      "apps": [
+        "Gmail"
+      ],
+      "agent_messages_per_run": 1,
+      "first_task": "Show me every thread from the last 14 days where I still owe someone a reply."
+    },
+    {
+      "slug": "weekly-wins",
+      "name": "Weekly Wins",
+      "emoji": "🏁",
+      "shared_by": "@mohit",
+      "example": true,
+      "one_line_job": "Turns your week into a 5-line recap, once a week.",
+      "why_i_use_it": "An example of a weekly routine that costs almost nothing: about 4 agent messages a month.",
+      "personality": "Upbeat, concrete, no fluff.",
+      "instructions": "Once a week, look at my sent email and calendar for the past 7 days. Write a 5-line recap of what I got done, who I met, and what's next. Offer to turn it into a short update I can send to a mentor.",
+      "routine": {
+        "label": "Every 7 days",
+        "runs_per_month": 4
+      },
+      "apps": [
+        "Gmail",
+        "Google Calendar"
+      ],
+      "agent_messages_per_run": 1,
+      "first_task": "Write my recap for the last 7 days."
+    }
+  ]
+}
