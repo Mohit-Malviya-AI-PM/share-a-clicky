@@ -1220,99 +1220,195 @@
     Object.keys(byId).forEach(function (id) { var sec = document.getElementById(id); if (sec) io.observe(sec); });
   }
 
-  // ---------- mohit's radio: off by default, fades down while any video plays with sound ----------
+  // ---------- mohit's radio: off by default, ducks while any video plays with sound ----------
   // Music: Kevin MacLeod (incompetech.com), CC BY 4.0. Credits are in the footer.
+  // Plays through a streaming <audio> element, not a Web Audio buffer, because:
+  //  - iPhone mutes Web Audio when the ring/silent switch is on; <audio> plays through it (like YouTube does).
+  //  - the first sound starts in about a second instead of waiting for a full download and decode.
+  //  - a 4-minute song decoded to raw audio is ~85 MB of memory, which phones can refuse.
+  //  - the lock screen and headphone buttons get play, pause, next and previous for free.
+  // play() is always called directly inside the tap, which Chrome, Safari and every iPhone browser require.
   (function radio() {
     var btn = document.querySelector(".np");
     var skip = document.querySelector(".np-skip");
     var prev = document.querySelector(".np-prev");
     var chip = document.querySelector(".radio");
     var toast = document.querySelector(".np-toast");
-    var AC = window.AudioContext || window.webkitAudioContext;
-    if (!btn || !AC) { if (chip) chip.hidden = true; return; }
+    if (!btn || typeof Audio === "undefined") { if (chip) chip.hidden = true; return; }
     var TRACKS = [
       { file: "radio-hustle", title: "Hustle" },
       { file: "radio-funky-chunk", title: "Funky Chunk" },
       { file: "radio-funk-game-loop", title: "Funk Game Loop" }
     ];
-    var BASE = 0.55, DUCK = 0.15, FADE = 0.4;
-    var ctx = null, gain = null, on = false, loading = false, index = 0, source = null, buffers = {}, toastTimer = null;
-    var aac = document.createElement("audio").canPlayType('audio/mp4; codecs="mp4a.40.2"');
+    var BASE = 0.55, DUCK = 0.15, FADE_MS = 400;
+    var audio = new Audio();
+    audio.preload = "none";
+    var formats = audio.canPlayType('audio/mp4; codecs="mp4a.40.2"') ? ["m4a", "mp3"] : ["mp3", "m4a"];
+    // iPhone and iPad ignore audio.volume, so there the radio pauses under a video instead of fading.
+    var canFade = (function () { try { var probe = new Audio(); probe.volume = 0.5; return Math.abs(probe.volume - 0.5) < 0.01; } catch (e) { return false; } })();
+    var on = false, loading = false, ducked = false, switching = false;
+    var index = 0, formatTry = 0, failedTracks = 0, fadeTimer = null, toastTimer = null, stallTimer = null;
+    var STALL_MS = 10000;
+
     function mediaWithSound() {
-      return Array.prototype.some.call(document.querySelectorAll("video, audio"), function (m) { return !m.paused && !m.muted && m.volume > 0; });
+      return Array.prototype.some.call(document.querySelectorAll("video, audio"), function (m) {
+        return m !== audio && !m.paused && !m.ended && !m.muted && m.volume > 0;
+      });
     }
-    function rampTo(value, seconds) {
-      if (!gain) return;
-      var t = ctx.currentTime;
-      gain.gain.cancelScheduledValues(t);
-      gain.gain.setValueAtTime(gain.gain.value, t);
-      gain.gain.linearRampToValueAtTime(value, t + seconds);
+    function fade(to, ms, done) {
+      clearInterval(fadeTimer);
+      if (!canFade) { if (done) done(); return; }
+      var from = audio.volume, started = Date.now();
+      fadeTimer = setInterval(function () {
+        var k = Math.min(1, (Date.now() - started) / ms);
+        audio.volume = Math.max(0, Math.min(1, from + (to - from) * k));
+        if (k >= 1) { clearInterval(fadeTimer); if (done) done(); }
+      }, 30);
     }
-    function level() { rampTo(on ? (mediaWithSound() ? BASE * DUCK : BASE) : 0, FADE); }
-    ["play", "pause", "volumechange", "ended"].forEach(function (name) { document.addEventListener(name, level, true); });
     function show() {
+      if (chip) {
+        chip.classList.toggle("on", on);
+        chip.setAttribute("data-state", !on ? "off" : loading ? "loading" : ducked ? "ducked" : "playing");
+      }
       btn.classList.toggle("playing", on);
-      if (chip) chip.classList.toggle("on", on);
-      if (prev) prev.hidden = !on;
-      btn.classList.toggle("loading", loading);
+      btn.classList.toggle("loading", on && loading);
       btn.setAttribute("aria-pressed", on ? "true" : "false");
       btn.setAttribute("aria-label", on ? "Pause background music" : "Play background music");
-      btn.title = on ? "Now playing: " + TRACKS[index].title + " by Kevin MacLeod. Click to pause." : "radio: funk by Kevin MacLeod, off by default";
+      btn.title = on ? "Now playing: " + TRACKS[index].title + " by Kevin MacLeod. Tap to pause." : "radio: funk by Kevin MacLeod, off by default";
+      if (prev) prev.hidden = !on;
       if (skip) skip.hidden = !on;
+      if ("mediaSession" in navigator) {
+        try { navigator.mediaSession.playbackState = on && !ducked ? "playing" : "paused"; } catch (e) {}
+      }
     }
     function say(text) {
       if (!toast) return;
       toast.textContent = text; toast.classList.add("show");
       clearTimeout(toastTimer); toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 3200);
     }
-    function decode(buffer) { return new Promise(function (resolve, reject) { ctx.decodeAudioData(buffer, resolve, reject); }); }
-    function fetchDecode(url) { return fetch(url).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.arrayBuffer(); }).then(decode); }
-    function load(i) {
-      var t = TRACKS[i];
-      if (!buffers[t.file]) {
-        var a = "media/" + t.file + ".m4a", b = "media/" + t.file + ".mp3";
-        buffers[t.file] = fetchDecode(aac ? a : b).catch(function () { return fetchDecode(aac ? b : a); });
-        buffers[t.file].catch(function () { delete buffers[t.file]; });
+    function announce() {
+      say("♪ " + TRACKS[index].title + " · Kevin MacLeod");
+      if ("mediaSession" in navigator && typeof MediaMetadata !== "undefined") {
+        try {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: TRACKS[index].title, artist: "Kevin MacLeod", album: "mohit's radio",
+            artwork: [{ src: "img/logo-512.png", sizes: "512x512", type: "image/png" }]
+          });
+        } catch (e) {}
       }
-      return buffers[t.file];
     }
-    function play(i) {
+    function setTrack(i) {
       index = (i + TRACKS.length) % TRACKS.length;
-      loading = true; show();
-      return load(index).then(function (buf) {
-        if (source) { source.onended = null; try { source.stop(); } catch (e) {} }
-        var src = ctx.createBufferSource();
-        src.buffer = buf; src.connect(gain);
-        src.onended = function () { if (src === source) play(index + 1); };
-        source = src; src.start();
-        loading = false; show(); level();
-        say("♪ " + TRACKS[index].title + " · Kevin MacLeod");
-        load((index + 1) % TRACKS.length);
-      }).catch(function () { loading = false; on = false; show(); if (chip) chip.hidden = true; });
+      formatTry = 0;
+      switching = true;
+      audio.src = "media/" + TRACKS[index].file + "." + formats[0];
     }
-    btn.addEventListener("click", function () {
-      if (loading) return;
-      if (!ctx) {
-        ctx = new AC();
-        gain = ctx.createGain(); gain.gain.value = 0; gain.connect(ctx.destination);
-        on = true; play(0); return;
+    function stop(message) {
+      on = false; loading = false; ducked = false; switching = false;
+      clearInterval(fadeTimer); clearTimeout(stallTimer);
+      try { audio.pause(); } catch (e) {}
+      show();
+      if (message) say(message);
+    }
+    function start() {
+      clearTimeout(stallTimer);
+      stallTimer = setTimeout(function () { if (on && !ducked && audio.readyState < 3) failed(true); }, STALL_MS);
+      var p;
+      try { p = audio.play(); } catch (err) { stop("Radio couldn't play in this browser"); return; }
+      if (p && p.catch) p.catch(function (err) {
+        var name = err && err.name;
+        if (name === "AbortError") return; // a newer src or pause replaced this play; not a failure
+        if (name === "NotSupportedError") return; // handled by the error event (tries the other format)
+        if (!on) return;
+        stop(name === "NotAllowedError" ? "Tap radio again to start the music" : "Radio couldn't play here");
+      });
+    }
+
+    audio.addEventListener("playing", function () {
+      clearTimeout(stallTimer);
+      switching = false; loading = false; failedTracks = 0;
+      if (!on) { audio.pause(); return; } // user tapped off while it was still loading
+      show();
+    });
+    audio.addEventListener("waiting", function () { if (on) { loading = true; show(); } });
+    audio.addEventListener("ended", function () {
+      if (!on) return;
+      setTrack(index + 1); start(); announce();
+    });
+    // A file that fails, or a download that stalls (flaky phone signal), tries the other format, then the next song.
+    function failed(stalled) {
+      clearTimeout(stallTimer);
+      if (!on || !audio.getAttribute("src")) return;
+      if (formatTry === 0 && stalled !== true) {
+        formatTry = 1;
+        switching = true;
+        audio.src = "media/" + TRACKS[index].file + "." + formats[1];
+        start(); return;
       }
-      if (on) { on = false; show(); rampTo(0, 0.25); setTimeout(function () { if (!on) ctx.suspend(); }, 300); }
-      else { on = true; show(); ctx.resume().then(level); say("♪ " + TRACKS[index].title + " · Kevin MacLeod"); }
+      failedTracks++;
+      if (failedTracks >= TRACKS.length) { failedTracks = 0; stop("Radio couldn't load. Check your connection and tap again."); return; }
+      setTrack(index + 1); start(); announce();
+    }
+    audio.addEventListener("error", function () { failed(false); });
+    // Paused by something other than this page: lock screen, headphones, a phone call,
+    // or iPhone stopping us because the demo video started with sound.
+    audio.addEventListener("pause", function () {
+      if (!on || switching || ducked || audio.ended) return;
+      if (mediaWithSound()) { ducked = true; show(); return; }
+      stop();
+    });
+    // Started from the lock screen or headphones.
+    audio.addEventListener("play", function () {
+      if (!on && !switching) { on = true; ducked = false; show(); fade(BASE, FADE_MS); }
+    });
+
+    function level() {
+      if (!on) return;
+      var busy = mediaWithSound();
+      if (canFade) { ducked = false; show(); fade(busy ? BASE * DUCK : BASE, FADE_MS); return; }
+      if (busy && !ducked) { ducked = true; show(); audio.pause(); }
+      else if (!busy && ducked) { ducked = false; show(); start(); }
+    }
+    ["play", "pause", "volumechange", "ended"].forEach(function (name) { document.addEventListener(name, level, true); });
+
+    btn.addEventListener("click", function () {
+      if (on) {
+        on = false; ducked = false; loading = false; show();
+        if (canFade) fade(0, 250, function () { if (!on) audio.pause(); });
+        else audio.pause();
+        return;
+      }
+      on = true; ducked = false; failedTracks = 0;
+      if (!audio.getAttribute("src")) setTrack(0);
+      clearInterval(fadeTimer);
+      if (canFade) audio.volume = 0;
+      loading = audio.readyState < 3;
+      show();
+      start(); // must stay synchronous inside the tap
+      announce();
+      level();
     });
     function jump(step) {
-      if (!on || loading) return;
-      rampTo(0, 0.15);
-      setTimeout(function () { play(index + step); }, 160);
+      if (!on) return;
+      ducked = false; loading = true;
+      setTrack(index + step);
+      show(); start(); announce(); level();
     }
     if (skip) skip.addEventListener("click", function () { jump(1); });
     if (prev) prev.addEventListener("click", function () { jump(-1); });
-    // Keep playing when the tab or window loses focus, like a radio.
-    // If the browser suspended audio on its own, pick it back up on return.
-    document.addEventListener("visibilitychange", function () {
-      if (!ctx || !on || document.hidden) return;
-      if (ctx.state !== "running") ctx.resume().then(level);
-    });
+
+    if ("mediaSession" in navigator) {
+      var handlers = {
+        play: function () { if (!on) btn.click(); },
+        pause: function () { if (on) btn.click(); },
+        nexttrack: function () { jump(1); },
+        previoustrack: function () { jump(-1); }
+      };
+      Object.keys(handlers).forEach(function (action) {
+        try { navigator.mediaSession.setActionHandler(action, handlers[action]); } catch (e) {}
+      });
+    }
+    show();
   })();
 
   // ---------- footer tile wordmark ----------
