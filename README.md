@@ -6,7 +6,7 @@
 |---|---|---|
 | Share a Clicky you already use. A friend pastes its setup into New Clicky | New Clickys start from a guess. Shared ones start from something that works | Built and tested live on HeyClicky 1.0.52, with 2 gaps found along the way |
 
-An unofficial prototype for [HeyClicky](https://www.heyclicky.com/), built by [Mohit Malviya](https://www.linkedin.com/in/malviyamohit/), an AI product manager who builds (6.5 years in product management, Cornell MBA). Not affiliated with or endorsed by HeyClicky.
+An unofficial prototype for [HeyClicky](https://www.heyclicky.com/), built by [Mohit Malviya](https://www.linkedin.com/in/malviyamohit/), an AI product manager who builds (6.5 years in product management, computer science engineering degree, Cornell MBA in AI, Tech & Product Management). Not affiliated with or endorsed by HeyClicky.
 
 <p align="center"><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo"><img src="docs/img/demo.gif" width="960" alt="Highlights from the 1-minute demo: the share page, copy and paste into New Clicky, the connector, and the bug found testing live. Click for the full demo with sound"></a><br><sub><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo">▶ Watch the 1-minute demo</a> (opens the share page, with captions)</sub></p>
 
