@@ -20,7 +20,7 @@ An unofficial prototype for [HeyClicky](https://www.heyclicky.com/), built by [M
 | **The idea** | A share page for Clickys. Each one shows what it does, how often it runs, which apps it needs, and roughly how many agent messages it uses. One button copies its setup. |
 | **Why HeyClicky might care** | Invite & Earn gives people a reason to share. A shared Clicky gives that link something specific to carry. "Here's the Clicky I use for my job search" beats "try this app." |
 
-This is a bet, not a proven result. The metrics I'd use to test it are at the bottom.
+This is a bet, not a proven result. The metrics I'd use to test it are in [How I'd measure it](#how-id-measure-it).
 
 ## How to use it
 
