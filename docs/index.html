@@ -1028,6 +1028,7 @@
     var playBtn = q(".vp-play"), muteBtn = q(".vp-mute"), ccBtn = q(".vp-cc"), speedBtn = q(".vp-speed");
     var chips = Array.prototype.slice.call(fig.querySelectorAll(".vp-chip"));
     var captionsOn = true, idleTimer = null, speeds = [1, 1.25, 1.5, 2];
+    var tapType = "mouse", tapWasIdle = false; // how the last press on the video started
     function dur() { return isFinite(video.duration) && video.duration > 0 ? video.duration : 65; }
 
     // chapter ticks on the track
@@ -1059,7 +1060,9 @@
     function wake() {
       frame.classList.remove("idle");
       clearTimeout(idleTimer);
-      idleTimer = setTimeout(function () { if (!video.paused && !frame.matches(":focus-within")) frame.classList.add("idle"); }, 2400);
+      // Hide the controls after a quiet moment. Only keyboard focus keeps them up: a tapped
+      // button on a phone keeps focus, and that used to pin (or fight) the bar.
+      idleTimer = setTimeout(function () { if (!video.paused && !frame.querySelector(":focus-visible")) frame.classList.add("idle"); }, 3000);
     }
     function isFull() { return document.fullscreenElement === frame || document.webkitFullscreenElement === frame; }
     function fullscreen() {
@@ -1082,7 +1085,13 @@
     ["play", "pause", "ended", "volumechange", "loadeddata"].forEach(function (n) { video.addEventListener(n, state); });
     video.addEventListener("timeupdate", paint);
     video.addEventListener("progress", paint);
-    video.addEventListener("click", toggle);
+    // Phones: first tap on a playing video only shows the controls (like YouTube and the
+    // iPhone player). With the controls showing, a tap plays or pauses. A mouse click always toggles.
+    video.addEventListener("pointerdown", function (e) { tapType = e.pointerType || "mouse"; tapWasIdle = frame.classList.contains("idle"); });
+    video.addEventListener("click", function () {
+      if (tapType !== "mouse" && tapWasIdle && !video.paused && !video.ended) { wake(); return; }
+      toggle();
+    });
     q(".vp-big").addEventListener("click", function () { video.muted = false; toggle(); });
     playBtn.addEventListener("click", toggle);
     muteBtn.addEventListener("click", function () { video.muted = !video.muted; });
@@ -1133,7 +1142,9 @@
     });
     video.setAttribute("tabindex", "0");
     ["pointermove", "pointerdown", "focusin"].forEach(function (n) { frame.addEventListener(n, wake); });
-    frame.addEventListener("pointerleave", function () { if (!video.paused) frame.classList.add("idle"); });
+    // Only a mouse can leave. On touch screens "pointerleave" fires right after every finger lift,
+    // which used to hide the controls the instant they appeared.
+    frame.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse" && !video.paused) frame.classList.add("idle"); });
     ["fullscreenchange", "webkitfullscreenchange"].forEach(function (n) { document.addEventListener(n, function () { frame.classList.toggle("is-full", isFull()); }); });
     state(); paint();
   }
@@ -1246,7 +1257,8 @@
     var formats = audio.canPlayType('audio/mp4; codecs="mp4a.40.2"') ? ["m4a", "mp3"] : ["mp3", "m4a"];
     // iPhone and iPad ignore audio.volume, so there the radio pauses under a video instead of fading.
     var canFade = (function () { try { var probe = new Audio(); probe.volume = 0.5; return Math.abs(probe.volume - 0.5) < 0.01; } catch (e) { return false; } })();
-    var on = false, loading = false, ducked = false, switching = false;
+    // on = the listener wants music. ducked = another video or audio on the page has the sound right now.
+    var on = false, loading = false, ducked = false, switching = false, resuming = false;
     var index = 0, formatTry = 0, failedTracks = 0, fadeTimer = null, toastTimer = null, stallTimer = null;
     var STALL_MS = 10000;
 
@@ -1310,7 +1322,8 @@
       show();
       if (message) say(message);
     }
-    function start() {
+    function start(isResume) {
+      resuming = !!isResume;
       clearTimeout(stallTimer);
       stallTimer = setTimeout(function () { if (on && !ducked && audio.readyState < 3) failed(true); }, STALL_MS);
       var p;
@@ -1320,6 +1333,9 @@
         if (name === "AbortError") return; // a newer src or pause replaced this play; not a failure
         if (name === "NotSupportedError") return; // handled by the error event (tries the other format)
         if (!on) return;
+        // A phone can refuse to restart sound that isn't right after a tap. Stay on and
+        // come back on the next tap anywhere on the page (see the click listener below).
+        if (name === "NotAllowedError" && resuming) { ducked = true; show(); return; }
         stop(name === "NotAllowedError" ? "Tap radio again to start the music" : "Radio couldn't play here");
       });
     }
@@ -1362,16 +1378,40 @@
       if (!on && !switching) { on = true; ducked = false; show(); fade(BASE, FADE_MS); }
     });
 
+    // One rule for every phone and browser:
+    //  - another video or audio has sound -> the radio fades to 15% (or, where the browser
+    //    stops it or won't allow volume changes, like iPhone, it steps aside and waits)
+    //  - nothing else has sound -> the radio comes back, fading in from where it stopped
+    function resume() {
+      ducked = false; show();
+      if (audio.paused) {
+        clearInterval(fadeTimer);
+        if (canFade) audio.volume = 0;
+        start(true);
+      }
+      fade(BASE, FADE_MS);
+    }
     function level() {
       if (!on) return;
-      var busy = mediaWithSound();
-      if (canFade) { ducked = false; show(); fade(busy ? BASE * DUCK : BASE, FADE_MS); return; }
-      if (busy && !ducked) { ducked = true; show(); audio.pause(); }
-      else if (!busy && ducked) { ducked = false; show(); start(); }
+      if (mediaWithSound()) {
+        if (canFade && !audio.paused && !ducked) { fade(BASE * DUCK, FADE_MS); return; }
+        if (!ducked) { ducked = true; show(); clearInterval(fadeTimer); if (!audio.paused) audio.pause(); }
+        return;
+      }
+      if (ducked || audio.paused) resume();
+      else fade(BASE, FADE_MS);
     }
     ["play", "pause", "volumechange", "ended"].forEach(function (name) { document.addEventListener(name, level, true); });
+    // Tapping pause on the video is a real tap, so resume inside it. This runs after the
+    // video player's own click handler (bubble phase on window), when the video is already paused.
+    // Phones allow play() here even when they refuse it a moment later from a media event.
+    window.addEventListener("click", function (e) {
+      if (!on || switching || (chip && chip.contains(e.target))) return;
+      if ((ducked || audio.paused) && !mediaWithSound()) resume();
+    });
 
     btn.addEventListener("click", function () {
+      if (on && (ducked || audio.paused) && !loading && !mediaWithSound()) { resume(); return; } // waiting for a tap: this tap brings it back
       if (on) {
         on = false; ducked = false; loading = false; show();
         if (canFade) fade(0, 250, function () { if (!on) audio.pause(); });
