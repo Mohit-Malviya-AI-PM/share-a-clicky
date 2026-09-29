@@ -452,6 +452,7 @@
   .sticker.tile, .sticker.tag, .sticker.stamp, .sticker.live { pointer-events: auto; cursor: grab; touch-action: none; }
   .sticker.dragging { cursor: grabbing; animation-play-state: paused; z-index: 5; filter: drop-shadow(0 16px 20px rgba(0,0,0,.25)); }
   .sticker.stamp { font: 800 15px/1 Inter, sans-serif; letter-spacing: .06em; color: #c2382a; border: 3px solid #c2382a; border-radius: 8px; padding: 6px 10px; background: rgba(255,250,240,.95); text-transform: uppercase; }
+  .sticker.stamp.go { color: #2f7a45; border-color: #2f7a45; }
   .sticker.live { font: 700 22px/1 Caveat, cursive; color: #fff; background: #2f7a45; padding: 8px 14px; border-radius: 999px; box-shadow: 0 10px 22px -10px rgba(0,0,0,.45); }
   .drag-hint { position: absolute; font: 700 20px/1 Caveat, cursive; color: var(--text-3); user-select: none; pointer-events: none; }
 
@@ -663,7 +664,7 @@
         el("span", { class: "sticker tile", style: "right:5%;top:70px;--r:8deg;animation-delay:-2s", "aria-hidden": "true", text: "📬" }),
         el("span", { class: "sticker tag", style: "right:4%;top:170px;--r:-6deg;animation-delay:-1s", "aria-hidden": "true", text: "shared by @mohit" }),
         el("span", { class: "sticker live", style: "left:2%;top:205px;--r:-4deg;animation-delay:-2.5s", "aria-hidden": "true", text: "tested live ✓" }),
-        el("span", { class: "sticker stamp", style: "right:5%;top:290px;--r:7deg;animation-delay:-3.5s", "aria-hidden": "true", text: "needs Pro" }),
+        el("span", { class: "sticker stamp go", style: "right:5%;top:290px;--r:7deg;animation-delay:-3.5s", "aria-hidden": "true", text: "free to share" }),
         el("span", { class: "drag-hint", style: "left:2%;top:172px", "aria-hidden": "true", text: "psst, drag these anywhere ↓" }),
         el("span", { class: "kaomoji", style: "right:3%;top:20px", "aria-hidden": "true", text: "(＾▽＾)/" }),
         el("div", { class: "kicker" }, [el("span", { class: "dot", "aria-hidden": "true" }), "a product bet for HeyClicky, built and tested live"]),
