@@ -24,7 +24,7 @@ This is a bet, not a proven result. The metrics I'd use to test it are in [How I
 
 ## How to use it
 
-<p align="center"><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/diagram-how-dark.png"><img src="docs/img/diagram-how-light.png" width="960" alt="How it works: 1. you share a Clicky you run for a real job, 2. the share page shows its apps, agent messages a month and whether it needs Pro, with a Copy setup button, 3. a friend pastes it into New Clicky and it is ready in about 20 seconds. Your invite link rides along. Inside HeyClicky, any Clicky can ask the web connector, which hands over the setup."></picture></a></p>
+<p align="center"><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/diagram-how-dark.png"><img src="docs/img/diagram-how-light.png" width="960" alt="How it works: your Clicky goes on the share page, which shows what it does, its apps and agent messages a month. From there, Copy setup or the web connector puts it in a friend\'s HeyClicky, pasted into New Clicky and ready in about 20 seconds. Your invite link rides along, so you earn 25% and the friend gets 25% off. Tested live in HeyClicky 1.0.52."></picture></a></p>
 
 <p align="center"><sub>Click the diagram for the live page, or try each step: <a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/">share page</a> · <a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/?c=job-hunter">Job Hunter's setup</a> · <a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#connector">add the connector</a> · <a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo">watch it</a></sub></p>
 
