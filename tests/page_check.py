@@ -131,7 +131,8 @@ def main():
                         const lh = parseFloat(getComputedStyle(b).lineHeight) || 24; return b.getBoundingClientRect().height < lh * 1.5; })""")
                     check(f"finding titles fit on one line [{tag}]", one_line)
                 check(f"radio button is off by default [{tag}]", page.get_attribute(".np", "aria-pressed") == "false")
-                check(f"faq has questions [{tag}]", page.locator("#faq details").count() >= (4 if V2 else 6))
+                new_layout = page.locator(".why-list").count() == 1  # the one-page layout (v2 preview, or live after the swap)
+                check(f"faq has questions [{tag}]", page.locator("#faq details").count() >= (4 if new_layout else 6))
                 check(f"demo uses the custom player, not native controls [{tag}]",
                       page.locator("#demo video[controls]").count() == 0
                       and page.locator("#demo .vp-big").count() == 1
@@ -140,13 +141,16 @@ def main():
                 check(f"radio skip button hidden until music plays [{tag}]", page.evaluate("document.querySelector('.np-skip').hidden"))
                 check(f"radio previous button hidden until music plays [{tag}]", page.evaluate("document.querySelector('.np-prev').hidden"))
                 check(f"music credit in the footer [{tag}]", "Kevin MacLeod" in page.inner_text("footer") and "creativecommons.org/licenses/by/4.0" in page.inner_html("footer"))
-                if V2:
+                if new_layout:
                     check(f"v2: stickers only in the hero [{tag}]", page.locator("section .sec-sticker").count() == 0)
                     check(f"v2: 6 nav links [{tag}]", page.locator(".mb-links a").count() == 6)
                     check(f"v2: every old section link still lands [{tag}]", page.evaluate("['demo','shared','how','connector','idea','findings','metrics','faq','builder'].every(id => document.getElementById(id))"))
                     check(f"v2: no repeated summary blocks [{tag}]", page.locator(".tldr, .marquee, .rotator").count() == 0)
                     check(f"v2: under 800 visible words [{tag}]", page.evaluate("document.querySelector('main').innerText.split(/\\s+/).filter(Boolean).length") < 800)
-                    check(f"v2: marked noindex and preview [{tag}]", page.locator("meta[name=robots][content=noindex]").count() == 1 and page.locator(".preview-ribbon").count() == 1)
+                    if V2:
+                        check(f"v2: marked noindex and preview [{tag}]", page.locator("meta[name=robots][content=noindex]").count() == 1 and page.locator(".preview-ribbon").count() == 1)
+                    else:
+                        check(f"live: no preview label or noindex left [{tag}]", page.locator("meta[name=robots], .preview-ribbon").count() == 0)
                     check(f"v2: email link in about me [{tag}]", page.locator("#builder a[href^='mailto:']").count() == 1)
                     check(f"v2: proof screenshot loads [{tag}]", page.evaluate("new Promise(r => { const i = document.querySelector('.proof img'); i.loading = 'eager'; if (i.complete && i.naturalWidth) r(true); i.onload = () => r(i.naturalWidth > 0); i.onerror = () => r(false); setTimeout(() => r(i.naturalWidth > 0), 8000); })"))
                 else:
