@@ -437,12 +437,13 @@
   main section { position: relative; }
   .sec-sticker { z-index: 1; }
   .sticker.tile { color: var(--paper-ink); }
-  .sec-sticker.dragging { z-index: 6; }
+  .sticker.free { position: absolute; z-index: 30; }
+  .sticker.dragging { z-index: 35; }
   .sticker.tag.pink { background: var(--pink); }
   .sticker.tag.blue { background: #bcd8ff; }
   .sec-sticker.kaomoji { font-size: 14px; }
-  @media (max-width: 999px) { .sec-sticker:not(.keep) { display: none; } .sec-sticker.keep { display: grid; width: 46px; height: 46px; font-size: 24px; border-radius: 13px; top: 18px !important; } }
-  @media (max-width: 640px) { .sec-sticker.keep { width: 40px; height: 40px; font-size: 21px; top: 22px !important; } }
+  @media (max-width: 999px) { .sec-sticker:not(.keep):not(.keep-text) { display: none; } .sec-sticker.keep { display: grid; width: 46px; height: 46px; font-size: 24px; border-radius: 13px; } main section .sec-sticker.keep { top: 18px !important; } }
+  @media (max-width: 640px) { .sec-sticker.keep { width: 40px; height: 40px; font-size: 21px; } main section .sec-sticker.keep { top: 22px !important; } }
   /* draggable stickers */
   .sticker.tile, .sticker.tag, .sticker.stamp, .sticker.live { pointer-events: auto; cursor: grab; touch-action: none; }
   .sticker.dragging { cursor: grabbing; animation-play-state: paused; z-index: 5; filter: drop-shadow(0 16px 20px rgba(0,0,0,.25)); }
@@ -656,14 +657,10 @@
       el("div", { class: "hero" }, [
         el("span", { class: "sticker tile", style: "left:3%;top:40px;--r:-10deg", "aria-hidden": "true", text: "💼" }),
         el("span", { class: "sticker tile", style: "right:5%;top:70px;--r:8deg;animation-delay:-2s", "aria-hidden": "true", text: "📬" }),
-        el("span", { class: "sticker tile", style: "left:5%;top:300px;--r:6deg;animation-delay:-4s", "aria-hidden": "true", text: "🏁" }),
         el("span", { class: "sticker tag", style: "right:4%;top:170px;--r:-6deg;animation-delay:-1s", "aria-hidden": "true", text: "shared by @mohit" }),
-        el("span", { class: "sticker spark", style: "left:22%;top:14px;animation-delay:-3s", "aria-hidden": "true", text: "✦" }),
-        el("span", { class: "sticker spark", style: "right:24%;top:330px;animation-delay:-5s", "aria-hidden": "true", text: "✦" }),
         el("span", { class: "sticker live", style: "left:2%;top:205px;--r:-4deg;animation-delay:-2.5s", "aria-hidden": "true", text: "tested live ✓" }),
         el("span", { class: "sticker stamp", style: "right:5%;top:290px;--r:7deg;animation-delay:-3.5s", "aria-hidden": "true", text: "needs Pro" }),
-        el("span", { class: "drag-hint", style: "left:2%;top:172px", "aria-hidden": "true", text: "psst, these move ↓" }),
-        el("span", { class: "kaomoji", style: "left:2%;top:360px", "aria-hidden": "true", text: "(•ᴗ•)" }),
+        el("span", { class: "drag-hint", style: "left:2%;top:172px", "aria-hidden": "true", text: "psst, drag these anywhere ↓" }),
         el("span", { class: "kaomoji", style: "right:3%;top:20px", "aria-hidden": "true", text: "(＾▽＾)/" }),
         el("div", { class: "kicker" }, [el("span", { class: "dot", "aria-hidden": "true" }), "a product bet for HeyClicky, built and tested live"]),
         el("h1", {}, [el("span", { class: "line", text: "start with a clicky" }), " ", el("span", { class: "line" }, ["that ", el("mark", { class: "hl", text: "already works" })])]),
@@ -1130,13 +1127,13 @@
 
   // ---------- stickers across the page (same feel as the hero, one theme per section) ----------
   var SECTION_STICKERS = {
-    shared:    [["tile keep", "📋", "left:0;top:38px;--r:-8deg"], ["tag", "copy → paste → done", "right:0;top:110px;--r:5deg;animation-delay:-2s"], ["spark", "✦", "left:14%;top:150px;animation-delay:-4s"]],
-    how:       [["tile keep", "⚡️", "right:0;top:30px;--r:9deg;animation-delay:-1s"], ["live", "~20 sec ⏱", "left:0;top:96px;--r:-5deg;animation-delay:-3s"], ["kao", "ᕙ(⇀‸↼‶)ᕗ", "right:4%;top:128px"]],
-    connector: [["tile keep", "🔌", "left:0;top:34px;--r:-6deg;animation-delay:-2.5s"], ["stamp", "no code", "right:1%;top:70px;--r:8deg;animation-delay:-1.5s"], ["kao", "(⌐■_■)", "left:3%;top:132px"], ["spark", "✦", "right:16%;top:24px;animation-delay:-5s"]],
-    findings:  [["tile keep", "🐛", "right:0;top:36px;--r:7deg;animation-delay:-3s"], ["stamp", "bug found", "left:0;top:64px;--r:-9deg"], ["tag pink", "tested on 1.0.52", "right:2%;top:134px;--r:-4deg;animation-delay:-2s"]],
-    metrics:   [["tile keep", "📈", "left:0;top:40px;--r:-7deg;animation-delay:-1s"], ["tag blue", "north star ★", "right:0;top:62px;--r:6deg;animation-delay:-3.5s"], ["spark", "✦", "left:12%;top:156px;animation-delay:-2s"]],
-    faq:       [["tile keep", "💬", "right:0;top:26px;--r:8deg;animation-delay:-2s"], ["kao", "(・・?)", "left:4%;top:40px"], ["live", "ask me anything", "left:0;top:78px;--r:-6deg;animation-delay:-4s"]],
-    builder:   [["tile keep", "👋", "left:0;top:30px;--r:-10deg;animation-delay:-1.5s"], ["tag", "AI PM who builds", "right:0;top:44px;--r:6deg;animation-delay:-3s"], ["stamp", "open to remote", "left:1%;top:112px;--r:-5deg;animation-delay:-2.2s"], ["spark", "✦", "right:14%;top:120px;animation-delay:-4.5s"]]
+    shared:    [["tile keep", "📋", "left:0;top:38px;--r:-8deg"]],
+    how:       [["tile keep", "⚡\ufe0f", "right:0;top:30px;--r:9deg;animation-delay:-1s"]],
+    connector: [["tile keep", "🔌", "left:0;top:34px;--r:-6deg;animation-delay:-2.5s"]],
+    findings:  [["stamp keep-text", "bug found", "right:0;top:52px;--r:8deg;animation-delay:-3s"]],
+    metrics:   [["tile keep", "📈", "left:0;top:40px;--r:-7deg;animation-delay:-1s"]],
+    faq:       [["tile keep", "💬", "right:0;top:26px;--r:8deg;animation-delay:-2s"]],
+    builder:   [["stamp keep-text", "open to remote", "left:0;top:44px;--r:-6deg;animation-delay:-2.2s"]]
   };
   function decorateSections() {
     Object.keys(SECTION_STICKERS).forEach(function (id) {
@@ -1152,27 +1149,43 @@
   }
 
   // ---------- draggable stickers ----------
+  // Stickers can be dragged anywhere on the page. On first grab a sticker moves to <body>,
+  // so no section box limits it. Near the top or bottom edge the page scrolls with you.
   function enableStickers() {
     decorateSections();
     document.querySelectorAll(".sticker.tile, .sticker.tag, .sticker.stamp, .sticker.live").forEach(function (node) {
       if (node.dataset.drag) return;
       node.dataset.drag = "1";
       node.addEventListener("pointerdown", function (e) {
-        var area = node.closest(".hero, section");
-        if (!area) return;
         e.preventDefault();
-        var box = area.getBoundingClientRect(), r = node.getBoundingClientRect();
-        var dx = e.clientX - r.left, dy = e.clientY - r.top;
-        node.style.right = "auto"; node.style.left = (r.left - box.left) + "px"; node.style.top = (r.top - box.top) + "px";
+        var r = node.getBoundingClientRect();
+        var dx = e.clientX - r.left, dy = e.clientY - r.top, px = e.clientX, py = e.clientY, raf = 0;
+        if (node.parentNode !== document.body) {
+          node.classList.add("free");
+          node.style.right = "auto"; node.style.bottom = "auto";
+          node.style.left = (r.left + window.scrollX) + "px"; node.style.top = (r.top + window.scrollY) + "px";
+          document.body.appendChild(node);
+        }
         node.classList.add("dragging");
         try { node.setPointerCapture(e.pointerId); } catch (err) {}
-        function move(ev) {
-          var x = Math.max(0, Math.min(box.width - r.width, ev.clientX - box.left - dx));
-          var y = Math.max(0, Math.min(box.height - r.height, ev.clientY - box.top - dy));
-          node.style.left = x + "px"; node.style.top = y + "px";
+        function place() {
+          var maxX = document.documentElement.clientWidth - r.width;
+          var maxY = document.documentElement.scrollHeight - r.height;
+          node.style.left = Math.max(0, Math.min(maxX, px - dx + window.scrollX)) + "px";
+          node.style.top = Math.max(0, Math.min(maxY, py - dy + window.scrollY)) + "px";
         }
-        function up() { node.classList.remove("dragging"); node.removeEventListener("pointermove", move); node.removeEventListener("pointerup", up); node.removeEventListener("pointercancel", up); }
+        function edgeScroll() {
+          var h = window.innerHeight, step = py > h - 70 ? 14 : (py < 90 ? -14 : 0);
+          if (step) { window.scrollBy({ top: step, behavior: "instant" }); place(); }
+          raf = requestAnimationFrame(edgeScroll);
+        }
+        function move(ev) { px = ev.clientX; py = ev.clientY; place(); }
+        function up() {
+          cancelAnimationFrame(raf);
+          node.classList.remove("dragging"); node.removeEventListener("pointermove", move); node.removeEventListener("pointerup", up); node.removeEventListener("pointercancel", up);
+        }
         node.addEventListener("pointermove", move); node.addEventListener("pointerup", up); node.addEventListener("pointercancel", up);
+        raf = requestAnimationFrame(edgeScroll);
       });
     });
   }
