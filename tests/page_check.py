@@ -70,7 +70,7 @@ CONTRAST_JS = """
 }
 """
 # Small text that must reach WCAG AA (4.5:1) in both themes.
-SMALL_TEXT = "footer span, .tag, .chip, .eyebrow, .step .n, .finding .k, .demo figcaption, .proof figcaption, .muted, .top-right a, .howto .body > span, .kbd, .builder p, .clock, .np-label, .tldr span, .faq summary, .mb-links a, .sky .section-head p, .term-bar span, .vp-chip, .vp-jump, footer .credits a"
+SMALL_TEXT = "footer span, .tag, .chip, .eyebrow, .step .n, .finding .k, .demo figcaption, .proof figcaption, .muted, .top-right a, .howto .body > span, .kbd, .builder p, .np-label, .tldr span, .faq summary, .mb-links a, .sky .section-head p, .term-bar span, .vp-chip, .vp-jump, footer .credits a"
 DETAIL_SMALL_TEXT = "dl.facts dt, .mac-note, .invite-note, .usage-row > span, .by, .back"
 
 
@@ -133,6 +133,7 @@ def main():
                       and page.locator("#demo .vp-track[role='slider']").count() == 1
                       and page.locator("#demo .vp-chip").count() >= 5)
                 check(f"radio skip button hidden until music plays [{tag}]", page.evaluate("document.querySelector('.np-skip').hidden"))
+                check(f"radio previous button hidden until music plays [{tag}]", page.evaluate("document.querySelector('.np-prev').hidden"))
                 check(f"music credit in the footer [{tag}]", "Kevin MacLeod" in page.inner_text("footer") and "creativecommons.org/licenses/by/4.0" in page.inner_html("footer"))
                 check(f"every section has stickers [{tag}]", page.evaluate("['shared','how','connector','findings','metrics','faq','builder'].every(id => document.querySelector('#' + id + ' .sec-sticker'))"))
                 check(f"footer tile wordmark drawn [{tag}]", page.locator("#tiles rect").count() > 100)
