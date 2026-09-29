@@ -1,4 +1,4 @@
-# Share-a-Clicky
+# <img src="docs/img/logo.svg" width="40" height="40" align="top" alt=""> Share-a-Clicky
 
 **Start with a Clicky that already works.** Share a Clicky you've set up for a real job. A friend pastes its setup into HeyClicky and connects their apps. They start from something that already works, and your invite link comes along.
 

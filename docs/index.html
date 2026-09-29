@@ -12,7 +12,9 @@
 <meta property="og:url" content="https://mohit-malviya-ai-pm.github.io/share-a-clicky/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://mohit-malviya-ai-pm.github.io/share-a-clicky/og.png">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>">
+<link rel="icon" href="img/logo.svg" type="image/svg+xml">
+<link rel="icon" href="img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Caveat:wght@700&display=swap" rel="stylesheet">
@@ -69,6 +71,8 @@
   .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 0; }
   .wordmark { font-weight: 600; font-size: 17px; letter-spacing: -0.03em; color: var(--text); display: inline-flex; align-items: center; gap: 8px; }
   .wordmark:hover { text-decoration: none; }
+  .wordmark .logo { width: 26px; height: 26px; flex: none; filter: drop-shadow(0 3px 6px rgba(10,79,208,.28)); transition: transform .25s cubic-bezier(.2,1.4,.4,1); }
+  .wordmark:hover .logo { transform: rotate(-8deg) scale(1.08); }
   .top-right { display: flex; align-items: center; gap: 14px; font-size: 14px; }
   .top-right a { color: var(--text-2); }
   .tag { font-size: 12.5px; color: var(--text-2); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; white-space: nowrap; box-shadow: var(--shadow-sm); }
@@ -514,7 +518,7 @@
 <header class="menubar">
   <div class="mb-row">
     <div class="mb-left">
-      <a class="wordmark" href="./"><span aria-hidden="true">☁️</span>share-a-clicky</a>
+      <a class="wordmark" href="./"><svg class="logo" aria-hidden="true" viewBox="0 0 64 64"><defs><linearGradient id="sac-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d8bff"/><stop offset="1" stop-color="#0a4fd0"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#sac-bg)"/><g fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"><path stroke="#fff" d="M11 25 L17 18 L27.5 40"/><path stroke="#fff" d="M32 25 L38 18 L44 25"/><path stroke="#ffd24d" d="M27.5 40 L50 40"/><path stroke="#ffd24d" d="M44.5 34.5 L50 40 L44.5 45.5"/></g></svg>share-a-clicky</a>
     </div>
     <nav class="mb-links" aria-label="Sections">
       <a href="./#idea">idea</a><a href="./#shared">clickys</a><a href="./#how">how it works</a><a href="./#connector">connector</a><a href="./#findings">findings</a><a href="./#metrics">measure</a><a href="./#faq">faq</a><a href="./#builder">about me</a>
@@ -792,8 +796,9 @@
               el("h3", { text: "Mohit Malviya" }),
               el("div", { class: "roles" }, [el("span", { class: "role", text: "AI product manager who builds" }), el("span", { class: "role alt", text: "Cornell MBA" })]),
               el("p", { text: "Most recently I led the beta of an AI triage agent in Jira during my PM internship at Atlassian. In all, that's 6.5 years in product management across B2B SaaS. I started out writing code as a full-stack product engineer at Wipro." }),
-              el("p", { text: "So think product engineer with product management depth. Share-a-Clicky is how I like to work. Find the gap, make a bet, build it end to end, test it live, and say how I'd measure it." }),
-              el("div", { class: "skills" }, ["product discovery", "metrics", "MCP", "Cloudflare Workers", "Python", "JavaScript", "testing"].map(function (s) { return el("span", { text: s }); })),
+              el("p", { text: "So think growth product engineer with product management depth. Share-a-Clicky is how I like to work. Find the gap, make a bet, build it end to end, test it live, and say how I'd measure it." }),
+              el("p", { text: "I'm in NYC and open to remote." }),
+              el("div", { class: "skills" }, ["product discovery", "metrics", "AI agents", "MCP", "Cloudflare Workers", "Python", "JavaScript", "testing"].map(function (s) { return el("span", { text: s }); })),
               el("div", { class: "sig", "aria-hidden": "true", text: "mohit" }),
               el("div", { class: "note-links" }, [
                 el("a", { href: "https://www.linkedin.com/in/malviyamohit/", rel: "noopener", text: "LinkedIn" }),

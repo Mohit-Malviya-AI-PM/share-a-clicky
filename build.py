@@ -272,6 +272,8 @@ def render_share_link_page(data, clicky):
 <meta name="twitter:title" content="{esc(title)}">
 <meta name="twitter:description" content="{esc(description)}">
 <meta name="twitter:image" content="{esc(site)}/og.png">
+<link rel="icon" href="{esc(site)}/img/logo.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{esc(site)}/img/apple-touch-icon.png">
 <meta http-equiv="refresh" content="0; url={esc(target)}">
 <script>location.replace({json.dumps(target)});</script>
 </head>
