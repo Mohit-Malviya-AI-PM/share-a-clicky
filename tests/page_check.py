@@ -1,6 +1,7 @@
 """Browser tests for the share page (headless Chromium via Playwright).
 
 Run: python3 tests/page_check.py [screenshot_dir]
+PAGE=v2/ python3 tests/page_check.py   checks the one-page v2 preview at docs/v2/ instead of the live page.
 Serves docs/ on a local port, checks acceptance items A1 to A6, saves screenshots.
 """
 import functools
@@ -20,6 +21,8 @@ except ImportError:
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = os.path.join(ROOT, "docs")
+PAGE = os.environ.get("PAGE", "")  # "" = live page, "v2/" = preview
+V2 = PAGE == "v2/"
 
 
 def serve(directory):
@@ -70,7 +73,7 @@ CONTRAST_JS = """
 }
 """
 # Small text that must reach WCAG AA (4.5:1) in both themes.
-SMALL_TEXT = "footer span, .tag, .chip, .eyebrow, .step .n, .finding .k, .demo figcaption, .proof figcaption, .muted, .top-right a, .howto .body > span, .kbd, .builder p, .np-label, .tldr span, .faq summary, .mb-links a, .sky .section-head p, .term-bar span, .vp-chip, .vp-jump, footer .credits a"
+SMALL_TEXT = "footer span, .tag, .chip, .eyebrow, .step .n, .finding .k, .demo figcaption, .proof figcaption, .muted, .top-right a, .howto .body > span, .kbd, .builder p, .np-label, .tldr span, .faq summary, .mb-links a, .sky .section-head p, .term-bar span, .vp-chip, .vp-jump, footer .credits a, .byline, .steps-line li, .why-list span, .funnel span, .measure .guard, .faq-title"
 DETAIL_SMALL_TEXT = "dl.facts dt, .mac-note, .invite-note, .usage-row > span, .by, .back"
 
 
@@ -88,8 +91,10 @@ def main():
             failures.append(label)
 
     server, base = serve(SITE)
+    home = base + PAGE
     broken_dir = tempfile.mkdtemp()
-    shutil.copy(os.path.join(SITE, "index.html"), broken_dir)
+    os.makedirs(os.path.join(broken_dir, PAGE), exist_ok=True)
+    shutil.copy(os.path.join(SITE, PAGE, "index.html"), os.path.join(broken_dir, PAGE))
     broken_server, broken_base = serve(broken_dir)
 
     with sync_playwright() as p:
@@ -104,7 +109,7 @@ def main():
                 page.on("pageerror", lambda e: errors.append(str(e)))
                 tag = f"{scheme}/{label}"
 
-                page.goto(base)
+                page.goto(home)
                 page.wait_for_selector(".card")
                 check(f"A1 gallery lists all Clickys [{tag}]", page.locator(".card").count() == len(data["clickys"]))
                 examples = sum(1 for c in data["clickys"] if c["example"])
@@ -126,7 +131,7 @@ def main():
                         const lh = parseFloat(getComputedStyle(b).lineHeight) || 24; return b.getBoundingClientRect().height < lh * 1.5; })""")
                     check(f"finding titles fit on one line [{tag}]", one_line)
                 check(f"radio button is off by default [{tag}]", page.get_attribute(".np", "aria-pressed") == "false")
-                check(f"faq has questions [{tag}]", page.locator("#faq details").count() >= 6)
+                check(f"faq has questions [{tag}]", page.locator("#faq details").count() >= (4 if V2 else 6))
                 check(f"demo uses the custom player, not native controls [{tag}]",
                       page.locator("#demo video[controls]").count() == 0
                       and page.locator("#demo .vp-big").count() == 1
@@ -135,13 +140,23 @@ def main():
                 check(f"radio skip button hidden until music plays [{tag}]", page.evaluate("document.querySelector('.np-skip').hidden"))
                 check(f"radio previous button hidden until music plays [{tag}]", page.evaluate("document.querySelector('.np-prev').hidden"))
                 check(f"music credit in the footer [{tag}]", "Kevin MacLeod" in page.inner_text("footer") and "creativecommons.org/licenses/by/4.0" in page.inner_html("footer"))
-                check(f"every section has stickers [{tag}]", page.evaluate("['shared','how','connector','findings','metrics','faq','builder'].every(id => document.querySelector('#' + id + ' .sec-sticker'))"))
+                if V2:
+                    check(f"v2: stickers only in the hero [{tag}]", page.locator("section .sec-sticker").count() == 0)
+                    check(f"v2: 6 nav links [{tag}]", page.locator(".mb-links a").count() == 6)
+                    check(f"v2: every old section link still lands [{tag}]", page.evaluate("['demo','shared','how','connector','idea','findings','metrics','faq','builder'].every(id => document.getElementById(id))"))
+                    check(f"v2: no repeated summary blocks [{tag}]", page.locator(".tldr, .marquee, .rotator").count() == 0)
+                    check(f"v2: under 800 visible words [{tag}]", page.evaluate("document.querySelector('main').innerText.split(/\\s+/).filter(Boolean).length") < 800)
+                    check(f"v2: marked noindex and preview [{tag}]", page.locator("meta[name=robots][content=noindex]").count() == 1 and page.locator(".preview-ribbon").count() == 1)
+                    check(f"v2: email link in about me [{tag}]", page.locator("#builder a[href^='mailto:']").count() == 1)
+                    check(f"v2: proof screenshot loads [{tag}]", page.evaluate("new Promise(r => { const i = document.querySelector('.proof img'); i.loading = 'eager'; if (i.complete && i.naturalWidth) r(true); i.onload = () => r(i.naturalWidth > 0); i.onerror = () => r(false); setTimeout(() => r(i.naturalWidth > 0), 8000); })"))
+                else:
+                    check(f"every section has stickers [{tag}]", page.evaluate("['shared','how','connector','findings','metrics','faq','builder'].every(id => document.querySelector('#' + id + ' .sec-sticker'))"))
                 check(f"footer tile wordmark drawn [{tag}]", page.locator("#tiles rect").count() > 100)
                 if shots:
                     page.screenshot(path=os.path.join(shots, f"gallery-{scheme}-{label}.png"), full_page=True)
 
                 clicky = data["clickys"][0]
-                page.goto(base + "?c=" + clicky["slug"])
+                page.goto(home + "?c=" + clicky["slug"])
                 page.wait_for_selector("h1")
                 body = page.inner_text("body")
                 for part in (clicky["name"], clicky["routine"]["label"], clicky["shared_by"],
@@ -171,16 +186,16 @@ def main():
                       (clicky["share_of_plan_percent"]["free"] > 100) == (page.locator(".needs-pro").count() == 1))
                 check(f"Mac-only note present [{tag}]", page.locator(".mac-note").count() == 1)
 
-                page.goto(base + "?c=" + clicky["name"].replace(" ", "%20"))
+                page.goto(home + "?c=" + clicky["name"].replace(" ", "%20"))
                 page.wait_for_selector("h1")
                 check(f"name in URL resolves like the connector [{tag}]", page.inner_text("h1") == clicky["name"])
 
-                page.goto(base + "?c=" + "x" * 90)
+                page.goto(home + "?c=" + "x" * 90)
                 page.wait_for_selector("h1")
                 no_scroll = page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
                 check(f"A5 long unknown slug does not cause horizontal scroll [{tag}]", no_scroll)
 
-                page.goto(base + "?c=does-not-exist")
+                page.goto(home + "?c=does-not-exist")
                 page.wait_for_selector("h1")
                 check(f"A3 unknown slug shows not found [{tag}]", "No shared Clicky called" in page.inner_text("h1"))
                 check(f"A3 link back to gallery [{tag}]", page.locator("a.btn[href='./']").count() == 1)
@@ -190,14 +205,14 @@ def main():
 
         context = browser.new_context()
         page = context.new_page()
-        page.goto(broken_base)
+        page.goto(broken_base + PAGE)
         page.wait_for_selector("h1")
         check("load error state when data missing", "Couldn't load" in page.inner_text("h1"))
         context.close()
 
         context = browser.new_context(viewport={"width": 1280, "height": 900})
         page = context.new_page()
-        page.goto(base + "?c=" + data["clickys"][0]["slug"])
+        page.goto(home + "?c=" + data["clickys"][0]["slug"])
         page.wait_for_selector("button:has-text('Copy setup')")
         page.evaluate("Object.defineProperty(navigator, 'clipboard', {value: undefined})")
         page.click("button:has-text('Copy setup')")
@@ -205,7 +220,7 @@ def main():
         check("A4 fallback selects setup text when clipboard unavailable", selected == data["clickys"][0]["setup_text"])
         check("A4 fallback tells user to press Cmd+C", "press ⌘C" in page.inner_text(".status"))
         check("A4 fallback styled as a warning", "warn" in page.get_attribute(".status", "class"))
-        page.goto(base)
+        page.goto(home)
         page.wait_for_selector("#connector button")
         page.evaluate("Object.defineProperty(navigator, 'clipboard', {value: undefined})")
         page.click("#connector button")
