@@ -1302,9 +1302,11 @@
       rampTo(0, 0.15);
       setTimeout(function () { play(index + 1); }, 160);
     });
+    // Keep playing when the tab or window loses focus, like a radio.
+    // If the browser suspended audio on its own, pick it back up on return.
     document.addEventListener("visibilitychange", function () {
-      if (!ctx || !on) return;
-      if (document.hidden) ctx.suspend(); else ctx.resume().then(level);
+      if (!ctx || !on || document.hidden) return;
+      if (ctx.state !== "running") ctx.resume().then(level);
     });
   })();
 
