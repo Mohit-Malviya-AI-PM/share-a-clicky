@@ -24,56 +24,9 @@ This is a bet, not a proven result. The metrics I'd use to test it are in [How I
 
 ## How to use it
 
-```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#ffffff", "primaryTextColor": "#16161a", "primaryBorderColor": "#d0d7de", "lineColor": "#8b949e", "clusterBkg": "#f6f8fa", "clusterBorder": "#d0d7de", "titleColor": "#57606a", "edgeLabelBackground": "#ffffff"}, "flowchart": {"curve": "basis", "padding": 16, "nodeSpacing": 40, "rankSpacing": 52}}}%%
-flowchart TB
-    subgraph S1["① THE SHARER"]
-        A(["💼 Runs a Clicky<br/>for a real job"])
-    end
-    subgraph S2["② THE SHARE PAGE"]
-        B["<b>📋 Job Hunter</b><br/>what it does · apps it needs<br/>~30 agent messages a month · needs Pro"]
-    end
-    subgraph S3["③ THE FRIEND, IN HEYCLICKY"]
-        C["➕ New Clicky<br/>paste the setup"]
-        D["🔗 Connect apps<br/>turn on the routine"]
-        E(["✅ A Clicky that<br/>already works"])
-    end
-    subgraph S4["OR, ASK ANY CLICKY"]
-        G(["🤖 “What shared Clickys<br/>can I get?”"])
-        H{{"🔌 Web connector<br/>list_shared_clickys · get_shared_clicky"}}
-    end
-    F(["🎁 Friend joins HeyClicky<br/>sharer earns 25%"])
+<p align="center"><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/diagram-how-dark.png"><img src="docs/img/diagram-how-light.png" width="960" alt="How it works: 1. you share a Clicky you run for a real job, 2. the share page shows its apps, agent messages a month and whether it needs Pro, with a Copy setup button, 3. a friend pastes it into New Clicky and it is ready in about 20 seconds. Your invite link rides along. Inside HeyClicky, any Clicky can ask the web connector, which hands over the setup."></picture></a></p>
 
-    A -- "shares it" --> B
-    B -- "Copy setup" --> C
-    C --> D
-    D --> E
-    B -. "invite link rides along" .-> F
-    G -- "asks" --> H
-    H -- "hands over the setup" --> C
-
-    classDef sharer fill:#fff4cc,stroke:#e0a800,stroke-width:2px,color:#3d2e00
-    classDef page fill:#e8f0ff,stroke:#1f6fe8,stroke-width:2px,color:#0b2a5b
-    classDef app fill:#e6f6ea,stroke:#3f9a4f,stroke-width:2px,color:#0f3a18
-    classDef win fill:#2f9e55,stroke:#1f7a40,stroke-width:2px,color:#ffffff
-    classDef conn fill:#f3e8ff,stroke:#8250df,stroke-width:2px,color:#2e1065
-    classDef invite fill:#ffe9e0,stroke:#e8744a,stroke-width:2px,color:#5a1f08
-    class A sharer
-    class B page
-    class C,D app
-    class E win
-    class G,H conn
-    class F invite
-    style S1 fill:#fffbeb,stroke:#f2c14e,stroke-width:1px,color:#7a5a00
-    style S2 fill:#f3f7ff,stroke:#9dbcf5,stroke-width:1px,color:#1f4f9e
-    style S3 fill:#f1faf3,stroke:#9fd1a9,stroke-width:1px,color:#256b34
-    style S4 fill:#faf5ff,stroke:#c9a8f5,stroke-width:1px,stroke-dasharray:5 4,color:#5b2ea6
-    linkStyle 0,1,2,3 stroke:#1f6fe8,stroke-width:2.5px
-    linkStyle 4 stroke:#e8744a,stroke-width:2px
-    linkStyle 5,6 stroke:#8250df,stroke-width:2.5px
-```
-
-<sub>Hover the diagram to zoom, pan or open it full screen. Try each step: <a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/">share page</a> · <a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/?c=job-hunter">Job Hunter's setup</a> · <a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#connector">add the connector</a> · <a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo">watch it</a></sub>
+<p align="center"><sub>Click the diagram for the live page, or try each step: <a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/">share page</a> · <a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/?c=job-hunter">Job Hunter's setup</a> · <a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#connector">add the connector</a> · <a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo">watch it</a></sub></p>
 
 
 **From the share page**
@@ -131,51 +84,9 @@ Job Hunter is the Clicky I built for my own job search. The other two are labele
 
 ### How it's built
 
-```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#ffffff", "primaryTextColor": "#16161a", "primaryBorderColor": "#d0d7de", "lineColor": "#8b949e", "clusterBkg": "#f6f8fa", "clusterBorder": "#d0d7de", "titleColor": "#57606a", "edgeLabelBackground": "#ffffff"}, "flowchart": {"curve": "basis", "padding": 16, "nodeSpacing": 34, "rankSpacing": 56}}}%%
-flowchart LR
-    S[("🗂️ clickys.source.json<br/>single source of truth")]
-    BLD{{"⚙️ build.py<br/>one build, three outputs"}}
-    subgraph OUT["GENERATED · python3 build.py --check fails if stale"]
-        direction TB
-        P["🌐 Share page<br/>docs/ on GitHub Pages"]
-        L["🐍 Local connector<br/>MCP over stdio · Python"]
-        W["☁️ Web connector<br/>MCP over Streamable HTTP<br/>Cloudflare Worker"]
-    end
-    HC(["🖥️ HeyClicky 1.0.52"])
-    T(["🧪 run_tests.sh<br/>same 50 messages to both,<br/>answers must match"])
+<p align="center"><a href="SPEC.md"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/img/diagram-built-dark.png"><img src="docs/img/diagram-built-light.png" width="960" alt="How it's built: clickys.source.json feeds build.py, which generates the share page, the local connector and the web connector. In HeyClicky 1.0.52 the local connector answers once, then Transport closed. The web connector answers every message. The same 50 test messages go to both connectors, and build.py --check fails if any output is stale."></picture></a></p>
 
-    S --> BLD
-    BLD --> P
-    BLD --> L
-    BLD --> W
-    L -. "❌ answers once, then “Transport closed”" .-> HC
-    W == "✅ answers every message" ==> HC
-    T -.-> L
-    T -.-> W
-
-    classDef src fill:#fff4cc,stroke:#e0a800,stroke-width:2px,color:#3d2e00
-    classDef build fill:#16161a,stroke:#8b949e,stroke-width:2px,color:#ffffff
-    classDef page fill:#e8f0ff,stroke:#1f6fe8,stroke-width:2px,color:#0b2a5b
-    classDef bad fill:#ffebe9,stroke:#cf222e,stroke-width:2px,color:#5c0a0f
-    classDef good fill:#e6f6ea,stroke:#2f9e55,stroke-width:2px,color:#0f3a18
-    classDef app fill:#2f9e55,stroke:#1f7a40,stroke-width:2px,color:#ffffff
-    classDef test fill:#f3e8ff,stroke:#8250df,stroke-width:2px,color:#2e1065
-    class S src
-    class BLD build
-    class P page
-    class L bad
-    class W good
-    class HC app
-    class T test
-    style OUT fill:#f6f8fa,stroke:#d0d7de,stroke-width:1px,stroke-dasharray:5 4,color:#57606a
-    linkStyle 0,1,2,3 stroke:#57606a,stroke-width:2px
-    linkStyle 4 stroke:#cf222e,stroke-width:2px
-    linkStyle 5 stroke:#2f9e55,stroke-width:3.5px
-    linkStyle 6,7 stroke:#8250df,stroke-width:1.5px
-```
-
-<sub>Hover the diagram to zoom, pan or open it full screen. Open each piece: <a href="data/clickys.source.json">clickys.source.json</a> · <a href="build.py">build.py</a> · <a href="docs/">docs/</a> · <a href="connector/local/share_a_clicky_mcp.py">local connector</a> · <a href="connector/worker/worker.js">web connector</a> · <a href="run_tests.sh">run_tests.sh</a></sub>
+<p align="center"><sub>Open each piece: <a href="data/clickys.source.json">clickys.source.json</a> · <a href="build.py">build.py</a> · <a href="docs/">docs/</a> · <a href="connector/local/share_a_clicky_mcp.py">local connector</a> · <a href="connector/worker/worker.js">web connector</a> · <a href="run_tests.sh">run_tests.sh</a></sub></p>
 
 - **Share page** (`docs/`): static, no framework. A gallery plus one view per Clicky (`?c=job-hunter`). Each Clicky also gets a share link (`/c/job-hunter/`) whose link preview names that Clicky.
 - **Connector**: an MCP server with two read-only tools, `list_shared_clickys` and `get_shared_clicky`, written twice:
