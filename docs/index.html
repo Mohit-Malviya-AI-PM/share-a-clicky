@@ -311,6 +311,82 @@
     .reveal { opacity: 1; transform: none; transition: none; }
   }
 
+  /* ---------- menubar (mac-style) ---------- */
+  .menubar { position: sticky; top: 0; z-index: 40; backdrop-filter: saturate(1.6) blur(14px); -webkit-backdrop-filter: saturate(1.6) blur(14px); background: color-mix(in srgb, var(--bg) 78%, transparent); border-bottom: 1px solid var(--line); }
+  .menubar .mb-row { max-width: 1080px; margin: 0 auto; padding: 0 20px; height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .mb-left { display: flex; align-items: center; gap: 22px; min-width: 0; }
+  .mb-links { display: flex; gap: 18px; font-size: 14px; }
+  .mb-links a { color: var(--text-2); }
+  .menubar .top-right { gap: 12px; }
+  .clock { font-size: 13.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .np { appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 999px; height: 32px; padding: 0 12px 0 10px; display: inline-flex; align-items: center; gap: 8px; font: 500 13px Inter, system-ui, sans-serif; cursor: pointer; box-shadow: var(--shadow-sm); }
+  .np:hover { filter: brightness(1.04); }
+  .np:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .np svg { width: 16px; height: 16px; flex: none; }
+  .np-label { color: var(--text-2); white-space: nowrap; }
+  .np.playing .np-label { color: var(--text); }
+  .np-bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+  .np-bars i { width: 3px; height: 4px; border-radius: 2px; background: var(--text-3); display: block; }
+  .np.playing .np-bars i { background: var(--accent); animation: eq .9s ease-in-out infinite; }
+  .np.playing .np-bars i:nth-child(2) { animation-delay: -.3s; } .np.playing .np-bars i:nth-child(3) { animation-delay: -.6s; }
+  .np.playing .np-bars i:nth-child(4) { animation-delay: -.15s; } .np.playing .np-bars i:nth-child(5) { animation-delay: -.45s; }
+  .np.loading { opacity: .7; cursor: progress; }
+  @keyframes eq { 0%,100% { height: 3px; } 50% { height: 12px; } }
+
+  /* draggable stickers */
+  .sticker.tile, .sticker.tag, .sticker.stamp, .sticker.live { pointer-events: auto; cursor: grab; touch-action: none; }
+  .sticker.dragging { cursor: grabbing; animation-play-state: paused; z-index: 5; filter: drop-shadow(0 16px 20px rgba(0,0,0,.25)); }
+  .sticker.stamp { font: 800 15px/1 Inter, sans-serif; letter-spacing: .06em; color: #c2382a; border: 3px solid #c2382a; border-radius: 8px; padding: 6px 10px; background: rgba(255,250,240,.95); text-transform: uppercase; }
+  .sticker.live { font: 700 22px/1 Caveat, cursive; color: #fff; background: #2f7a45; padding: 8px 14px; border-radius: 999px; box-shadow: 0 10px 22px -10px rgba(0,0,0,.45); }
+  .drag-hint { position: absolute; font: 700 20px/1 Caveat, cursive; color: var(--text-3); user-select: none; pointer-events: none; }
+
+  /* tl;dr card */
+  .tldr { max-width: 900px; margin: 22px auto 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: left; }
+  .tldr div { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow-sm); }
+  .tldr b { display: block; font: 700 22px/1 Caveat, cursive; color: var(--accent); margin-bottom: 4px; }
+  .tldr span { font-size: 14.5px; color: var(--text-2); }
+
+  /* sky section */
+  section.sky { margin: 64px -20px 0; padding: 56px 20px 60px; border-radius: 28px; background: #2a67ad url(img/sky.jpg) center / cover no-repeat; position: relative; overflow: hidden;
+    --text: #ffffff; --text-2: rgba(255,255,255,.92); --text-3: rgba(255,255,255,.88); color: var(--text); }
+  section.sky .section-head h2, section.sky .section-head p, section.sky .eyebrow { text-shadow: 0 1px 2px rgba(0,0,0,.25); }
+  section.sky .idea-card { --surface: #ffffff; --text: #0a0a0a; --text-2: rgba(0,0,0,.72); --line: rgba(0,0,0,.08); color: #0a0a0a; background: #fff; }
+  .cloud { position: absolute; width: 220px; height: 70px; border-radius: 999px; background: rgba(255,255,255,.55); filter: blur(6px); animation: drift 38s linear infinite; pointer-events: none; }
+  .cloud::before, .cloud::after { content: ""; position: absolute; background: inherit; border-radius: 50%; }
+  .cloud::before { width: 100px; height: 100px; left: 30px; top: -45px; } .cloud::after { width: 80px; height: 80px; right: 36px; top: -30px; }
+  @keyframes drift { from { transform: translateX(-260px); } to { transform: translateX(1300px); } }
+
+  /* terminal */
+  .term { margin-top: 10px; background: #16181d; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.08); box-shadow: var(--shadow-md); }
+  .term-bar { display: flex; align-items: center; gap: 6px; padding: 8px 12px; background: #23262d; }
+  .term-bar i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+  .term-bar span { margin-left: 8px; font: 500 12px var(--mono); color: #b8bfcc; }
+  .term-body { display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 14px; flex-wrap: wrap; }
+  .term-body .prompt { font: 500 14px var(--mono); color: #7fd49b; }
+  .term .code { background: transparent; border: 0; color: #e9f5ec; padding: 6px 0; }
+  .term .btn.secondary { min-height: 38px; padding: 8px 16px; }
+
+  /* faq */
+  .faq { max-width: 760px; margin: 0 auto; display: grid; gap: 10px; }
+  .faq details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-sm); }
+  .faq summary { list-style: none; cursor: pointer; padding: 16px 18px; font-weight: 600; letter-spacing: -0.01em; display: flex; justify-content: space-between; gap: 12px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; font-weight: 500; color: var(--text-3); transition: transform .2s ease; }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq details p { margin: 0; padding: 0 18px 16px; color: var(--text-2); font-size: 15px; }
+
+  /* tile wordmark */
+  .tiles { display: block; width: 100%; max-width: 900px; height: auto; margin: 26px auto 6px; }
+  .tiles rect { transform-box: fill-box; transform-origin: center; transform: scale(0); transition: transform .45s cubic-bezier(.2,1.6,.4,1); transition-delay: var(--d, 0s); }
+  .tiles.in rect { transform: scale(1); }
+  .tiles rect:hover { transform: scale(1.25); transition-delay: 0s; }
+
+  @media (max-width: 860px) { .mb-links { display: none; } .tldr { grid-template-columns: 1fr; } }
+  .wordmark { white-space: nowrap; }
+  @media (max-width: 700px) { .drag-hint { display: none; } }
+  @media (max-width: 640px) { .clock { display: none; } section.sky { margin-inline: -12px; border-radius: 20px; } .cloud { display: none; } .np-label { display: none; } .menubar .tag { font-size: 11.5px; padding: 3px 9px; } .menubar .mb-row { padding: 0 14px; } }
+  @media (prefers-reduced-motion: reduce) { .cloud, .np.playing .np-bars i { animation: none; } .tiles rect { transform: scale(1); transition: none; } }
+
   @media (max-width: 640px) {
     .kaomoji { display: none; }
     .top-right .hide-sm { display: none; }
@@ -324,18 +400,32 @@
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <a class="wordmark" href="./"><span aria-hidden="true">☁️</span>share-a-clicky</a>
+<header class="menubar">
+  <div class="mb-row">
+    <div class="mb-left">
+      <a class="wordmark" href="./"><span aria-hidden="true">☁️</span>share-a-clicky</a>
+      <nav class="mb-links" aria-label="Sections">
+        <a href="./#idea">idea</a><a href="./#shared">clickys</a><a href="./#connector">connector</a><a href="./#findings">findings</a><a href="./#faq">faq</a>
+      </nav>
+    </div>
     <div class="top-right">
+      <button class="np" type="button" aria-pressed="false" aria-label="Play background music" title="mohit's radio: an original loop, off by default">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3" y="13" width="5" height="8" rx="2" fill="currentColor"/><rect x="16" y="13" width="5" height="8" rx="2" fill="currentColor"/></svg>
+        <span class="np-label">mohit's radio</span>
+        <span class="np-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+      </button>
+      <span class="clock" aria-hidden="true"></span>
       <a class="hide-sm" id="repo-link" href="https://github.com/Mohit-Malviya-AI-PM/share-a-clicky" rel="noopener">github</a>
       <span class="tag">unofficial prototype</span>
     </div>
-  </header>
+  </div>
+</header>
+<div class="wrap">
   <main id="app">
     <p class="sub" style="text-align:center;margin-top:80px">Loading…</p>
     <noscript><p class="sub" style="text-align:center">This page needs JavaScript. The shared Clickys are also in <a href="clickys.json">clickys.json</a> and on <a href="https://github.com/Mohit-Malviya-AI-PM/share-a-clicky">GitHub</a>.</p></noscript>
   </main>
+  <svg class="tiles" id="tiles" aria-hidden="true" focusable="false"></svg>
   <footer>
     <span>An unofficial prototype by Mohit Malviya for <a href="https://www.heyclicky.com/" rel="noopener">HeyClicky</a>. Not affiliated with or endorsed by HeyClicky.</span>
     <span>Message counts are estimates: about one agent message per routine run; retries can add more. Routines run only while the Mac is awake and HeyClicky is open.</span>
@@ -457,6 +547,9 @@
         el("span", { class: "sticker tag", style: "right:4%;top:170px;--r:-6deg;animation-delay:-1s", "aria-hidden": "true", text: "shared by @mohit" }),
         el("span", { class: "sticker spark", style: "left:22%;top:14px;animation-delay:-3s", "aria-hidden": "true", text: "✦" }),
         el("span", { class: "sticker spark", style: "right:24%;top:330px;animation-delay:-5s", "aria-hidden": "true", text: "✦" }),
+        el("span", { class: "sticker live", style: "left:2%;top:205px;--r:-4deg;animation-delay:-2.5s", "aria-hidden": "true", text: "tested live ✓" }),
+        el("span", { class: "sticker stamp", style: "right:5%;top:290px;--r:7deg;animation-delay:-3.5s", "aria-hidden": "true", text: "needs Pro" }),
+        el("span", { class: "drag-hint", style: "left:2%;top:172px", "aria-hidden": "true", text: "psst, these move ↓" }),
         el("span", { class: "kaomoji", style: "left:2%;top:360px", "aria-hidden": "true", text: "(•ᴗ•)" }),
         el("span", { class: "kaomoji", style: "right:3%;top:20px", "aria-hidden": "true", text: "(＾▽＾)/" }),
         el("div", { class: "kicker" }, [el("span", { class: "dot", "aria-hidden": "true" }), "a product bet for HeyClicky, built and tested live"]),
@@ -477,18 +570,25 @@
             ])
           ]),
           el("figcaption", { text: "The whole idea in one minute. Sound on, or turn on captions." })
+        ]),
+        el("div", { class: "tldr" }, [
+          el("div", {}, [el("b", { text: "what" }), el("span", { text: "Share a Clicky you already use. A friend pastes its setup into New Clicky." })]),
+          el("div", {}, [el("b", { text: "why" }), el("span", { text: "New Clickys start from a guess. Shared ones start from something that works, and the invite link comes along." })]),
+          el("div", {}, [el("b", { text: "proof" }), el("span", { text: "Built it, tested it live on HeyClicky 1.0.52, and found 2 gaps along the way." })])
         ])
       ]),
       el("div", { class: "marquee", "aria-hidden": "true" }, [el("div", { class: "track" }, marqueeRow().concat(marqueeRow()))]),
 
       // ---- the idea (product lens) ----
-      el("section", { id: "idea" }, [
+      el("section", { id: "idea", class: "sky" }, [
+        el("span", { class: "cloud", style: "top:22px;animation-delay:-6s", "aria-hidden": "true" }),
+        el("span", { class: "cloud", style: "top:70%;animation-delay:-24s;transform:scale(.8)", "aria-hidden": "true" }),
         sectionHead("the idea", "why sharing, why now", "The product thinking behind the build: the gap, the bet, and why it fits where HeyClicky is headed."),
         el("div", { class: "idea" }, [
           el("div", { class: "idea-card reveal" }, [el("span", { class: "badge", style: "background:rgba(232,116,74,.16)", "aria-hidden": "true", text: "🧩" }), el("b", { text: "The gap" }),
             el("span", { text: "A new Clicky comes from four onboarding questions or a short interview. There's no way to start from a Clicky a friend already runs for a real job." })]),
           el("div", { class: "idea-card reveal" }, [el("span", { class: "badge", style: "background:rgba(31,111,232,.14)", "aria-hidden": "true", text: "🎯" }), el("b", { text: "The bet" }),
-            el("span", { text: "A Clicky shared by someone you trust, for a job they really have, is a strong first or second Clicky next to HeyClicky's own suggestions." })]),
+            el("span", { text: "A Clicky from someone you trust, for a job they really have, makes a strong first Clicky. It sits right next to HeyClicky's own suggestions." })]),
           el("div", { class: "idea-card reveal" }, [el("span", { class: "badge", style: "background:rgba(95,174,104,.16)", "aria-hidden": "true", text: "🚀" }), el("b", { text: "Why it fits now" }),
             el("span", { text: "Invite & Earn (Sep 24) gives people a reason to share. A shared Clicky gives the invite link something specific to carry." })])
         ])
@@ -525,7 +625,10 @@
             ])]),
             el("li", {}, [el("span", { class: "num", "aria-hidden": "true", text: "2" }), el("div", { class: "body" }, [
               el("span", {}, ["Paste this as the Server URL and set Authentication to ", el("span", { class: "kbd", text: "None" })]),
-              el("div", { class: "code-row" }, [connectorCode, copyConnector]),
+              el("div", { class: "term" }, [
+                el("div", { class: "term-bar", "aria-hidden": "true" }, [el("i", { style: "background:#ff5f57" }), el("i", { style: "background:#febc2e" }), el("i", { style: "background:#28c840" }), el("span", { text: "connector.url" })]),
+                el("div", { class: "term-body" }, [el("span", { class: "prompt", "aria-hidden": "true", text: "$" }), connectorCode, copyConnector])
+              ]),
               connectorStatus
             ])]),
             el("li", {}, [el("span", { class: "num", "aria-hidden": "true", text: "3" }), el("div", { class: "body" }, [
@@ -544,7 +647,7 @@
       el("section", { id: "findings" }, [
         sectionHead("found while testing it live", "what it taught me about HeyClicky", "Three things I only learned by shipping this into the real app."),
         el("div", { class: "findings" }, [
-          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "bug" }), el("b", { text: "Local connectors stop at message 2" }), el("span", { text: "A connector added with “Command on this Mac” answers once, then fails with “Transport closed.” I built the web connector here as a working way around it. The real fix is inside HeyClicky: keep the local session open between messages." })]),
+          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "bug" }), el("b", { text: "Local connectors stop at message 2" }), el("span", { text: "A local connector (added with “Command on this Mac”) answers once. The second message fails with “Transport closed.” I built the web connector here to get around it. The real fix is inside HeyClicky: keep the local session open between messages." })]),
           el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "missing hook" }), el("b", { text: "A Clicky can't create a Clicky" }), el("span", { text: "So install is one paste, not one click. A create_clicky tool or a heyclicky://new link would close the gap." })]),
           el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "upgrade moment" }), el("b", { text: "Daily routines need Pro" }), el("span", { text: "Job Hunter uses about 30 agent messages a month, more than Free's 25. Saying so up front beats a surprise limit." })])
         ])
@@ -563,6 +666,21 @@
         el("p", { class: "flow-note reveal", text: "Guardrails: surprise agent-limit hits go down, and few shared Clickys get archived or reported in week one. Tracking needs one small tag on each new Clicky saying it came from a share. No real data yet, this is the plan." })
       ]),
 
+      // ---- faq ----
+      el("section", { id: "faq" }, [
+        sectionHead("faq", "questions you might have"),
+        el("div", { class: "faq" }, [
+          el("details", { class: "reveal" }, [el("summary", { text: "Is this made by HeyClicky?" }), el("p", { text: "No. It's an unofficial prototype I built on my own to show how sharing could work. It isn't affiliated with or endorsed by HeyClicky." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "What's a Clicky?" }), el("p", { text: "HeyClicky's name for an AI helper that lives in the Mac's notch. Each one does a job for you, like a daily inbox check. Farza's latest update also calls them agent buddies." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "What's a “setup”?" }), el("p", { text: "The text you copy from this page. It tells New Clicky the Clicky's name, job, personality, apps and routine." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "Does installing one use agent messages?" }), el("p", { text: "Making a Clicky on the New Clicky page doesn't use a credit. Its routine does. Every shared Clicky shows roughly how many agent messages its routine uses a month. It says “needs Pro” when that's more than Free's 25." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "Is it safe to paste a setup?" }), el("p", { text: "A setup is instructions for an agent that can reach your apps, so read it first. The full text is on the page before you copy it, and these setups never send email without asking. A real version should also list the apps and actions a setup touches, and review shared ones." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "Why a web connector and a local connector?" }), el("p", { text: "Both let a Clicky list shared Clickys. The local one runs on the Mac and stops after the first message, a bug I found in HeyClicky. The web one runs on Cloudflare and works on every message, so it's the one this page gives you." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "Why isn't install one click?" }), el("p", { text: "A Clicky can't create another Clicky today. With a create_clicky tool or a heyclicky://new link, the Copy setup button could become an Install button." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "Where's the code?" }), el("p", { text: "On GitHub, MIT licensed, with the tests and a full log of what I tested live." })])
+        ])
+      ]),
+
       // ---- who built this ----
       el("section", { id: "builder" }, [
         sectionHead("who built this", "hi, I'm Mohit"),
@@ -573,8 +691,8 @@
             el("div", {}, [
               el("h3", { text: "Mohit Malviya" }),
               el("div", { class: "roles" }, [el("span", { class: "role", text: "AI product manager who builds" }), el("span", { class: "role alt", text: "Cornell MBA" })]),
-              el("p", { text: "Most recently I led the beta of an AI triage agent in Jira during my PM internship at Atlassian. That sits on 6.5 years in product management across B2B SaaS, which started with me writing code as a full-stack product engineer at Wipro." }),
-              el("p", { text: "So think product engineer with product management depth. Share-a-Clicky is how I like to work: find the gap, make a bet, build it end to end, test it live, and say how I'd measure it." }),
+              el("p", { text: "Most recently I led the beta of an AI triage agent in Jira during my PM internship at Atlassian. In all, that's 6.5 years in product management across B2B SaaS. I started out writing code as a full-stack product engineer at Wipro." }),
+              el("p", { text: "So think product engineer with product management depth. Share-a-Clicky is how I like to work. Find the gap, make a bet, build it end to end, test it live, and say how I'd measure it." }),
               el("div", { class: "skills" }, ["product discovery", "metrics", "MCP", "Cloudflare Workers", "Python", "JavaScript", "testing"].map(function (s) { return el("span", { text: s }); })),
               el("div", { class: "sig", "aria-hidden": "true", text: "mohit" }),
               el("div", { class: "note-links" }, [
@@ -592,6 +710,7 @@
       setInterval(function () { wi = (wi + 1) % words.length; var b = el("b", { text: words[wi] }); rotating.replaceWith(b); rotating = b; }, 2400);
     }
     setupReveal();
+    enableStickers();
   }
 
   function metric(title, why, width) {
@@ -731,6 +850,130 @@
     var target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
     if (target) target.scrollIntoView();
   }
+
+  // ---------- draggable stickers ----------
+  function enableStickers() {
+    var hero = document.querySelector(".hero");
+    if (!hero) return;
+    hero.querySelectorAll(".sticker.tile, .sticker.tag, .sticker.stamp, .sticker.live").forEach(function (node) {
+      node.addEventListener("pointerdown", function (e) {
+        e.preventDefault();
+        var box = hero.getBoundingClientRect(), r = node.getBoundingClientRect();
+        var dx = e.clientX - r.left, dy = e.clientY - r.top;
+        node.style.right = "auto"; node.style.left = (r.left - box.left) + "px"; node.style.top = (r.top - box.top) + "px";
+        node.classList.add("dragging");
+        try { node.setPointerCapture(e.pointerId); } catch (err) {}
+        function move(ev) {
+          var x = Math.max(0, Math.min(box.width - r.width, ev.clientX - box.left - dx));
+          var y = Math.max(0, Math.min(box.height - r.height, ev.clientY - box.top - dy));
+          node.style.left = x + "px"; node.style.top = y + "px";
+        }
+        function up() { node.classList.remove("dragging"); node.removeEventListener("pointermove", move); node.removeEventListener("pointerup", up); node.removeEventListener("pointercancel", up); }
+        node.addEventListener("pointermove", move); node.addEventListener("pointerup", up); node.addEventListener("pointercancel", up);
+      });
+    });
+  }
+
+  // ---------- menubar clock ----------
+  (function clock() {
+    var node = document.querySelector(".clock");
+    if (!node) return;
+    function tick() { node.textContent = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); }
+    tick(); setInterval(tick, 20000);
+  })();
+
+  // ---------- mohit's radio: off by default, fades down while any video plays with sound ----------
+  (function radio() {
+    var btn = document.querySelector(".np");
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!btn || !AC) { if (btn) btn.hidden = true; return; }
+    var LOOP_SECONDS = 36.92, BASE = 0.5, DUCK = 0.15, FADE = 0.4;
+    var ctx = null, gain = null, on = false, loading = false;
+    function mediaWithSound() {
+      return Array.prototype.some.call(document.querySelectorAll("video, audio"), function (m) { return !m.paused && !m.muted && m.volume > 0; });
+    }
+    function rampTo(value, seconds) {
+      if (!gain) return;
+      var t = ctx.currentTime;
+      gain.gain.cancelScheduledValues(t);
+      gain.gain.setValueAtTime(gain.gain.value, t);
+      gain.gain.linearRampToValueAtTime(value, t + seconds);
+    }
+    function level() { rampTo(on ? (mediaWithSound() ? BASE * DUCK : BASE) : 0, FADE); }
+    ["play", "pause", "volumechange", "ended"].forEach(function (name) { document.addEventListener(name, level, true); });
+    function show() {
+      btn.classList.toggle("playing", on);
+      btn.classList.toggle("loading", loading);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      btn.setAttribute("aria-label", on ? "Pause background music" : "Play background music");
+    }
+    function decode(buffer) {
+      return new Promise(function (resolve, reject) { ctx.decodeAudioData(buffer, resolve, reject); });
+    }
+    function load(url) { return fetch(url).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.arrayBuffer(); }).then(decode); }
+    function start() {
+      ctx = new AC();
+      gain = ctx.createGain(); gain.gain.value = 0; gain.connect(ctx.destination);
+      loading = true; show();
+      var aac = document.createElement("audio").canPlayType('audio/mp4; codecs="mp4a.40.2"');
+      var first = aac ? "media/share-a-clicky-radio.m4a" : "media/share-a-clicky-radio.mp3";
+      var second = aac ? "media/share-a-clicky-radio.mp3" : "media/share-a-clicky-radio.m4a";
+      return load(first).catch(function () { return load(second); }).then(function (buf) {
+        var src = ctx.createBufferSource();
+        src.buffer = buf; src.loop = true; src.loopStart = 0; src.loopEnd = Math.min(buf.duration, LOOP_SECONDS);
+        src.connect(gain); src.start();
+        loading = false; on = true; show(); level();
+      }).catch(function () { loading = false; on = false; btn.hidden = true; });
+    }
+    btn.addEventListener("click", function () {
+      if (loading) return;
+      if (!ctx) { start(); return; }
+      if (on) { on = false; show(); rampTo(0, 0.25); setTimeout(function () { if (!on) ctx.suspend(); }, 300); }
+      else { on = true; show(); ctx.resume().then(level); }
+    });
+    document.addEventListener("visibilitychange", function () {
+      if (!ctx || !on) return;
+      if (document.hidden) ctx.suspend(); else ctx.resume().then(level);
+    });
+  })();
+
+  // ---------- footer tile wordmark ----------
+  (function tiles() {
+    var svg = document.getElementById("tiles");
+    if (!svg) return;
+    var F = {
+      s: [".....", ".....", ".####", "#....", ".###.", "....#", "####."],
+      h: ["#....", "#....", "####.", "#...#", "#...#", "#...#", "#...#"],
+      a: [".....", ".....", ".###.", "....#", ".####", "#...#", ".####"],
+      r: [".....", ".....", "#.##.", "##..#", "#....", "#....", "#...."],
+      e: [".....", ".....", ".###.", "#...#", "#####", "#....", ".###."],
+      "-": [".....", ".....", ".....", "####.", ".....", ".....", "....."],
+      c: [".....", ".....", ".####", "#....", "#....", "#....", ".####"],
+      l: [".##..", "..#..", "..#..", "..#..", "..#..", "..#..", ".###."],
+      i: ["..#..", ".....", ".##..", "..#..", "..#..", "..#..", ".###."],
+      k: ["#....", "#....", "#..#.", "#.#..", "##...", "#.#..", "#..#."],
+      y: [".....", ".....", "#...#", "#...#", ".####", "....#", ".###."]
+    };
+    var word = "share-a-clicky", colors = ["#1f6fe8", "#e8744a", "#f2c14e", "#5fae68", "#f4a7b4", "#9fd8b8"];
+    var NS = "http://www.w3.org/2000/svg", cols = word.length * 6 - 1;
+    svg.setAttribute("viewBox", "0 0 " + (cols * 10) + " 70");
+    word.split("").forEach(function (ch, li) {
+      (F[ch] || []).forEach(function (row, ry) {
+        row.split("").forEach(function (cell, cx) {
+          if (cell !== "#") return;
+          var r = document.createElementNS(NS, "rect");
+          r.setAttribute("x", (li * 6 + cx) * 10 + 0.5); r.setAttribute("y", ry * 10 + 0.5);
+          r.setAttribute("width", 9); r.setAttribute("height", 9); r.setAttribute("rx", 2.5);
+          r.setAttribute("fill", colors[li % colors.length]);
+          r.style.setProperty("--d", ((li * 6 + cx) * 0.012 + ry * 0.02).toFixed(3) + "s");
+          svg.appendChild(r);
+        });
+      });
+    });
+    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) { svg.classList.add("in"); return; }
+    var io = new IntersectionObserver(function (entries) { entries.forEach(function (e) { if (e.isIntersecting) { svg.classList.add("in"); io.disconnect(); } }); }, { rootMargin: "0px 0px -10% 0px" });
+    io.observe(svg);
+  })();
 
   fetch("clickys.json", { cache: "no-cache" })
     .then(function (response) {

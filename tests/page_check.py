@@ -70,7 +70,7 @@ CONTRAST_JS = """
 }
 """
 # Small text that must reach WCAG AA (4.5:1) in both themes.
-SMALL_TEXT = "footer span, .tag, .chip, .eyebrow, .step .n, .finding .k, .demo figcaption, .proof figcaption, .muted, .top-right a, .howto .body > span, .kbd, .builder p"
+SMALL_TEXT = "footer span, .tag, .chip, .eyebrow, .step .n, .finding .k, .demo figcaption, .proof figcaption, .muted, .top-right a, .howto .body > span, .kbd, .builder p, .clock, .np-label, .tldr span, .faq summary, .mb-links a, .sky .section-head p, .term-bar span"
 DETAIL_SMALL_TEXT = "dl.facts dt, .mac-note, .invite-note, .usage-row > span, .by, .back"
 
 
@@ -125,6 +125,9 @@ def main():
                     one_line = page.evaluate("""[...document.querySelectorAll('.finding b')].every(b => {
                         const lh = parseFloat(getComputedStyle(b).lineHeight) || 24; return b.getBoundingClientRect().height < lh * 1.5; })""")
                     check(f"finding titles fit on one line [{tag}]", one_line)
+                check(f"radio button is off by default [{tag}]", page.get_attribute(".np", "aria-pressed") == "false")
+                check(f"faq has questions [{tag}]", page.locator("#faq details").count() >= 6)
+                check(f"footer tile wordmark drawn [{tag}]", page.locator("#tiles rect").count() > 100)
                 if shots:
                     page.screenshot(path=os.path.join(shots, f"gallery-{scheme}-{label}.png"), full_page=True)
 

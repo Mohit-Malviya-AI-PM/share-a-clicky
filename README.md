@@ -1,6 +1,10 @@
 # Share-a-Clicky
 
-**Start with a Clicky that already works.** Share a Clicky you've set up for a real job. A friend pastes its setup into HeyClicky, connects their apps, and starts from something that already works. Your invite link comes along.
+**Start with a Clicky that already works.** Share a Clicky you've set up for a real job. A friend pastes its setup into HeyClicky and connects their apps. They start from something that already works, and your invite link comes along.
+
+| What | Why | Proof |
+|---|---|---|
+| Share a Clicky you already use. A friend pastes its setup into New Clicky | New Clickys start from a guess. Shared ones start from something that works | Built and tested live on HeyClicky 1.0.52, with 2 gaps found along the way |
 
 An unofficial prototype for [HeyClicky](https://www.heyclicky.com/), built by [Mohit Malviya](https://www.linkedin.com/in/malviyamohit/), an AI product manager who builds (6.5 years in product management, Cornell MBA). Not affiliated with or endorsed by HeyClicky.
 
@@ -14,7 +18,7 @@ An unofficial prototype for [HeyClicky](https://www.heyclicky.com/), built by [M
 |---|---|
 | **The gap** | Today a new Clicky comes from HeyClicky's four onboarding questions or a short interview. There's no way to start from a Clicky a friend already runs for a real job. |
 | **The idea** | A share page for Clickys. Each one shows what it does, how often it runs, which apps it needs, and roughly how many agent messages it uses. One button copies its setup. |
-| **Why HeyClicky might care** | Invite & Earn gives people a reason to share. A shared Clicky gives that invite link something specific to carry: "here's the Clicky I use for my job search," not just "try this app." |
+| **Why HeyClicky might care** | Invite & Earn gives people a reason to share. A shared Clicky gives that link something specific to carry. "Here's the Clicky I use for my job search" beats "try this app." |
 
 This is a bet, not a proven result. The metrics I'd use to test it are at the bottom.
 
@@ -38,24 +42,24 @@ I tested everything live in HeyClicky 1.0.52 on Sep 28, 2026.
 
 | What happened | What would fix it |
 |---|---|
-| **Local connectors stop after the first message.** A connector added with "Command on this Mac" answers once. The second message in the same chat fails with "Transport closed." **What I built:** the web-hosted connector here, which works on every message (tested live). | Inside HeyClicky: keep the local connector's session open between messages, or restart it |
+| **Local connectors stop after the first message.** A connector added with "Command on this Mac" answers once. The second message in the same chat fails with "Transport closed." **What I built:** the web connector here. It works on every message (tested live). | Inside HeyClicky: keep the local connector's session open between messages, or restart it |
 | **A Clicky can't create a Clicky.** When I asked one to install a shared Clicky, it tried to click through HeyClicky's own screens and got stuck. So install is one paste, not one click. | A `create_clicky` tool, or a `heyclicky://new` link the share page's button could open |
 | **Daily routines need Pro.** Job Hunter runs every day and uses about 30 agent messages a month. Free includes 25. | Nothing to fix. The page says "needs Pro" up front instead of letting people hit a limit mid-month |
 
-Smaller ones: the New Clicky screen can't use connectors, and routines repeat on an interval ("every 24 hours") instead of at a set time.
+Two smaller ones. The New Clicky screen can't use connectors. And routines repeat on an interval ("every 24 hours"), not at a set time.
 
-<p align="center"><img src="docs/img/02-two-turns.jpg" width="560" alt="Two messages in one HeyClicky chat through the web-hosted connector: it lists shared Clickys, then hands over the Weekly Wins setup"></p>
+<p align="center"><img src="docs/img/02-two-turns.jpg" width="560" alt="Two messages in one HeyClicky chat through the web connector: it lists shared Clickys, then hands over the Weekly Wins setup"></p>
 
 ## Why I think it matters
 
 | What I saw | Where |
 |---|---|
 | Clickys relaunched Sep 12. New users answer four questions and get three Clickys made for them | Changelog v1.0.49 |
-| The community Skills library (about 100 skills at launch) was paused Sep 12, with a plan to bring skills back in a new form | Changelog v1.0.33 and v1.0.49 |
-| Invite & Earn launched Sep 24: a friend gets 25% off their first month, the sharer earns 25% of what they pay for up to 12 months | Changelog v1.0.52 |
+| The community Skills library (about 100 skills at launch) was paused Sep 12. HeyClicky plans to bring skills back in a new form | Changelog v1.0.33 and v1.0.49 |
+| Invite & Earn launched Sep 24. A friend gets 25% off their first month. The sharer earns 25% of what they pay, for up to 12 months | Changelog v1.0.52 |
 | Agent messages are the metered part of every plan: Free 25, Pro 150, Max 1,000 a month | heyclicky.com pricing |
 
-**How I'd measure it.** North star: shared Clickys still running a week after install, compared with Clickys made in onboarding. Inputs: page views to copies, copies to created, created to routine turned on (a separate step, likely the biggest drop), invite signups per shared Clicky, and Free-to-Pro upgrades within 14 days of a "needs Pro" install. Guardrails: fewer surprise agent-limit hits, and few shared Clickys archived or reported in week one. Tracking needs a small "installed from a share" tag on each new Clicky.
+**How I'd measure it.** North star: shared Clickys still running a week after install, compared with Clickys made in onboarding. Inputs: page views to copies, copies to created, and created to routine turned on (a separate step, likely the biggest drop). Then invite signups per shared Clicky, and Free-to-Pro upgrades within 14 days of a "needs Pro" install. Guardrails: fewer surprise agent-limit hits, and few shared Clickys archived or reported in week one. Tracking needs a small "installed from a share" tag on each new Clicky.
 
 Job Hunter is the Clicky I built for my own job search. The other two are labeled as examples.
 

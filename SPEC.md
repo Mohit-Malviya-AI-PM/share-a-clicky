@@ -19,7 +19,7 @@ Let people share a Clicky that already does a real job. A friend starts from a C
 | `data/clickys.source.json` | Single source of truth: sharers (with optional invite link) and shared Clickys (name, job, personality, instructions, routine, apps, messages per run, first task, example flag) |
 | Share page (static site) | Gallery plus one page per Clicky, and a small link page per Clicky (`/c/<slug>/`) so a shared link previews that Clicky. Shows what it does, schedule, apps, monthly message estimate against Free and Pro (with a "Needs Pro" note above the Free limit), sharer, and an Example label where the sharer doesn't run it. "Copy setup" copies the paste-ready setup. "Get HeyClicky" uses the sharer's invite link when one is set, otherwise heyclicky.com |
 | Local connector (`connector/local`) | MCP over stdio, zero dependencies, for "Command on this Mac" |
-| Remote connector (`connector/worker`) | MCP over HTTP on Cloudflare Workers, for "Remote URL". Anyone can paste one URL to try it |
+| Web connector (`connector/worker`) | MCP over HTTP on Cloudflare Workers, for "Remote URL". Anyone can paste one URL to try it |
 | Connector tools | `list_shared_clickys`, `get_shared_clicky(slug)` |
 
 Out of scope: accounts, uploading your own Clicky, analytics, one-click install (needs a HeyClicky hook, see Known limits).
