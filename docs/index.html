@@ -315,8 +315,20 @@
   .menubar { position: sticky; top: 0; z-index: 40; backdrop-filter: saturate(1.6) blur(14px); -webkit-backdrop-filter: saturate(1.6) blur(14px); background: color-mix(in srgb, var(--bg) 78%, transparent); border-bottom: 1px solid var(--line); }
   .menubar .mb-row { max-width: 1080px; margin: 0 auto; padding: 0 20px; height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .mb-left { display: flex; align-items: center; gap: 22px; min-width: 0; }
-  .mb-links { display: flex; gap: 18px; font-size: 14px; }
-  .mb-links a { color: var(--text-2); }
+  .menubar .mb-row { flex-wrap: nowrap; column-gap: 14px; max-width: 1320px; }
+  .mb-links { display: flex; gap: 2px; font-size: 14px; flex: 1 1 auto; justify-content: center; min-width: 0; }
+  .mb-links a { color: var(--text-2); padding: 5px 10px; border-radius: 999px; white-space: nowrap; transition: background .15s ease, color .15s ease; }
+  .mb-links a:hover { text-decoration: none; background: var(--surface-2); color: var(--text); }
+  .mb-links a.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm), 0 0 0 1px var(--line); }
+  section[id] { scroll-margin-top: 64px; }
+  @media (max-width: 1400px) { .clock { display: none; } }
+  @media (max-width: 1200px) {
+    .menubar .mb-row { flex-wrap: wrap; height: auto; padding-top: 8px; padding-bottom: 6px; row-gap: 4px; }
+    .mb-links { order: 3; flex-basis: 100%; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; margin: 0 -8px; padding: 2px 4px 4px; }
+    .mb-links::-webkit-scrollbar { display: none; }
+    section[id] { scroll-margin-top: 112px; }
+  }
+  @media (max-width: 640px) { .tag-long { display: none; } .wordmark { font-size: 16px; } }
   .menubar .top-right { gap: 12px; }
   .clock { font-size: 13.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
   .np { appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 999px; height: 32px; padding: 0 12px 0 10px; display: inline-flex; align-items: center; gap: 8px; font: 500 13px Inter, system-ui, sans-serif; cursor: pointer; box-shadow: var(--shadow-sm); }
@@ -381,10 +393,10 @@
   .tiles.in rect { transform: scale(1); }
   .tiles rect:hover { transform: scale(1.25); transition-delay: 0s; }
 
-  @media (max-width: 860px) { .mb-links { display: none; } .tldr { grid-template-columns: 1fr; } }
+  @media (max-width: 860px) { .tldr { grid-template-columns: 1fr; } }
   .wordmark { white-space: nowrap; }
   @media (max-width: 700px) { .drag-hint { display: none; } }
-  @media (max-width: 640px) { .clock { display: none; } section.sky { margin-inline: -12px; border-radius: 20px; } .cloud { display: none; } .np-label { display: none; } .menubar .tag { font-size: 11.5px; padding: 3px 9px; } .menubar .mb-row { padding: 0 14px; } }
+  @media (max-width: 640px) { .clock { display: none; } section.sky { margin-inline: -12px; border-radius: 20px; } .cloud { display: none; } .np-label { display: none; } .menubar .tag { font-size: 11.5px; padding: 3px 9px; } .menubar .mb-row { padding: 8px 14px 4px; } }
   @media (prefers-reduced-motion: reduce) { .cloud, .np.playing .np-bars i { animation: none; } .tiles rect { transform: scale(1); transition: none; } }
 
   @media (max-width: 640px) {
@@ -404,19 +416,19 @@
   <div class="mb-row">
     <div class="mb-left">
       <a class="wordmark" href="./"><span aria-hidden="true">☁️</span>share-a-clicky</a>
-      <nav class="mb-links" aria-label="Sections">
-        <a href="./#idea">idea</a><a href="./#shared">clickys</a><a href="./#connector">connector</a><a href="./#findings">findings</a><a href="./#faq">faq</a>
-      </nav>
     </div>
+    <nav class="mb-links" aria-label="Sections">
+      <a href="./#idea">idea</a><a href="./#shared">clickys</a><a href="./#how">how it works</a><a href="./#connector">connector</a><a href="./#findings">findings</a><a href="./#metrics">measure</a><a href="./#faq">faq</a><a href="./#builder">about me</a>
+    </nav>
     <div class="top-right">
-      <button class="np" type="button" aria-pressed="false" aria-label="Play background music" title="mohit's radio: an original loop, off by default">
+      <button class="np" type="button" aria-pressed="false" aria-label="Play background music" title="mohit's radio: an original funk loop, off by default">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3" y="13" width="5" height="8" rx="2" fill="currentColor"/><rect x="16" y="13" width="5" height="8" rx="2" fill="currentColor"/></svg>
         <span class="np-label">mohit's radio</span>
         <span class="np-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
       </button>
       <span class="clock" aria-hidden="true"></span>
       <a class="hide-sm" id="repo-link" href="https://github.com/Mohit-Malviya-AI-PM/share-a-clicky" rel="noopener">github</a>
-      <span class="tag">unofficial prototype</span>
+      <span class="tag">unofficial<span class="tag-long"> prototype</span></span>
     </div>
   </div>
 </header>
@@ -711,6 +723,7 @@
     }
     setupReveal();
     enableStickers();
+    trackSections();
   }
 
   function metric(title, why, width) {
@@ -874,6 +887,23 @@
     });
   }
 
+  // ---------- menubar: highlight the section in view ----------
+  function trackSections() {
+    var links = Array.prototype.slice.call(document.querySelectorAll(".mb-links a"));
+    if (!links.length || !("IntersectionObserver" in window)) return;
+    var byId = {};
+    links.forEach(function (a) { byId[a.getAttribute("href").split("#")[1]] = a; });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        links.forEach(function (a) { a.classList.remove("active"); a.removeAttribute("aria-current"); });
+        var a = byId[e.target.id];
+        if (a) { a.classList.add("active"); a.setAttribute("aria-current", "true"); if (window.innerWidth <= 1200) a.parentNode.scrollLeft = a.offsetLeft - 40; }
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    Object.keys(byId).forEach(function (id) { var sec = document.getElementById(id); if (sec) io.observe(sec); });
+  }
+
   // ---------- menubar clock ----------
   (function clock() {
     var node = document.querySelector(".clock");
@@ -887,7 +917,7 @@
     var btn = document.querySelector(".np");
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!btn || !AC) { if (btn) btn.hidden = true; return; }
-    var LOOP_SECONDS = 36.92, BASE = 0.5, DUCK = 0.15, FADE = 0.4;
+    var LOOP_SECONDS = 32.542, BASE = 0.6, DUCK = 0.15, FADE = 0.4;
     var ctx = null, gain = null, on = false, loading = false;
     function mediaWithSound() {
       return Array.prototype.some.call(document.querySelectorAll("video, audio"), function (m) { return !m.paused && !m.muted && m.volume > 0; });

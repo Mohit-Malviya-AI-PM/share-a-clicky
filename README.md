@@ -8,7 +8,7 @@
 
 An unofficial prototype for [HeyClicky](https://www.heyclicky.com/), built by [Mohit Malviya](https://www.linkedin.com/in/malviyamohit/), an AI product manager who builds (6.5 years in product management, Cornell MBA). Not affiliated with or endorsed by HeyClicky.
 
-<p align="center"><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo"><img src="docs/img/video-poster.jpg" width="640" alt="Watch the 1-minute demo"></a><br><sub>▶ Watch the 1-minute demo</sub></p>
+<p align="center"><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo"><img src="docs/img/video-poster.jpg" width="640" alt="Watch the 1-minute demo"></a><br><sub><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo">▶ Watch the 1-minute demo</a> (opens the share page, with captions)</sub></p>
 
 **Try it:** [share page](https://mohit-malviya-ai-pm.github.io/share-a-clicky/) · connector URL `https://share-a-clicky.malviyamohit58.workers.dev/mcp`
 
@@ -23,6 +23,18 @@ An unofficial prototype for [HeyClicky](https://www.heyclicky.com/), built by [M
 This is a bet, not a proven result. The metrics I'd use to test it are at the bottom.
 
 ## How to use it
+
+```mermaid
+flowchart TB
+    A["Sharer runs a Clicky<br/>for a real job"] --> B["Share page<br/>what it does, apps,<br/>agent messages a month"]
+    B -- "Copy setup" --> C["New Clicky<br/>in HeyClicky: paste"]
+    C --> D["Connect apps,<br/>turn on the routine"]
+    D --> E["Friend has a Clicky<br/>that already works"]
+    B -. "invite link" .-> F["Friend joins HeyClicky,<br/>sharer earns 25%"]
+    G["Any Clicky"] -- "asks the web connector" --> H["list_shared_clickys<br/>get_shared_clicky"]
+    H -- "hands over the setup" --> C
+```
+
 
 **From the share page**
 1. Open the [share page](https://mohit-malviya-ai-pm.github.io/share-a-clicky/) and pick a Clicky.
@@ -59,19 +71,34 @@ Two smaller ones. The New Clicky screen can't use connectors. And routines repea
 | Invite & Earn launched Sep 24. A friend gets 25% off their first month. The sharer earns 25% of what they pay, for up to 12 months | Changelog v1.0.52 |
 | Agent messages are the metered part of every plan: Free 25, Pro 150, Max 1,000 a month | heyclicky.com pricing |
 
-**How I'd measure it.** North star: shared Clickys still running a week after install, compared with Clickys made in onboarding. Inputs: page views to copies, copies to created, and created to routine turned on (a separate step, likely the biggest drop). Then invite signups per shared Clicky, and Free-to-Pro upgrades within 14 days of a "needs Pro" install. Guardrails: fewer surprise agent-limit hits, and few shared Clickys archived or reported in week one. Tracking needs a small "installed from a share" tag on each new Clicky.
+## How I'd measure it
+
+- **North star.** Shared Clickys still running a week after install, compared with Clickys made in onboarding.
+- **Inputs.** The funnel that feeds the north star:
+  - Page views to copies. Does the page make people want it?
+  - Copies to created. Does the paste into New Clicky work?
+  - Created to routine turned on. A separate step today, so likely the biggest drop.
+  - Invite signups per shared Clicky.
+  - Free-to-Pro upgrades within 14 days of a "needs Pro" install.
+- **Guardrails.**
+  - Fewer surprise agent-limit hits.
+  - Few shared Clickys archived or reported in week one.
+- **Tracking needed.** A small "installed from a share" tag on each new Clicky.
 
 Job Hunter is the Clicky I built for my own job search. The other two are labeled as examples.
 
-<details>
-<summary><b>For engineers: how it's built, tests, and running it</b></summary>
+## For engineers: how it's built, tests, and running it
 
 ### How it's built
 
-```
-data/clickys.source.json  ──build.py──►  docs/clickys.json             (share page, GitHub Pages)
-   (single source of truth)          ├─►  connector/local/clickys.json  (local connector)
-                                     └─►  connector/worker/worker.js    (web connector, data inlined)
+```mermaid
+flowchart LR
+    S["data/clickys.source.json<br/>single source of truth"] --> B["build.py"]
+    B --> P["docs/clickys.json<br/>share page on GitHub Pages"]
+    B --> L["connector/local/clickys.json<br/>local connector, MCP over stdio"]
+    B --> W["connector/worker/worker.js<br/>web connector, MCP over<br/>Streamable HTTP on Cloudflare"]
+    L -. "answers only the first message<br/>(HeyClicky 1.0.52 bug)" .-> HC["HeyClicky"]
+    W -- "works on every message" --> HC
 ```
 
 - **Share page** (`docs/`): static, no framework. A gallery plus one view per Clicky (`?c=job-hunter`). Each Clicky also gets a share link (`/c/job-hunter/`) whose link preview names that Clicky.
@@ -123,7 +150,6 @@ Deploy the Worker: paste `connector/worker/worker.js` into a new Cloudflare Work
 
 Full spec and acceptance checks: [SPEC.md](SPEC.md).
 
-</details>
 
 ## License
 
