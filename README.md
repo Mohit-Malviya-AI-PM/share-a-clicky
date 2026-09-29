@@ -8,7 +8,7 @@
 
 An unofficial prototype for [HeyClicky](https://www.heyclicky.com/), built by [Mohit Malviya](https://www.linkedin.com/in/malviyamohit/), an AI product manager who builds (6.5 years in product management, Cornell MBA). Not affiliated with or endorsed by HeyClicky.
 
-<p align="center"><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo"><img src="docs/img/video-poster.jpg" width="640" alt="Watch the 1-minute demo"></a><br><sub><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo">▶ Watch the 1-minute demo</a> (opens the share page, with captions)</sub></p>
+<p align="center"><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo"><img src="docs/img/demo.gif" width="640" alt="Highlights from the 1-minute demo: the share page, copy and paste into New Clicky, the connector, and the bug found testing live. Click for the full demo with sound"></a><br><sub><a href="https://mohit-malviya-ai-pm.github.io/share-a-clicky/#demo">▶ Watch the 1-minute demo</a> (opens the share page, with captions)</sub></p>
 
 **Try it:** [share page](https://mohit-malviya-ai-pm.github.io/share-a-clicky/) · connector URL `https://share-a-clicky.malviyamohit58.workers.dev/mcp`
 
@@ -60,7 +60,7 @@ I tested everything live in HeyClicky 1.0.52 on Sep 28, 2026.
 
 Two smaller ones. The New Clicky screen can't use connectors. And routines repeat on an interval ("every 24 hours"), not at a set time.
 
-<p align="center"><img src="docs/img/02-two-turns.jpg" width="560" alt="Two messages in one HeyClicky chat through the web connector: it lists shared Clickys, then hands over the Weekly Wins setup"></p>
+<p align="center"><img src="docs/img/02-two-turns.gif" width="640" alt="A real HeyClicky 1.0.52 chat: the local connector returns Transport closed, then the web connector answers two messages in the same chat, listing shared Clickys and handing over the Weekly Wins setup"></p>
 
 ## Why I think it matters
 

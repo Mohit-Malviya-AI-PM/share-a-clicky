@@ -234,6 +234,86 @@
   .win-bar span { margin-left: 10px; font: 500 12.5px var(--mono); color: var(--text-3); }
   .demo video { width: 100%; height: auto; aspect-ratio: 16 / 9; display: block; background: #111; border-radius: 0; box-shadow: none; }
 
+  /* demo player */
+  .win-bar .tl { appearance: none; width: 13px; height: 13px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; position: relative; display: grid; place-items: center; font: 800 10px/1 Inter, sans-serif; color: transparent; }
+  .win-bar .tl::after { position: absolute; inset: 0; display: grid; place-items: center; font: 900 9px/1 Inter, system-ui, sans-serif; color: rgba(0,0,0,.55); opacity: 0; transition: opacity .15s; }
+  .win-bar:hover .tl::after, .win-bar .tl:focus-visible::after { opacity: 1; }
+  .win-bar .tl:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tl-red { background: #ff5f57; } .tl-red::after { content: "■"; font-size: 7px !important; }
+  .tl-yellow { background: #febc2e; } .tl-yellow::after { content: "−"; }
+  .tl-green { background: #28c840; } .tl-green::after { content: "+"; }
+  .vp { position: relative; }
+  .vp-stage { position: relative; background: #111; overflow: hidden; }
+  .vp-stage video { cursor: pointer; }
+  .vp-stage video:focus { outline: none; }
+  .vp.idle .vp-stage, .vp.idle .vp-stage video { cursor: none; }
+  .vp-big { position: absolute; inset: 0; margin: auto; width: 190px; height: 190px; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; transition: transform .25s cubic-bezier(.2,1.4,.4,1), opacity .25s; }
+  .vp-big::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: rgba(14,14,20,.62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); box-shadow: 0 20px 50px -18px rgba(0,0,0,.6); }
+  .vp-stage::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(0,0,0,.28), rgba(0,0,0,0) 60%); pointer-events: none; transition: opacity .3s; }
+  .vp.started .vp-stage::after { opacity: 0; }
+  .vp-big:hover { transform: scale(1.06); }
+  .vp-big > * { position: relative; }
+  @media (hover: none) { .vp-keys { display: none; } }
+  .vp-big:focus-visible { outline: 3px solid var(--sun); outline-offset: 4px; border-radius: 50%; }
+  .vp-big > .vp-ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: spin 14s linear infinite; }
+  .vp-ring text { font: 800 14px Inter, system-ui, sans-serif; letter-spacing: .14em; text-transform: uppercase; fill: #fff; paint-order: stroke; stroke: rgba(0,0,0,.35); stroke-width: 3px; }
+  .vp-big-btn { width: 104px; height: 104px; border-radius: 50%; background: var(--sun); color: #16161a; display: grid; place-items: center; box-shadow: 0 18px 40px -12px rgba(0,0,0,.6), inset 0 -5px 0 rgba(0,0,0,.12); animation: pulse 2.4s ease-in-out infinite; }
+  .vp-big-btn svg { width: 44px; height: 44px; margin-left: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100% { box-shadow: 0 18px 40px -12px rgba(0,0,0,.6), 0 0 0 0 rgba(242,193,78,.55), inset 0 -5px 0 rgba(0,0,0,.12); } 50% { box-shadow: 0 18px 40px -12px rgba(0,0,0,.6), 0 0 0 16px rgba(242,193,78,0), inset 0 -5px 0 rgba(0,0,0,.12); } }
+  .vp.started .vp-big { opacity: 0; transform: scale(.7); pointer-events: none; }
+  .vp-cap { position: absolute; left: 50%; bottom: 74px; transform: translateX(-50%) translateY(6px); margin: 0; max-width: 84%; width: max-content; text-align: center; background: rgba(12,12,16,.82); color: #fff; font: 600 clamp(13px, 1.9vw, 19px)/1.35 Inter, system-ui, sans-serif; padding: 8px 14px; border-radius: 12px; opacity: 0; transition: opacity .2s, transform .2s, bottom .25s; pointer-events: none; }
+  .vp-cap.show { opacity: 1; transform: translateX(-50%); }
+  .vp.idle .vp-cap { bottom: 22px; }
+  .vp-bar { position: absolute; left: 14px; right: 14px; bottom: 14px; display: flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 16px; background: rgba(18,18,24,.55); backdrop-filter: blur(16px) saturate(1.6); -webkit-backdrop-filter: blur(16px) saturate(1.6); border: 1px solid rgba(255,255,255,.14); color: #fff; box-shadow: 0 16px 36px -16px rgba(0,0,0,.7); transition: opacity .3s, transform .3s; }
+  .vp:not(.started) .vp-bar { opacity: 0; transform: translateY(12px); pointer-events: none; }
+  .vp.idle .vp-bar { opacity: 0; transform: translateY(12px); pointer-events: none; }
+  .vp-btn { appearance: none; border: 0; background: transparent; color: #fff; min-width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; cursor: pointer; font: 800 12px/1 Inter, system-ui, sans-serif; letter-spacing: .02em; transition: background .15s, transform .15s; flex: none; }
+  .vp-btn:hover { background: rgba(255,255,255,.14); }
+  .vp-btn:active { transform: scale(.92); }
+  .vp-btn:focus-visible, .vp-track:focus-visible { outline: 2px solid var(--sun); outline-offset: 1px; }
+  .vp-btn svg { width: 20px; height: 20px; }
+  .vp-play { background: var(--sun); color: #16161a; }
+  .vp-play:hover { background: #ffd66e; }
+  .vp-cc { opacity: .55; border: 1.5px solid rgba(255,255,255,.5); height: 26px; min-width: 34px; border-radius: 7px; margin-inline: 4px; }
+  .vp-cc.on { opacity: 1; background: #fff; color: #16161a; border-color: #fff; }
+  .vp-speed { font-variant-numeric: tabular-nums; min-width: 44px; }
+  .vp-time { font: 600 12.5px/1 var(--mono); color: rgba(255,255,255,.75); white-space: nowrap; padding: 0 6px; font-variant-numeric: tabular-nums; }
+  .vp-time b { color: #fff; font-weight: 700; }
+  .vp-track { position: relative; flex: 1; height: 26px; cursor: pointer; touch-action: none; border-radius: 6px; }
+  .vp-track::before, .vp-buf, .vp-fill { content: ""; position: absolute; left: 0; top: 50%; height: 6px; margin-top: -3px; border-radius: 999px; }
+  .vp-track::before { right: 0; background: rgba(255,255,255,.2); }
+  .vp-buf { background: rgba(255,255,255,.3); width: 0; }
+  .vp-fill { background: linear-gradient(90deg, var(--sun), #e8744a); width: 0; }
+  .vp-track:hover::before, .vp-track:hover .vp-buf, .vp-track:hover .vp-fill, .vp-track.drag .vp-fill { height: 9px; margin-top: -4.5px; }
+  .vp-tick { position: absolute; top: 50%; width: 3px; height: 13px; margin: -6.5px 0 0 -1.5px; background: rgba(255,255,255,.75); border-radius: 2px; pointer-events: none; }
+  .vp-knob { position: absolute; top: 50%; left: 0; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.5); transform: scale(0); transition: transform .15s; pointer-events: none; }
+  .vp-track:hover .vp-knob, .vp-track.drag .vp-knob, .vp-track:focus-visible .vp-knob { transform: scale(1); }
+  .vp-tip { position: absolute; bottom: 30px; left: 0; transform: translateX(-50%); background: #fff; color: #16161a; font: 700 12px/1 Inter, system-ui, sans-serif; padding: 6px 9px; border-radius: 8px; white-space: nowrap; opacity: 0; transition: opacity .15s; pointer-events: none; }
+  .vp-track:hover .vp-tip { opacity: 1; }
+  .vp.is-full { border-radius: 0; border: 0; display: flex; flex-direction: column; background: #000; }
+  .vp.is-full .win-bar { display: none; }
+  .vp.is-full .vp-stage { flex: 1; display: grid; place-items: center; }
+  .vp.is-full video { max-height: 100vh; }
+  .vp-chapters { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 16px; }
+  .vp-jump { font: 700 20px/1 Caveat, cursive; color: var(--text-2); margin-right: 2px; }
+  .vp-chip { appearance: none; border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 999px; padding: 7px 13px; font: 600 13px/1 Inter, system-ui, sans-serif; cursor: pointer; box-shadow: var(--shadow-sm); transition: transform .15s, background .15s, color .15s; }
+  .vp-chip em { font-style: normal; font: 600 11.5px var(--mono); color: var(--text-3); margin-right: 2px; }
+  .vp-chip:hover { transform: translateY(-2px) rotate(-1deg); }
+  .vp-chip:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .vp-chip.now { background: var(--sun); color: #16161a; border-color: transparent; }
+  .vp-chip.now em { color: rgba(22,22,26,.7); }
+  @media (max-width: 640px) {
+    .vp-big { width: 112px; height: 112px; } .vp-big-btn { width: 60px; height: 60px; } .vp-big-btn svg { width: 26px; height: 26px; margin-left: 4px; }
+    .vp-ring text { font-size: 17px; }
+    .vp-bar { left: 6px; right: 6px; bottom: 6px; padding: 4px 6px; gap: 2px; border-radius: 12px; }
+    .vp-btn { min-width: 32px; height: 32px; } .vp-btn svg { width: 18px; height: 18px; }
+    .vp-time, .vp-speed { display: none; }
+    .vp-cap { bottom: 52px; font-size: 12px; padding: 5px 9px; max-width: 92%; }
+    .vp-chip { padding: 6px 10px; font-size: 12.5px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .vp-ring, .vp-big-btn { animation: none; } }
+
   /* marquee */
   .marquee { margin: 64px -20px 0; overflow: hidden; border-block: 1px solid var(--line); background: var(--surface); padding: 14px 0; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
   .marquee .track { display: flex; gap: 28px; width: max-content; animation: scroll 28s linear infinite; font-weight: 600; font-size: 17px; letter-spacing: -0.02em; color: var(--text); }
@@ -343,8 +423,26 @@
   .np.playing .np-bars i:nth-child(2) { animation-delay: -.3s; } .np.playing .np-bars i:nth-child(3) { animation-delay: -.6s; }
   .np.playing .np-bars i:nth-child(4) { animation-delay: -.15s; } .np.playing .np-bars i:nth-child(5) { animation-delay: -.45s; }
   .np.loading { opacity: .7; cursor: progress; }
+  .np-skip { appearance: none; width: 32px; height: 32px; margin-left: -6px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); display: inline-grid; place-items: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: transform .15s; }
+  .np-skip[hidden] { display: none; }
+  .np-skip:hover { transform: translateX(2px); }
+  .np-skip:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .np-skip svg { width: 14px; height: 14px; }
+  .np-toast { position: absolute; right: 18px; top: calc(100% + 10px); background: #16161a; color: #fff; font: 600 13px/1 Inter, system-ui, sans-serif; padding: 10px 14px; border-radius: 999px; box-shadow: 0 12px 28px -12px rgba(0,0,0,.5); opacity: 0; transform: translateY(-6px) scale(.96); transition: opacity .25s, transform .25s; pointer-events: none; white-space: nowrap; }
+  .np-toast.show { opacity: 1; transform: none; }
+  footer .credits { flex-basis: 100%; }
   @keyframes eq { 0%,100% { height: 3px; } 50% { height: 12px; } }
 
+  /* stickers across the page */
+  main section { position: relative; }
+  .sec-sticker { z-index: 1; }
+  .sticker.tile { color: var(--paper-ink); }
+  .sec-sticker.dragging { z-index: 6; }
+  .sticker.tag.pink { background: var(--pink); }
+  .sticker.tag.blue { background: #bcd8ff; }
+  .sec-sticker.kaomoji { font-size: 14px; }
+  @media (max-width: 999px) { .sec-sticker:not(.keep) { display: none; } .sec-sticker.keep { display: grid; width: 46px; height: 46px; font-size: 24px; border-radius: 13px; top: 18px !important; } }
+  @media (max-width: 640px) { .sec-sticker.keep { width: 40px; height: 40px; font-size: 21px; top: 22px !important; } }
   /* draggable stickers */
   .sticker.tile, .sticker.tag, .sticker.stamp, .sticker.live { pointer-events: auto; cursor: grab; touch-action: none; }
   .sticker.dragging { cursor: grabbing; animation-play-state: paused; z-index: 5; filter: drop-shadow(0 16px 20px rgba(0,0,0,.25)); }
@@ -421,16 +519,18 @@
       <a href="./#idea">idea</a><a href="./#shared">clickys</a><a href="./#how">how it works</a><a href="./#connector">connector</a><a href="./#findings">findings</a><a href="./#metrics">measure</a><a href="./#faq">faq</a><a href="./#builder">about me</a>
     </nav>
     <div class="top-right">
-      <button class="np" type="button" aria-pressed="false" aria-label="Play background music" title="mohit's radio: an original funk loop, off by default">
+      <button class="np" type="button" aria-pressed="false" aria-label="Play background music" title="mohit's radio: funk by Kevin MacLeod, off by default">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="3" y="13" width="5" height="8" rx="2" fill="currentColor"/><rect x="16" y="13" width="5" height="8" rx="2" fill="currentColor"/></svg>
         <span class="np-label">mohit's radio</span>
         <span class="np-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
       </button>
+      <button class="np-skip" type="button" aria-label="Next song" title="Next song" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l9 7-9 7z" fill="currentColor"/><rect x="16" y="5" width="3" height="14" rx="1" fill="currentColor"/></svg></button>
       <span class="clock" aria-hidden="true"></span>
       <a class="hide-sm" id="repo-link" href="https://github.com/Mohit-Malviya-AI-PM/share-a-clicky" rel="noopener">github</a>
       <span class="tag">unofficial<span class="tag-long"> prototype</span></span>
     </div>
   </div>
+  <div class="np-toast" role="status" aria-live="polite"></div>
 </header>
 <div class="wrap">
   <main id="app">
@@ -441,6 +541,7 @@
   <footer>
     <span>An unofficial prototype by Mohit Malviya for <a href="https://www.heyclicky.com/" rel="noopener">HeyClicky</a>. Not affiliated with or endorsed by HeyClicky.</span>
     <span>Message counts are estimates: about one agent message per routine run; retries can add more. Routines run only while the Mac is awake and HeyClicky is open.</span>
+    <span class="credits">Music on mohit's radio: “Hustle”, “Funky Chunk” and “Funk Game Loop” by Kevin MacLeod (<a href="https://incompetech.com" rel="noopener">incompetech.com</a>), licensed under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">Creative Commons: By Attribution 4.0</a>.</span>
   </footer>
 </div>
 <script>
@@ -572,17 +673,7 @@
           el("a", { class: "btn", href: "#shared", text: "Browse shared Clickys" }),
           el("a", { class: "btn secondary", href: "#demo", text: "▶ Watch the 1-minute demo" })
         ]),
-        el("figure", { class: "demo", id: "demo" }, [
-          el("div", { class: "win-frame" }, [
-            el("div", { class: "win-bar", "aria-hidden": "true" }, [el("i", { style: "background:#ff5f57" }), el("i", { style: "background:#febc2e" }), el("i", { style: "background:#28c840" }), el("span", { text: "share-a-clicky-demo.mov" })]),
-            el("video", { controls: "", playsinline: "", preload: "metadata", poster: "img/video-poster.jpg", width: "1920", height: "1080",
-              "aria-label": "One-minute demo of Share-a-Clicky" }, [
-              el("source", { src: "media/share-a-clicky-demo.mp4", type: "video/mp4" }),
-              el("track", { kind: "captions", src: "media/share-a-clicky-demo.vtt", srclang: "en", label: "English", default: "" })
-            ])
-          ]),
-          el("figcaption", { text: "The whole idea in one minute. Sound on, or turn on captions." })
-        ]),
+        demoPlayer(),
         el("div", { class: "tldr" }, [
           el("div", {}, [el("b", { text: "what" }), el("span", { text: "Share a Clicky you already use. A friend pastes its setup into New Clicky." })]),
           el("div", {}, [el("b", { text: "why" }), el("span", { text: "New Clickys start from a guess. Shared ones start from something that works, and the invite link comes along." })]),
@@ -723,6 +814,7 @@
     }
     setupReveal();
     enableStickers();
+    enablePlayer();
     trackSections();
   }
 
@@ -864,14 +956,212 @@
     if (target) target.scrollIntoView();
   }
 
+  // ---------- demo player: a reimagined control set (the window's traffic lights work too) ----------
+  var CHAPTERS = [
+    { t: 0, label: "the gap" }, { t: 16.6, label: "the build" }, { t: 28.2, label: "install" },
+    { t: 37, label: "connector" }, { t: 45.7, label: "2 gaps found" }, { t: 59, label: "the end" }
+  ];
+  var ICON = {
+    play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z" fill="currentColor"/></svg>',
+    pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4.5" height="16" rx="1.5" fill="currentColor"/><rect x="13.5" y="4" width="4.5" height="16" rx="1.5" fill="currentColor"/></svg>',
+    sound: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+    muted: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+    full: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+  function fmt(sec) { sec = Math.max(0, Math.floor(sec || 0)); return Math.floor(sec / 60) + ":" + String(sec % 60).padStart(2, "0"); }
+
+  function demoPlayer() {
+    var video = el("video", { playsinline: "", preload: "metadata", poster: "img/video-poster.jpg", width: "1920", height: "1080",
+      "aria-label": "One-minute demo of Share-a-Clicky" }, [
+      el("source", { src: "media/share-a-clicky-demo.mp4", type: "video/mp4" }),
+      el("track", { kind: "captions", src: "media/share-a-clicky-demo.vtt", srclang: "en", label: "English", default: "" })
+    ]);
+    var stage = el("div", { class: "vp-stage" }, [video]);
+    stage.insertAdjacentHTML("beforeend",
+      '<p class="vp-cap" aria-hidden="true"></p>' +
+      '<button class="vp-big" type="button" aria-label="Play the 1-minute demo">' +
+        '<svg class="vp-ring" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="vp-circle" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs>' +
+        '<text><textPath href="#vp-circle" textLength="486" lengthAdjust="spacing">play the demo ✦ 1 minute ✦ sound on ✦ </textPath></text></svg>' +
+        '<span class="vp-big-btn">' + ICON.play + '</span></button>' +
+      '<div class="vp-bar">' +
+        '<button class="vp-btn vp-play" type="button" aria-label="Play">' + ICON.play + '</button>' +
+        '<span class="vp-time"><b class="vp-cur">0:00</b> / <span class="vp-dur">1:05</span></span>' +
+        '<div class="vp-track" role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="65" aria-valuenow="0" aria-valuetext="0:00">' +
+          '<div class="vp-buf"></div><div class="vp-fill"></div><div class="vp-knob"></div><span class="vp-tip"></span></div>' +
+        '<button class="vp-btn vp-cc on" type="button" aria-pressed="true" aria-label="Captions">CC</button>' +
+        '<button class="vp-btn vp-speed" type="button" aria-label="Playback speed 1x">1×</button>' +
+        '<button class="vp-btn vp-mute" type="button" aria-label="Mute">' + ICON.sound + '</button>' +
+        '<button class="vp-btn vp-full" type="button" aria-label="Full screen">' + ICON.full + '</button>' +
+      '</div>');
+    var bar = el("div", { class: "win-bar" }, [
+      el("button", { class: "tl tl-red", type: "button", "aria-label": "Stop and rewind", title: "stop" }),
+      el("button", { class: "tl tl-yellow", type: "button", "aria-label": "Mini player", title: "mini player" }),
+      el("button", { class: "tl tl-green", type: "button", "aria-label": "Full screen", title: "full screen" }),
+      el("span", { "aria-hidden": "true", text: "share-a-clicky-demo.mov" })
+    ]);
+    var chips = el("div", { class: "vp-chapters", role: "group", "aria-label": "Jump to a part of the demo" },
+      [el("span", { class: "vp-jump", text: "jump to" })].concat(CHAPTERS.map(function (c, i) {
+        return el("button", { class: "vp-chip", type: "button", "data-i": String(i) }, [el("em", { text: fmt(c.t) }), " " + c.label]);
+      })));
+    return el("figure", { class: "demo", id: "demo" }, [
+      el("div", { class: "win-frame vp paused" }, [bar, stage]),
+      chips,
+      el("figcaption", {}, ["The whole idea in one minute.", el("span", { class: "vp-keys", text: " Keys: space to play, ← → to skip, M mute, C captions, F full screen." })])
+    ]);
+  }
+
+  function enablePlayer() {
+    var fig = document.getElementById("demo");
+    if (!fig) return;
+    var frame = fig.querySelector(".vp"), video = fig.querySelector("video"), q = function (sel) { return fig.querySelector(sel); };
+    var cap = q(".vp-cap"), track = q(".vp-track"), fill = q(".vp-fill"), knob = q(".vp-knob"), buf = q(".vp-buf"), tip = q(".vp-tip");
+    var playBtn = q(".vp-play"), muteBtn = q(".vp-mute"), ccBtn = q(".vp-cc"), speedBtn = q(".vp-speed");
+    var chips = Array.prototype.slice.call(fig.querySelectorAll(".vp-chip"));
+    var captionsOn = true, idleTimer = null, speeds = [1, 1.25, 1.5, 2];
+    function dur() { return isFinite(video.duration) && video.duration > 0 ? video.duration : 65; }
+
+    // chapter ticks on the track
+    CHAPTERS.slice(1).forEach(function (c) { var tick = el("i", { class: "vp-tick" }); tick.style.left = (c.t / 65 * 100) + "%"; track.appendChild(tick); });
+
+    function chapterAt(t) { var k = 0; CHAPTERS.forEach(function (c, i) { if (t >= c.t) k = i; }); return k; }
+    function paint() {
+      var p = video.currentTime / dur() * 100;
+      fill.style.width = p + "%"; knob.style.left = p + "%";
+      q(".vp-cur").textContent = fmt(video.currentTime);
+      track.setAttribute("aria-valuenow", String(Math.round(video.currentTime)));
+      track.setAttribute("aria-valuetext", fmt(video.currentTime) + ", " + CHAPTERS[chapterAt(video.currentTime)].label);
+      var k = chapterAt(video.currentTime);
+      chips.forEach(function (c, i) { c.classList.toggle("now", i === k && (video.currentTime > 0 || !video.paused)); });
+      if (video.buffered.length) buf.style.width = (video.buffered.end(video.buffered.length - 1) / dur() * 100) + "%";
+    }
+    function state() {
+      var playing = !video.paused && !video.ended;
+      frame.classList.toggle("paused", !playing);
+      frame.classList.toggle("started", video.currentTime > 0 || playing);
+      playBtn.innerHTML = playing ? ICON.pause : ICON.play;
+      playBtn.setAttribute("aria-label", playing ? "Pause" : "Play");
+      muteBtn.innerHTML = video.muted ? ICON.muted : ICON.sound;
+      muteBtn.setAttribute("aria-label", video.muted ? "Unmute" : "Mute");
+      if (!playing) wake();
+    }
+    function toggle() { if (video.paused || video.ended) { var p = video.play(); if (p && p.catch) p.catch(function () {}); } else video.pause(); }
+    function seek(t) { video.currentTime = Math.max(0, Math.min(dur() - 0.1, t)); paint(); }
+    function wake() {
+      frame.classList.remove("idle");
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(function () { if (!video.paused && !frame.matches(":focus-within")) frame.classList.add("idle"); }, 2400);
+    }
+    function isFull() { return document.fullscreenElement === frame || document.webkitFullscreenElement === frame; }
+    function fullscreen() {
+      if (isFull()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+      if (frame.requestFullscreen) frame.requestFullscreen().catch(function () {});
+      else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+      else if (video.webkitEnterFullscreen) video.webkitEnterFullscreen();
+    }
+
+    // our own captions, drawn as a bubble
+    var tt = video.textTracks && video.textTracks[0];
+    function drawCue() {
+      var cue = tt && tt.activeCues && tt.activeCues[0];
+      cap.textContent = captionsOn && cue ? cue.text : "";
+      cap.classList.toggle("show", !!cap.textContent);
+    }
+    if (tt) { tt.mode = "hidden"; tt.addEventListener("cuechange", drawCue); }
+    video.addEventListener("loadedmetadata", function () { if (tt) tt.mode = "hidden"; q(".vp-dur").textContent = fmt(dur()); track.setAttribute("aria-valuemax", String(Math.round(dur()))); });
+
+    ["play", "pause", "ended", "volumechange", "loadeddata"].forEach(function (n) { video.addEventListener(n, state); });
+    video.addEventListener("timeupdate", paint);
+    video.addEventListener("progress", paint);
+    video.addEventListener("click", toggle);
+    q(".vp-big").addEventListener("click", function () { video.muted = false; toggle(); });
+    playBtn.addEventListener("click", toggle);
+    muteBtn.addEventListener("click", function () { video.muted = !video.muted; });
+    ccBtn.addEventListener("click", function () { captionsOn = !captionsOn; ccBtn.classList.toggle("on", captionsOn); ccBtn.setAttribute("aria-pressed", String(captionsOn)); drawCue(); });
+    speedBtn.addEventListener("click", function () {
+      var next = speeds[(speeds.indexOf(video.playbackRate) + 1) % speeds.length] || 1;
+      video.playbackRate = next; speedBtn.textContent = next + "×"; speedBtn.setAttribute("aria-label", "Playback speed " + next + "x");
+    });
+    q(".vp-full").addEventListener("click", fullscreen);
+    q(".tl-green").addEventListener("click", fullscreen);
+    q(".tl-red").addEventListener("click", function () { video.pause(); seek(0); frame.classList.remove("started"); cap.textContent = ""; cap.classList.remove("show"); });
+    var yellow = q(".tl-yellow");
+    if (document.pictureInPictureEnabled && video.requestPictureInPicture) {
+      yellow.addEventListener("click", function () {
+        if (document.pictureInPictureElement) document.exitPictureInPicture().catch(function () {});
+        else video.requestPictureInPicture().then(function () { if (video.paused) toggle(); }).catch(function () {});
+      });
+    } else { yellow.setAttribute("aria-label", "Mute"); yellow.title = "mute"; yellow.addEventListener("click", function () { video.muted = !video.muted; }); }
+    chips.forEach(function (c) { c.addEventListener("click", function () { seek(CHAPTERS[+c.getAttribute("data-i")].t + 0.05); if (video.paused) { video.muted = false; toggle(); } }); });
+
+    // scrubbing
+    function ratioFrom(e) { var r = track.getBoundingClientRect(); return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); }
+    track.addEventListener("pointerdown", function (e) {
+      e.preventDefault(); track.classList.add("drag");
+      try { track.setPointerCapture(e.pointerId); } catch (err) {}
+      seek(ratioFrom(e) * dur());
+      function move(ev) { seek(ratioFrom(ev) * dur()); }
+      function up() { track.classList.remove("drag"); track.removeEventListener("pointermove", move); track.removeEventListener("pointerup", up); track.removeEventListener("pointercancel", up); }
+      track.addEventListener("pointermove", move); track.addEventListener("pointerup", up); track.addEventListener("pointercancel", up);
+    });
+    track.addEventListener("pointermove", function (e) {
+      var t = ratioFrom(e) * dur();
+      tip.textContent = fmt(t) + " · " + CHAPTERS[chapterAt(t)].label; tip.style.left = (ratioFrom(e) * 100) + "%";
+    });
+
+    // keys work while focus is inside the player
+    frame.addEventListener("keydown", function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      var k = e.key.toLowerCase(), onTrack = e.target === track, onButton = e.target.tagName === "BUTTON";
+      if ((k === " " && !onButton) || k === "k") { e.preventDefault(); toggle(); }
+      else if (k === "arrowright" || k === "l") { e.preventDefault(); seek(video.currentTime + 5); }
+      else if (k === "arrowleft" || k === "j") { e.preventDefault(); seek(video.currentTime - 5); }
+      else if (k === "home" && onTrack) { e.preventDefault(); seek(0); }
+      else if (k === "m") video.muted = !video.muted;
+      else if (k === "c") ccBtn.click();
+      else if (k === "f") fullscreen();
+      wake();
+    });
+    video.setAttribute("tabindex", "0");
+    ["pointermove", "pointerdown", "focusin"].forEach(function (n) { frame.addEventListener(n, wake); });
+    frame.addEventListener("pointerleave", function () { if (!video.paused) frame.classList.add("idle"); });
+    ["fullscreenchange", "webkitfullscreenchange"].forEach(function (n) { document.addEventListener(n, function () { frame.classList.toggle("is-full", isFull()); }); });
+    state(); paint();
+  }
+
+  // ---------- stickers across the page (same feel as the hero, one theme per section) ----------
+  var SECTION_STICKERS = {
+    shared:    [["tile keep", "📋", "left:0;top:38px;--r:-8deg"], ["tag", "copy → paste → done", "right:0;top:110px;--r:5deg;animation-delay:-2s"], ["spark", "✦", "left:14%;top:150px;animation-delay:-4s"]],
+    how:       [["tile keep", "⚡️", "right:0;top:30px;--r:9deg;animation-delay:-1s"], ["live", "~20 sec ⏱", "left:0;top:96px;--r:-5deg;animation-delay:-3s"], ["kao", "ᕙ(⇀‸↼‶)ᕗ", "right:4%;top:128px"]],
+    connector: [["tile keep", "🔌", "left:0;top:34px;--r:-6deg;animation-delay:-2.5s"], ["stamp", "no code", "right:1%;top:70px;--r:8deg;animation-delay:-1.5s"], ["kao", "(⌐■_■)", "left:3%;top:132px"], ["spark", "✦", "right:16%;top:24px;animation-delay:-5s"]],
+    findings:  [["tile keep", "🐛", "right:0;top:36px;--r:7deg;animation-delay:-3s"], ["stamp", "bug found", "left:0;top:64px;--r:-9deg"], ["tag pink", "tested on 1.0.52", "right:2%;top:134px;--r:-4deg;animation-delay:-2s"]],
+    metrics:   [["tile keep", "📈", "left:0;top:40px;--r:-7deg;animation-delay:-1s"], ["tag blue", "north star ★", "right:0;top:62px;--r:6deg;animation-delay:-3.5s"], ["spark", "✦", "left:12%;top:156px;animation-delay:-2s"]],
+    faq:       [["tile keep", "💬", "right:0;top:26px;--r:8deg;animation-delay:-2s"], ["kao", "(・・?)", "left:4%;top:40px"], ["live", "ask me anything", "left:0;top:78px;--r:-6deg;animation-delay:-4s"]],
+    builder:   [["tile keep", "👋", "left:0;top:30px;--r:-10deg;animation-delay:-1.5s"], ["tag", "AI PM who builds", "right:0;top:44px;--r:6deg;animation-delay:-3s"], ["stamp", "open to remote", "left:1%;top:112px;--r:-5deg;animation-delay:-2.2s"], ["spark", "✦", "right:14%;top:120px;animation-delay:-4.5s"]]
+  };
+  function decorateSections() {
+    Object.keys(SECTION_STICKERS).forEach(function (id) {
+      var sec = document.getElementById(id);
+      if (!sec || sec.querySelector(".sec-sticker")) return;
+      SECTION_STICKERS[id].forEach(function (d) {
+        var kind = d[0], node;
+        if (kind === "kao") node = el("span", { class: "kaomoji sec-sticker", style: d[2], "aria-hidden": "true", text: d[1] });
+        else node = el("span", { class: "sticker sec-sticker " + kind, style: d[2], "aria-hidden": "true", text: d[1] });
+        sec.insertBefore(node, sec.firstChild);
+      });
+    });
+  }
+
   // ---------- draggable stickers ----------
   function enableStickers() {
-    var hero = document.querySelector(".hero");
-    if (!hero) return;
-    hero.querySelectorAll(".sticker.tile, .sticker.tag, .sticker.stamp, .sticker.live").forEach(function (node) {
+    decorateSections();
+    document.querySelectorAll(".sticker.tile, .sticker.tag, .sticker.stamp, .sticker.live").forEach(function (node) {
+      if (node.dataset.drag) return;
+      node.dataset.drag = "1";
       node.addEventListener("pointerdown", function (e) {
+        var area = node.closest(".hero, section");
+        if (!area) return;
         e.preventDefault();
-        var box = hero.getBoundingClientRect(), r = node.getBoundingClientRect();
+        var box = area.getBoundingClientRect(), r = node.getBoundingClientRect();
         var dx = e.clientX - r.left, dy = e.clientY - r.top;
         node.style.right = "auto"; node.style.left = (r.left - box.left) + "px"; node.style.top = (r.top - box.top) + "px";
         node.classList.add("dragging");
@@ -913,12 +1203,21 @@
   })();
 
   // ---------- mohit's radio: off by default, fades down while any video plays with sound ----------
+  // Music: Kevin MacLeod (incompetech.com), CC BY 4.0. Credits are in the footer.
   (function radio() {
     var btn = document.querySelector(".np");
+    var skip = document.querySelector(".np-skip");
+    var toast = document.querySelector(".np-toast");
     var AC = window.AudioContext || window.webkitAudioContext;
-    if (!btn || !AC) { if (btn) btn.hidden = true; return; }
-    var LOOP_SECONDS = 32.542, BASE = 0.6, DUCK = 0.15, FADE = 0.4;
-    var ctx = null, gain = null, on = false, loading = false;
+    if (!btn || !AC) { if (btn) btn.hidden = true; if (skip) skip.hidden = true; return; }
+    var TRACKS = [
+      { file: "radio-hustle", title: "Hustle" },
+      { file: "radio-funky-chunk", title: "Funky Chunk" },
+      { file: "radio-funk-game-loop", title: "Funk Game Loop" }
+    ];
+    var BASE = 0.55, DUCK = 0.15, FADE = 0.4;
+    var ctx = null, gain = null, on = false, loading = false, index = 0, source = null, buffers = {}, toastTimer = null;
+    var aac = document.createElement("audio").canPlayType('audio/mp4; codecs="mp4a.40.2"');
     function mediaWithSound() {
       return Array.prototype.some.call(document.querySelectorAll("video, audio"), function (m) { return !m.paused && !m.muted && m.volume > 0; });
     }
@@ -936,30 +1235,53 @@
       btn.classList.toggle("loading", loading);
       btn.setAttribute("aria-pressed", on ? "true" : "false");
       btn.setAttribute("aria-label", on ? "Pause background music" : "Play background music");
+      btn.title = on ? "Now playing: " + TRACKS[index].title + " by Kevin MacLeod. Click to pause." : "mohit's radio: funk by Kevin MacLeod, off by default";
+      if (skip) skip.hidden = !on;
     }
-    function decode(buffer) {
-      return new Promise(function (resolve, reject) { ctx.decodeAudioData(buffer, resolve, reject); });
+    function say(text) {
+      if (!toast) return;
+      toast.textContent = text; toast.classList.add("show");
+      clearTimeout(toastTimer); toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 3200);
     }
-    function load(url) { return fetch(url).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.arrayBuffer(); }).then(decode); }
-    function start() {
-      ctx = new AC();
-      gain = ctx.createGain(); gain.gain.value = 0; gain.connect(ctx.destination);
+    function decode(buffer) { return new Promise(function (resolve, reject) { ctx.decodeAudioData(buffer, resolve, reject); }); }
+    function fetchDecode(url) { return fetch(url).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.arrayBuffer(); }).then(decode); }
+    function load(i) {
+      var t = TRACKS[i];
+      if (!buffers[t.file]) {
+        var a = "media/" + t.file + ".m4a", b = "media/" + t.file + ".mp3";
+        buffers[t.file] = fetchDecode(aac ? a : b).catch(function () { return fetchDecode(aac ? b : a); });
+        buffers[t.file].catch(function () { delete buffers[t.file]; });
+      }
+      return buffers[t.file];
+    }
+    function play(i) {
+      index = (i + TRACKS.length) % TRACKS.length;
       loading = true; show();
-      var aac = document.createElement("audio").canPlayType('audio/mp4; codecs="mp4a.40.2"');
-      var first = aac ? "media/share-a-clicky-radio.m4a" : "media/share-a-clicky-radio.mp3";
-      var second = aac ? "media/share-a-clicky-radio.mp3" : "media/share-a-clicky-radio.m4a";
-      return load(first).catch(function () { return load(second); }).then(function (buf) {
+      return load(index).then(function (buf) {
+        if (source) { source.onended = null; try { source.stop(); } catch (e) {} }
         var src = ctx.createBufferSource();
-        src.buffer = buf; src.loop = true; src.loopStart = 0; src.loopEnd = Math.min(buf.duration, LOOP_SECONDS);
-        src.connect(gain); src.start();
-        loading = false; on = true; show(); level();
-      }).catch(function () { loading = false; on = false; btn.hidden = true; });
+        src.buffer = buf; src.connect(gain);
+        src.onended = function () { if (src === source) play(index + 1); };
+        source = src; src.start();
+        loading = false; show(); level();
+        say("♪ " + TRACKS[index].title + " · Kevin MacLeod");
+        load((index + 1) % TRACKS.length);
+      }).catch(function () { loading = false; on = false; show(); btn.hidden = true; if (skip) skip.hidden = true; });
     }
     btn.addEventListener("click", function () {
       if (loading) return;
-      if (!ctx) { start(); return; }
+      if (!ctx) {
+        ctx = new AC();
+        gain = ctx.createGain(); gain.gain.value = 0; gain.connect(ctx.destination);
+        on = true; play(0); return;
+      }
       if (on) { on = false; show(); rampTo(0, 0.25); setTimeout(function () { if (!on) ctx.suspend(); }, 300); }
-      else { on = true; show(); ctx.resume().then(level); }
+      else { on = true; show(); ctx.resume().then(level); say("♪ " + TRACKS[index].title + " · Kevin MacLeod"); }
+    });
+    if (skip) skip.addEventListener("click", function () {
+      if (!on || loading) return;
+      rampTo(0, 0.15);
+      setTimeout(function () { play(index + 1); }, 160);
     });
     document.addEventListener("visibilitychange", function () {
       if (!ctx || !on) return;
