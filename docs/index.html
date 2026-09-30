@@ -517,6 +517,54 @@
     .hero-row { align-items: flex-start; }
   }
   @media (prefers-reduced-motion: reduce) { .card, .btn { transition: none; } html { scroll-behavior: auto; } }
+  /* ---- nav on phones and tablets: every link visible, no sideways scrolling ---- */
+  @media (max-width: 1200px) {
+    .mb-links { flex-wrap: wrap; justify-content: center; overflow: visible; margin: 0; padding: 2px 0 4px; row-gap: 2px; }
+    .mb-links a.active { box-shadow: 0 0 0 1px var(--line); }
+  }
+  @media (max-width: 640px) {
+    /* The link rows float just under the top bar, so hiding them never shifts the page. */
+    .menubar .mb-row { padding: 8px 14px; }
+    .mb-links { position: absolute; left: 0; right: 0; top: 100%; font-size: 13.5px; padding: 4px 10px 7px; gap: 2px 0;
+      background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: saturate(1.6) blur(14px); -webkit-backdrop-filter: saturate(1.6) blur(14px);
+      border-bottom: 1px solid var(--line); transition: transform .25s ease, opacity .2s ease; }
+    .mb-links a { padding: 4px 9px; }
+    .menubar.tuck .mb-links { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+    .wrap { padding-top: 58px; }
+    section[id], #demo { scroll-margin-top: 116px; }
+  }
+  @media (max-width: 640px) and (prefers-reduced-motion: reduce) { .mb-links { transition: none; } }
+
+  /* ---- "is the bet working?": journey to the north star ---- */
+  .measure { max-width: 980px; margin: 0 auto; }
+  .journey { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; position: relative; }
+  .journey::before { content: ""; position: absolute; top: 28px; left: 10%; right: 10%; border-top: 2px dashed var(--text-3); opacity: .35; }
+  .journey li { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+  .journey .dot { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-size: 24px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-sm); position: relative; z-index: 1; }
+  .journey b { display: block; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; text-wrap: balance; }
+  .journey small { display: inline-block; margin-top: 6px; font-size: 12.5px; font-weight: 600; line-height: 1.25; padding: 4px 9px; border-radius: 999px; }
+  .journey .drop small { background: rgba(232,116,74,.16); color: var(--text); }
+  .journey .north .dot { background: var(--sun); border-color: transparent; box-shadow: 0 0 0 6px rgba(242,193,78,.28); }
+  .journey .north small { background: rgba(242,193,78,.28); color: var(--text); }
+  .journey .sub-note { display: block; font-style: normal; font-size: 13px; color: var(--text-2); margin-top: 5px; }
+  .watch { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 28px; }
+  .watch > div { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow-sm); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .watch h3 { flex-basis: 100%; margin: 0 0 2px; font: 500 12.5px/1.2 var(--mono); color: var(--text-2); }
+  .watch span { font-size: 14px; padding: 6px 11px; border-radius: 999px; background: var(--surface-2); }
+  .measure .fine { text-align: center; font-size: 13.5px; color: var(--text-2); margin: 16px 0 0; }
+  @media (max-width: 760px) {
+    .journey { grid-template-columns: 1fr; gap: 0; max-width: 420px; margin: 0 auto; }
+    .journey::before { top: 36px; bottom: 36px; left: 27px; right: auto; border-top: 0; border-left: 2px dashed var(--text-3); }
+    .journey li { flex-direction: row; text-align: left; gap: 14px; padding: 8px 0; }
+    .journey .dot { flex: none; }
+    .journey b { text-wrap: pretty; }
+    .journey small { margin-top: 4px; }
+    .watch { grid-template-columns: 1fr; max-width: 420px; margin-inline: auto; }
+  }
+
+  /* ---- no one-word last lines (with keepLastWordsTogether in the script as a fallback) ---- */
+  p, li, dd, dt, blockquote, figcaption, summary, footer span, .finding span, .idea-card span, .step span, .metric span, .tldr span, .flow-note { text-wrap: pretty; }
+  h1, h2, h3, .kicker, .sub, .rotator, .section-head p, .faq summary, .ask, .by, .card p, .tldr span, .btn { text-wrap: balance; }
 </style>
 </head>
 <body>
@@ -582,6 +630,32 @@
   function normalizeSlug(value) {
     return String(value || "").trim().toLowerCase()
       .replace(/[ _‐-―−]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+  }
+
+  // Glue the last two words of every text block with a no-break space, so a line never ends
+  // with one word on its own. Works in every browser; CSS text-wrap only helps where supported.
+  // Skips anything people copy (connector URL, setup text) so copied text stays exact.
+  var NO_GLUE = "textarea, .code, .term-body, script, style, svg, .marquee, .vp-cap, .np-toast, .sticker, .drag-hint, .kaomoji, #tiles, noscript";
+  function keepLastWordsTogether(root) {
+    var blocks = (root || document.body).querySelectorAll("p, li, dd, dt, h1, h2, h3, summary, figcaption, blockquote, .kicker, .ask, .rotator, a.btn, footer span, .finding span, .idea-card span, .step span, .metric span, .tldr span, .journey b, .journey small, .journey .sub-note, .watch span");
+    Array.prototype.forEach.call(blocks, function (block) {
+      if (block.closest(NO_GLUE)) return;
+      var texts = [], walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, null);
+      while (walker.nextNode()) { if (!walker.currentNode.parentElement.closest(NO_GLUE)) texts.push(walker.currentNode); }
+      for (var i = texts.length - 1; i >= 0; i--) {
+        var t = texts[i], value = t.nodeValue, trimmed = value.replace(/\s+$/, "");
+        if (!trimmed) continue;
+        var at = trimmed.search(/[ \t\n]+\S+$/);
+        if (at > 0) { t.nodeValue = trimmed.slice(0, at) + "\u00a0" + trimmed.slice(at).replace(/^[ \t\n]+/, "") + value.slice(trimmed.length); return; }
+        // the last node is one word (e.g. inside <b> or <mark>): glue the space before it instead
+        for (var j = i - 1; j >= 0; j--) {
+          var before = texts[j].nodeValue;
+          if (/[ \t\n]+$/.test(before)) { texts[j].nodeValue = before.replace(/[ \t\n]+$/, "\u00a0"); return; }
+          if (before.trim()) return;
+        }
+        return;
+      }
+    });
   }
 
   function requestedValue() {
@@ -765,17 +839,23 @@
         ])
       ]),
 
-      // ---- metrics ----
+      // ---- metrics: the journey to a Clicky that sticks, then what else to watch ----
       el("section", { id: "metrics" }, [
-        sectionHead("how I'd measure it", "is the bet working?", "The north star is shared Clickys still running a week after install, compared with Clickys made in onboarding. These five steps feed it."),
-        el("div", { class: "flow" }, [
-          metric("Views to copies", "Does the page make people want it?", 100),
-          metric("Copies to created", "Does the paste into New Clicky work?", 82),
-          metric("Created to routine on", "The separate step I hit in testing. Likely the biggest drop.", 64),
-          metric("Invite signups", "New users per shared Clicky.", 46),
-          metric("Free to Pro", "Upgrades within 14 days of a “needs Pro” install.", 30)
-        ]),
-        el("p", { class: "flow-note reveal", text: "Guardrails: surprise agent-limit hits go down, and few shared Clickys get archived or reported in week one. Tracking needs one small tag on each new Clicky saying it came from a share. No real data yet, this is the plan." })
+        sectionHead("how I'd measure it", "is the bet working?"),
+        el("div", { class: "measure reveal" }, [
+          el("ol", { class: "journey", "aria-label": "From a shared page to a Clicky that sticks" }, [
+            journeyStep("👀", "Sees a shared Clicky"),
+            journeyStep("📋", "Copies the setup"),
+            journeyStep("✨", "Creates the Clicky"),
+            journeyStep("⏰", "Turns on its routine", "likely the biggest drop", "drop"),
+            journeyStep("⭐", "Still running on day 7", "north star", "north", "vs Clickys made in onboarding")
+          ]),
+          el("div", { class: "watch" }, [
+            el("div", {}, [el("h3", { text: "also track" }), el("span", { text: "Invite signups per share" }), el("span", { text: "Free → Pro within 14 days" })]),
+            el("div", {}, [el("h3", { text: "guardrails, keep low" }), el("span", { text: "Surprise limit hits" }), el("span", { text: "Reported or archived in week 1" })])
+          ]),
+          el("p", { class: "fine", text: "No real data yet. Tracking needs one “installed from a share” tag." })
+        ])
       ]),
 
       // ---- faq ----
@@ -820,12 +900,19 @@
 
     var words = ["job hunting", "email follow-ups", "a weekly recap"], wi = 0;
     if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setInterval(function () { wi = (wi + 1) % words.length; var b = el("b", { text: words[wi] }); rotating.replaceWith(b); rotating = b; }, 2400);
+      setInterval(function () { wi = (wi + 1) % words.length; var b = el("b", { text: words[wi].replace(/ (\S+)$/, "\u00a0$1") }); rotating.replaceWith(b); rotating = b; }, 2400);
     }
     setupReveal();
     enableStickers();
     enablePlayer();
     trackSections();
+  }
+
+  function journeyStep(icon, title, note, kind, sub) {
+    return el("li", { class: kind || "" }, [
+      el("span", { class: "dot", "aria-hidden": "true", text: icon }),
+      el("div", {}, [el("b", { text: title }), note ? el("small", { text: note }) : null, sub ? el("i", { class: "sub-note", text: sub }) : null])
+    ]);
   }
 
   function metric(title, why, width) {
@@ -943,6 +1030,7 @@
   }
 
   function renderLoadError() {
+    setTimeout(function () { keepLastWordsTogether(app); }, 0);
     app.replaceChildren(
       el("div", { class: "hero" }, [
         el("h1", { text: "Couldn't load shared Clickys" }),
@@ -955,9 +1043,11 @@
     if (data.repo_url) document.getElementById("repo-link").href = data.repo_url;
     var requested = requestedValue();
     var wanted = normalizeSlug(requested);
-    if (!wanted) return renderGallery(data);
-    var clicky = data.clickys.find(function (c) { return c.slug === wanted || normalizeSlug(c.name) === wanted; });
-    return clicky ? renderClicky(data, clicky) : renderNotFound(data, requested);
+    var clicky = wanted && data.clickys.find(function (c) { return c.slug === wanted || normalizeSlug(c.name) === wanted; });
+    if (!wanted) renderGallery(data);
+    else if (clicky) renderClicky(data, clicky);
+    else renderNotFound(data, requested);
+    keepLastWordsTogether(app);
   }
 
   function scrollToHash() {
@@ -1225,11 +1315,26 @@
         if (!e.isIntersecting) return;
         links.forEach(function (a) { a.classList.remove("active"); a.removeAttribute("aria-current"); });
         var a = byId[e.target.id];
-        if (a) { a.classList.add("active"); a.setAttribute("aria-current", "true"); if (window.innerWidth <= 1200) a.parentNode.scrollLeft = a.offsetLeft - 40; }
+        if (a) { a.classList.add("active"); a.setAttribute("aria-current", "true"); }
       });
     }, { rootMargin: "-45% 0px -50% 0px" });
     Object.keys(byId).forEach(function (id) { var sec = document.getElementById(id); if (sec) io.observe(sec); });
   }
+
+  // ---------- phones: the nav rows slide away while scrolling down, back on any scroll up ----------
+  (function tuckNav() {
+    var bar = document.querySelector(".menubar"), small = window.matchMedia("(max-width: 640px)");
+    if (!bar) return;
+    var lastY = window.scrollY;
+    window.addEventListener("scroll", function () {
+      var y = window.scrollY, moved = y - lastY;
+      if (y < 80) { bar.classList.remove("tuck"); lastY = y; return; }
+      if (Math.abs(moved) < 12) return;
+      bar.classList.toggle("tuck", small.matches && moved > 0);
+      lastY = y;
+    }, { passive: true });
+    bar.addEventListener("focusin", function () { bar.classList.remove("tuck"); });
+  })();
 
   // ---------- mohit's radio: off by default, ducks while any video plays with sound ----------
   // Music: Kevin MacLeod (incompetech.com), CC BY 4.0. Credits are in the footer.
@@ -1489,6 +1594,7 @@
     io.observe(svg);
   })();
 
+  keepLastWordsTogether(document.querySelector("footer"));
   fetch("clickys.json", { cache: "no-cache" })
     .then(function (response) {
       if (!response.ok) throw new Error("HTTP " + response.status);

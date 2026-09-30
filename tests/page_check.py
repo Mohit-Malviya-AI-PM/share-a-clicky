@@ -13,6 +13,16 @@ import sys
 import tempfile
 import threading
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from webfonts import route_fonts  # noqa: E402
+
+def txt(page, selector):
+    """Visible text with no-break spaces read as normal spaces (the page glues last words together)."""
+    return page.inner_text(selector).replace("\u00a0", " ")
+
+
+WIDOWS_JS = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "widows.js")).read()
+
 try:
     from playwright.sync_api import sync_playwright
 except ImportError:
@@ -102,6 +112,7 @@ def main():
         for scheme in ("light", "dark"):
             for label, viewport in (("desktop", {"width": 1280, "height": 900}), ("phone", {"width": 390, "height": 844})):
                 context = browser.new_context(viewport=viewport, color_scheme=scheme)
+                route_fonts(context)
                 context.grant_permissions(["clipboard-read", "clipboard-write"], origin=base.rstrip("/"))
                 page = context.new_page()
                 errors = []
@@ -140,7 +151,7 @@ def main():
                       and page.locator("#demo .vp-chip").count() >= 5)
                 check(f"radio skip button hidden until music plays [{tag}]", page.evaluate("document.querySelector('.np-skip').hidden"))
                 check(f"radio previous button hidden until music plays [{tag}]", page.evaluate("document.querySelector('.np-prev').hidden"))
-                check(f"music credit in the footer [{tag}]", "Kevin MacLeod" in page.inner_text("footer") and "creativecommons.org/licenses/by/4.0" in page.inner_html("footer"))
+                check(f"music credit in the footer [{tag}]", "Kevin MacLeod" in txt(page, "footer") and "creativecommons.org/licenses/by/4.0" in page.inner_html("footer"))
                 if new_layout:
                     check(f"v2: stickers only in the hero [{tag}]", page.locator("section .sec-sticker").count() == 0)
                     check(f"v2: 6 nav links [{tag}]", page.locator(".mb-links a").count() == 6)
@@ -156,22 +167,36 @@ def main():
                 else:
                     check(f"every section has stickers [{tag}]", page.evaluate("['shared','how','connector','findings','metrics','faq','builder'].every(id => document.querySelector('#' + id + ' .sec-sticker'))"))
                 check(f"footer tile wordmark drawn [{tag}]", page.locator("#tiles rect").count() > 100)
+                page.evaluate("document.fonts.ready")
+                widows = page.evaluate(WIDOWS_JS)
+                check(f"no one-word last lines on the gallery [{tag}] {widows[:3]}", not widows)
+                if not new_layout:
+                    check(f"metrics is a 5-step journey ending in the north star [{tag}]",
+                          page.locator("#metrics .journey li").count() == 5 and page.locator("#metrics .journey li.north").count() == 1
+                          and page.locator("#metrics .metric, #metrics .flow").count() == 0 and page.locator("#metrics .watch > div").count() == 2)
+                    check(f"metrics stays short (under 90 words incl. emoji and heading, was 126) [{tag}]", len(txt(page, "#metrics").split()) < 90)
+                nav_fits = page.evaluate("""[...document.querySelectorAll('.mb-links a')].every(a => { const r = a.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.width > 0; })
+                    && document.querySelector('.mb-links').scrollWidth <= document.querySelector('.mb-links').clientWidth + 1""")
+                check(f"every nav link is on screen, no sideways scroll [{tag}]", nav_fits)
                 if shots:
                     page.screenshot(path=os.path.join(shots, f"gallery-{scheme}-{label}.png"), full_page=True)
 
                 clicky = data["clickys"][0]
                 page.goto(home + "?c=" + clicky["slug"])
                 page.wait_for_selector("h1")
-                body = page.inner_text("body")
+                body = txt(page, "body")
                 for part in (clicky["name"], clicky["routine"]["label"], clicky["shared_by"],
                              str(clicky["estimated_agent_messages_per_month"])):
                     check(f"A2 detail shows '{part}' [{tag}]", part in body)
                 check(f"A2 setup box holds exact setup [{tag}]", page.input_value("textarea.setup") == clicky["setup_text"])
+                page.evaluate("document.fonts.ready")
+                widows = page.evaluate(WIDOWS_JS)
+                check(f"no one-word last lines on the detail page [{tag}] {widows[:3]}", not widows)
                 page.click("button:has-text('Copy setup')")
                 page.wait_for_function("document.querySelector('.status').textContent.length > 0")
                 clipboard = page.evaluate("navigator.clipboard.readText()")
                 check(f"A4 clipboard gets exact setup [{tag}]", clipboard == clicky["setup_text"])
-                check(f"A4 copy confirms [{tag}]", "Copied" in page.inner_text(".status"))
+                check(f"A4 copy confirms [{tag}]", "Copied" in txt(page, ".status"))
                 no_scroll = page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
                 check(f"A5 no horizontal scroll on detail [{tag}]", no_scroll)
                 button_height = page.locator("button:has-text('Copy setup')").bounding_box()["height"]
@@ -192,7 +217,7 @@ def main():
 
                 page.goto(home + "?c=" + clicky["name"].replace(" ", "%20"))
                 page.wait_for_selector("h1")
-                check(f"name in URL resolves like the connector [{tag}]", page.inner_text("h1") == clicky["name"])
+                check(f"name in URL resolves like the connector [{tag}]", txt(page, "h1") == clicky["name"])
 
                 page.goto(home + "?c=" + "x" * 90)
                 page.wait_for_selector("h1")
@@ -201,7 +226,7 @@ def main():
 
                 page.goto(home + "?c=does-not-exist")
                 page.wait_for_selector("h1")
-                check(f"A3 unknown slug shows not found [{tag}]", "No shared Clicky called" in page.inner_text("h1"))
+                check(f"A3 unknown slug shows not found [{tag}]", "No shared Clicky called" in txt(page, "h1"))
                 check(f"A3 link back to gallery [{tag}]", page.locator("a.btn[href='./']").count() == 1)
 
                 check(f"no console errors [{tag}]", not errors)
@@ -211,7 +236,7 @@ def main():
         page = context.new_page()
         page.goto(broken_base + PAGE)
         page.wait_for_selector("h1")
-        check("load error state when data missing", "Couldn't load" in page.inner_text("h1"))
+        check("load error state when data missing", "Couldn't load" in txt(page, "h1"))
         context.close()
 
         context = browser.new_context(viewport={"width": 1280, "height": 900})
@@ -222,7 +247,7 @@ def main():
         page.click("button:has-text('Copy setup')")
         selected = page.evaluate("window.getSelection().toString() || (document.activeElement && document.activeElement.value.substring(document.activeElement.selectionStart, document.activeElement.selectionEnd))")
         check("A4 fallback selects setup text when clipboard unavailable", selected == data["clickys"][0]["setup_text"])
-        check("A4 fallback tells user to press Cmd+C", "press ⌘C" in page.inner_text(".status"))
+        check("A4 fallback tells user to press Cmd+C", "press ⌘C" in txt(page, ".status"))
         check("A4 fallback styled as a warning", "warn" in page.get_attribute(".status", "class"))
         page.goto(home)
         page.wait_for_selector("#connector button")
@@ -238,7 +263,27 @@ def main():
             page.goto(base + "c/" + clicky["slug"] + "/")
             page.wait_for_url("**/?c=" + clicky["slug"])
             page.wait_for_selector("h1")
-            check(f"share link /c/{clicky['slug']}/ forwards to its detail view", page.inner_text("h1") == clicky["name"])
+            check(f"share link /c/{clicky['slug']}/ forwards to its detail view", txt(page, "h1") == clicky["name"])
+            context.close()
+        # Phone sizes: nav fits at every common width, and slides away / back while scrolling.
+        for width in (320, 360, 375, 390, 393, 402, 414, 430):
+            context = browser.new_context(viewport={"width": width, "height": 800}, is_mobile=True, has_touch=True)
+            route_fonts(context)
+            page = context.new_page()
+            page.goto(home)
+            page.wait_for_selector(".card")
+            page.evaluate("document.fonts.ready")
+            fits = page.evaluate("""[...document.querySelectorAll('.mb-links a')].every(a => { const r = a.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth; })""")
+            covers = page.evaluate("""(() => { const nav = document.querySelector('.mb-links').getBoundingClientRect(); const k = document.querySelector('.kicker').getBoundingClientRect(); return k.top >= nav.bottom; })()""")
+            widows = page.evaluate(WIDOWS_JS)
+            check(f"phone {width}px: all 8 nav links on screen, none hides the page top, no one-word lines {widows[:2]}", fits and covers and not widows)
+            if width == 390:
+                for y in (1500, 1900):
+                    page.evaluate(f"window.scrollTo({{top: {y}, behavior: 'instant'}})"); page.wait_for_timeout(300)
+                tucked = page.evaluate("document.querySelector('.menubar').classList.contains('tuck')")
+                page.evaluate("window.scrollTo({top: 1700, behavior: 'instant'})"); page.wait_for_timeout(300)
+                back = not page.evaluate("document.querySelector('.menubar').classList.contains('tuck')")
+                check("phone: nav rows slide away scrolling down and come back scrolling up", tucked and back)
             context.close()
         browser.close()
 
