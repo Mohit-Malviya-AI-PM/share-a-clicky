@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>share-a-clicky</title>
+<meta name="description" content="Unofficial prototype, not affiliated with HeyClicky. Start with a Clicky that already works: copy a friend's setup, paste it into New Clicky.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="share-a-clicky: start with a Clicky that already works">
+<meta property="og:description" content="Unofficial prototype, not affiliated with HeyClicky. Built and tested live on HeyClicky 1.0.52.">
+<meta property="og:image" content="https://mohit-malviya-ai-pm.github.io/share-a-clicky/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../img/logo.svg" type="image/svg+xml">
+<link rel="icon" href="../img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Caveat:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbfaf8;
+    --surface: #ffffff;
+    --surface-2: #f3f2ef;
+    --text: #141416;
+    --text-2: #45454c;
+    --text-3: #6b6b73;
+    --line: rgba(20, 20, 30, 0.09);
+    --line-2: rgba(20, 20, 30, 0.16);
+    --accent: #0a5fe0;
+    --accent-soft: #e8f0fd;
+    --accent-ink: #ffffff;
+    --mark: #ffe9a8;
+    --ok: #177245;
+    --ok-soft: #e6f4ec;
+    --bad: #b42318;
+    --bad-soft: #fdecea;
+    --warn: #9a4a06;
+    --warn-soft: #fdf1e3;
+    --code-bg: #16161a;
+    --code-text: #e9e9ee;
+    --code-dim: #9a9aa6;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 10px 30px -16px rgba(20,20,40,.22);
+    --radius: 14px;
+    --mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111113; --surface: #1a1a1d; --surface-2: #222226; --text: #f2f2f4; --text-2: #c4c4cc; --text-3: #9d9da8;
+      --line: rgba(255,255,255,.09); --line-2: rgba(255,255,255,.17); --accent: #5b9dff; --accent-soft: #16243b; --accent-ink: #0b0b0d;
+      --mark: #5a4a12; --ok: #5bd394; --ok-soft: #15291f; --bad: #ff8a80; --bad-soft: #321a19; --warn: #f3b26b; --warn-soft: #2e2214;
+      --code-bg: #0b0b0d; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 30px -16px rgba(0,0,0,.6); color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111113; --surface: #1a1a1d; --surface-2: #222226; --text: #f2f2f4; --text-2: #c4c4cc; --text-3: #9d9da8;
+    --line: rgba(255,255,255,.09); --line-2: rgba(255,255,255,.17); --accent: #5b9dff; --accent-soft: #16243b; --accent-ink: #0b0b0d;
+    --mark: #5a4a12; --ok: #5bd394; --ok-soft: #15291f; --bad: #ff8a80; --bad-soft: #321a19; --warn: #f3b26b; --warn-soft: #2e2214;
+    --code-bg: #0b0b0d; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 30px -16px rgba(0,0,0,.6); color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 72px; -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 400 16px/1.65 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  p, li, h1, h2, h3, dd, summary, figcaption { text-wrap: pretty; }
+  h1, h2, h3 { text-wrap: balance; }
+  code, .mono { font-family: var(--mono); font-size: .88em; }
+  :not(pre) > code { background: var(--surface-2); border: 1px solid var(--line); padding: 1px 6px; border-radius: 6px; white-space: nowrap; }
+  mark { background: var(--mark); color: inherit; padding: 0 .15em; border-radius: 3px; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* top bar */
+  .bar { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: saturate(1.4) blur(12px); -webkit-backdrop-filter: saturate(1.4) blur(12px); border-bottom: 1px solid var(--line); }
+  .bar-in { max-width: 1120px; margin: 0 auto; padding: 0 20px; height: 56px; display: flex; align-items: center; gap: 18px; }
+  .wordmark { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: var(--text); text-decoration: none; letter-spacing: -.01em; white-space: nowrap; }
+  .wordmark svg { width: 24px; height: 24px; }
+  .nav { display: flex; gap: 2px; margin: 0 auto; }
+  .nav a { color: var(--text-3); text-decoration: none; font-size: 14px; padding: 6px 10px; border-radius: 8px; white-space: nowrap; }
+  .nav a:hover { color: var(--text); background: var(--surface-2); }
+  .nav a.on { color: var(--text); font-weight: 600; }
+  .bar-right { display: flex; align-items: center; gap: 8px; }
+  .icon-btn { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--text); text-decoration: none; }
+  .icon-btn svg { width: 17px; height: 17px; }
+  .talk { background: var(--text); color: var(--bg); text-decoration: none; font-size: 14px; font-weight: 600; padding: 7px 14px; border-radius: 999px; white-space: nowrap; }
+  .menu-btn { display: none; }
+  .menu-panel { display: none; }
+  @media (max-width: 900px) {
+    .nav { display: none; }
+    .bar-right { margin-left: auto; }
+    .menu-btn { display: inline-grid; }
+    .menu-panel { display: none; border-top: 1px solid var(--line); padding: 10px 16px 14px; background: var(--bg); }
+    .menu-panel.open { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+    .menu-panel a { color: var(--text); text-decoration: none; padding: 10px 12px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); font-size: 15px; }
+  }
+  @media (max-width: 400px) { .talk { display: none; } }
+
+  /* layout */
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+  .wide { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+  section { padding: 72px 0 8px; }
+  .rule { max-width: 720px; margin: 0 auto; border: 0; border-top: 1px solid var(--line); }
+  .eyebrow { display: flex; align-items: center; gap: 10px; font: 500 12.5px/1 var(--mono); color: var(--text-3); letter-spacing: .02em; text-transform: lowercase; margin: 0 0 14px; }
+  .eyebrow .n { color: var(--accent); }
+  h2 { font-size: clamp(26px, 4vw, 34px); line-height: 1.15; letter-spacing: -.02em; margin: 0 0 12px; font-weight: 700; }
+  h3 { font-size: 18px; line-height: 1.3; letter-spacing: -.01em; margin: 0 0 6px; font-weight: 650; }
+  .lede { font-size: 17.5px; color: var(--text-2); margin: 0 0 8px; }
+  .muted { color: var(--text-3); }
+  .small { font-size: 14px; }
+
+  /* hero */
+  .hero { padding-top: 64px; padding-bottom: 24px; }
+  .kicker { display: inline-flex; align-items: center; gap: 8px; font: 500 13px/1.3 var(--mono); color: var(--text-3); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
+  @media (max-width: 480px) { .k-long { display: none; } }
+  .kicker i { width: 7px; height: 7px; border-radius: 50%; background: #22a861; box-shadow: 0 0 0 3px color-mix(in srgb, #22a861 22%, transparent); flex: none; }
+  .hero h1 { font-size: clamp(38px, 7vw, 60px); line-height: 1.03; letter-spacing: -.035em; margin: 20px 0 16px; font-weight: 700; }
+  .hero h1 mark { background: linear-gradient(transparent 58%, var(--mark) 58%); padding: 0; }
+  .hero .lede { font-size: 19px; max-width: 600px; }
+  .byline { display: flex; align-items: center; gap: 10px; margin: 18px 0 24px; color: var(--text-3); font-size: 14.5px; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 700 12px/1 var(--sans); color: #6b3a00; background: linear-gradient(135deg, #ffd9a0, #f7a86b); flex: none; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-2); background: var(--surface); color: var(--text); padding: 10px 16px; border-radius: 11px; font-weight: 600; font-size: 15px; text-decoration: none; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn.small { padding: 7px 12px; font-size: 14px; border-radius: 9px; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .proof { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; margin: 36px 0 0; }
+  .proof div { background: var(--surface); padding: 14px 16px; }
+  .proof b { display: block; font-size: 15px; letter-spacing: -.01em; }
+  .proof span { font-size: 13.5px; color: var(--text-3); }
+  @media (max-width: 620px) { .proof { grid-template-columns: 1fr; } }
+
+  /* demo */
+  .demo { margin: 40px auto 0; }
+  .window { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
+  .window-top span:last-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .window-top { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); font: 500 12.5px/1 var(--mono); color: var(--text-3); }
+  .dots { display: flex; gap: 6px; }
+  .dots i { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; }
+  .dots i:nth-child(2) { background: #febc2e; } .dots i:nth-child(3) { background: #28c840; }
+  .demo video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #0b0b0d; }
+  .chapters { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 14px; border-top: 1px solid var(--line); align-items: center; }
+  .chapters .lbl { font: 500 12.5px/1 var(--mono); color: var(--text-3); margin-right: 4px; }
+  .chip { border: 1px solid var(--line); background: var(--surface-2); border-radius: 999px; padding: 5px 10px; font-size: 13px; color: var(--text-2); }
+  .chip b { font-family: var(--mono); font-weight: 500; color: var(--text-3); margin-right: 4px; }
+  .chip:hover { border-color: var(--line-2); color: var(--text); }
+
+  /* build log */
+  .log { margin: 56px auto 0; }
+  .log-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
+  .log-head p { margin: 0; font-size: 14px; color: var(--text-3); }
+  .log-row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(250px, 1fr); gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 2px 16px; }
+  .note { scroll-snap-align: start; position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 16px 14px 20px; box-shadow: var(--shadow);
+    background-image: repeating-linear-gradient(transparent 0 25px, color-mix(in srgb, var(--accent) 9%, transparent) 25px 26px); background-position: 0 44px; }
+  .note::before { content: ""; position: absolute; left: 10px; top: 0; bottom: 0; width: 1px; background: color-mix(in srgb, #e5484d 35%, transparent); }
+  .note .when { font: 500 12px/1 var(--mono); color: var(--text-3); margin: 0 0 10px; display: flex; justify-content: space-between; }
+  .note .when b { color: var(--accent); font-weight: 500; }
+  .note h3 { font-size: 15.5px; margin: 0 0 4px; }
+  .note p { margin: 0; font-size: 14px; line-height: 26px; color: var(--text-2); }
+  .note .tag { display: inline-block; margin-top: 8px; font: 500 11.5px/1 var(--mono); padding: 4px 7px; border-radius: 6px; background: var(--surface-2); color: var(--text-3); }
+  .note .tag.drop { background: var(--bad-soft); color: var(--bad); }
+  .note .tag.keep { background: var(--ok-soft); color: var(--ok); }
+
+  /* why */
+  .callout { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 14px 18px; border-radius: 0 12px 12px 0; font-weight: 600; margin: 22px 0 0; }
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 22px 0 0; }
+  .fact { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  .fact b { display: block; font-size: 22px; letter-spacing: -.02em; }
+  .fact span { font-size: 13.5px; color: var(--text-3); line-height: 1.45; display: block; }
+  @media (max-width: 620px) { .facts { grid-template-columns: 1fr; } }
+
+  /* findings */
+  .group-lbl { font: 500 12.5px/1 var(--mono); color: var(--text-3); margin: 30px 0 12px; display: flex; align-items: center; gap: 10px; }
+  .group-lbl::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .finding { display: grid; grid-template-columns: 34px 1fr; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .finding:last-child { border-bottom: 0; }
+  .fid { font: 500 12.5px/1 var(--mono); width: 34px; height: 26px; border-radius: 7px; display: grid; place-items: center; background: var(--surface-2); color: var(--text-2); border: 1px solid var(--line); }
+  .finding.live .fid { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+  .finding p { margin: 0; color: var(--text-2); font-size: 15.5px; }
+  .finding h3 { font-size: 16.5px; margin: 0 0 3px; }
+  .src { font: 500 12px/1 var(--mono); color: var(--text-3); margin-top: 6px; display: inline-block; }
+
+  /* decisions */
+  .decision { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; margin: 14px 0 0; }
+  .decision .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .decision .top span { font: 500 12px/1 var(--mono); color: var(--accent); }
+  .because { font: 500 12px/1 var(--mono); color: var(--text-3); white-space: nowrap; }
+  .because a { color: var(--text-2); text-decoration: none; border-bottom: 1px dotted var(--line-2); }
+  .decision p { margin: 0; color: var(--text-2); font-size: 15.5px; }
+
+  /* try */
+  .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 22px 0 0; }
+  @media (max-width: 860px) { .gallery { grid-template-columns: 1fr; } }
+  .cl { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .cl-top { display: flex; align-items: center; gap: 10px; }
+  .cl-emoji { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; font-size: 21px; background: var(--surface-2); flex: none; }
+  .cl h3 { margin: 0; font-size: 16.5px; }
+  .cl .by { font-size: 12.5px; color: var(--text-3); }
+  .cl p { margin: 0; font-size: 14.5px; color: var(--text-2); }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tg { font-size: 12.5px; padding: 3px 8px; border-radius: 999px; background: var(--surface-2); color: var(--text-2); border: 1px solid var(--line); }
+  .tg.pro { background: var(--warn-soft); color: var(--warn); border-color: transparent; font-weight: 600; }
+  .tg.ex { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .meter { font-size: 12.5px; color: var(--text-3); }
+  .meter .track { position: relative; height: 6px; border-radius: 99px; background: var(--surface-2); margin: 5px 0 3px; overflow: visible; }
+  .meter .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 99px; background: var(--accent); }
+  .meter .fill.over { background: #e0892b; }
+  .meter .free { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text-3); border-radius: 2px; }
+  .cl details { border-top: 1px solid var(--line); padding-top: 10px; margin-top: auto; }
+  .cl summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text); list-style: none; display: flex; justify-content: space-between; }
+  .cl summary::-webkit-details-marker { display: none; }
+  .cl summary::after { content: "+"; color: var(--text-3); font-weight: 400; }
+  .cl details[open] summary::after { content: "–"; }
+  .setup { width: 100%; min-height: 190px; margin: 10px 0 8px; font: 12.5px/1.55 var(--mono); color: var(--text-2); background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px; resize: vertical; }
+  .cl .acts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .status { font-size: 13px; color: var(--ok); min-height: 1em; }
+  .status.warn { color: var(--warn); }
+
+  .steps3 { counter-reset: s; list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 10px; }
+  .steps3 li { counter-increment: s; display: grid; grid-template-columns: 28px 1fr; gap: 12px; align-items: start; color: var(--text-2); font-size: 15.5px; }
+  .steps3 li::before { content: counter(s); width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 600 13px/1 var(--sans); background: var(--surface); border: 1px solid var(--line-2); color: var(--text); }
+  .path { display: inline-flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+  .path span { background: var(--surface); border: 1px solid var(--line); border-radius: 7px; padding: 1px 8px; font-size: 14px; color: var(--text); }
+  .urlbox { display: flex; gap: 8px; align-items: center; background: var(--code-bg); color: var(--code-text); border-radius: 11px; padding: 8px 8px 8px 14px; margin-top: 8px; }
+  .urlbox code { background: none; border: 0; padding: 0; color: var(--code-text); white-space: normal; word-break: break-all; flex: 1; font-size: 13.5px; }
+  .urlbox .btn { background: #fff; color: #111; border-color: #fff; flex: none; }
+
+  /* playground */
+  .play { margin: 28px 0 0; }
+  .play-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .play-head .t { font: 500 12.5px/1 var(--mono); color: var(--text-3); }
+  .seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+  .seg button { border: 0; background: none; padding: 6px 12px; border-radius: 8px; font-size: 13.5px; color: var(--text-3); font-weight: 500; }
+  .seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 2px rgba(0,0,0,.08); font-weight: 600; }
+  .chat { padding: 16px; display: flex; flex-direction: column; gap: 12px; min-height: 250px; max-height: 460px; overflow-y: auto; background: var(--bg); }
+  .msg { max-width: 88%; padding: 10px 13px; border-radius: 14px; font-size: 14.5px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+  .msg.me { align-self: flex-end; background: var(--accent); color: var(--accent-ink); border-bottom-right-radius: 4px; }
+  .msg.bot { align-self: flex-start; background: var(--surface); border: 1px solid var(--line); border-bottom-left-radius: 4px; color: var(--text-2); }
+  .msg.bot.err { background: var(--bad-soft); border-color: transparent; color: var(--bad); }
+  .msg .meta { display: block; margin-top: 6px; font: 500 11.5px/1.3 var(--mono); color: var(--text-3); }
+  .msg.err .meta { color: var(--bad); opacity: .85; }
+  .msg.sys { align-self: center; background: none; color: var(--text-3); font: 500 12px/1.4 var(--mono); padding: 2px; text-align: center; }
+  .typing { display: inline-flex; gap: 4px; }
+  .typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--text-3); animation: blink 1s infinite; }
+  .typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+  @keyframes blink { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+  .play-foot { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 14px; border-top: 1px solid var(--line); align-items: center; }
+  .play-foot .hint { font-size: 13px; color: var(--text-3); margin-left: auto; }
+  figure { margin: 22px 0 0; }
+  figure img { display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); }
+  figcaption { font-size: 13.5px; color: var(--text-3); margin-top: 8px; }
+
+  /* measure */
+  .journey { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin: 24px 0 0; position: relative; }
+  .journey::before { content: ""; position: absolute; left: 10%; right: 10%; top: 22px; height: 2px; background: var(--line-2); }
+  .jstep { position: relative; background: none; border: 0; padding: 0 4px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+  .jdot { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 2px solid var(--line-2); font: 600 14px/1 var(--sans); color: var(--text-2); position: relative; z-index: 1; transition: transform .15s; }
+  .jstep:hover .jdot { transform: scale(1.06); }
+  .jstep[aria-selected="true"] .jdot { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .jstep.star .jdot { border-color: #e7b416; }
+  .jstep.star[aria-selected="true"] .jdot { background: #e7b416; border-color: #e7b416; color: #1d1600; }
+  .jstep b { font-size: 13.5px; line-height: 1.3; color: var(--text); font-weight: 600; }
+  .jstep small { font: 500 11px/1.2 var(--mono); padding: 3px 6px; border-radius: 6px; }
+  .jstep small.drop { background: var(--warn-soft); color: var(--warn); }
+  .jstep small.ns { background: #fff4cc; color: #6a4f00; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .jstep small.ns { background: #3a300c; color: #f1d27a; } }
+  :root[data-theme="dark"] .jstep small.ns { background: #3a300c; color: #f1d27a; }
+  .jpanel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin: 18px 0 0; padding: 18px 20px; }
+  .jpanel dl { display: grid; grid-template-columns: 150px 1fr; gap: 10px 16px; margin: 0; }
+  .jpanel dt { font: 500 12.5px/1.6 var(--mono); color: var(--text-3); }
+  .jpanel dd { margin: 0; color: var(--text-2); font-size: 15px; }
+  @media (max-width: 620px) {
+    .journey { grid-template-columns: 1fr; gap: 8px; }
+    .journey::before { left: 21px; right: auto; top: 10px; bottom: 10px; width: 2px; height: auto; }
+    .jstep { flex-direction: row; text-align: left; gap: 12px; }
+    .jpanel dl { grid-template-columns: 1fr; gap: 2px; }
+    .jpanel dd { margin-bottom: 10px; }
+  }
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0 0; }
+  @media (max-width: 620px) { .twocol { grid-template-columns: 1fr; } }
+  .box { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .box h3 { font: 500 12.5px/1 var(--mono); color: var(--text-3); margin: 0 0 10px; }
+  .box ul { margin: 0; padding-left: 18px; color: var(--text-2); font-size: 14.5px; }
+
+  /* under the hood */
+  .doc { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin: 12px 0 0; }
+  .doc > summary { list-style: none; cursor: pointer; padding: 15px 18px; display: flex; align-items: center; gap: 12px; font-weight: 600; }
+  .doc > summary::-webkit-details-marker { display: none; }
+  .doc > summary .k { font: 500 12px/1 var(--mono); color: var(--text-3); width: 26px; }
+  .doc > summary .x { margin-left: auto; font: 500 12px/1 var(--mono); color: var(--text-3); }
+  .doc > summary .x::after { content: "expand ▾"; }
+  .doc[open] > summary .x::after { content: "close ▴"; }
+  .doc .body { padding: 0 18px 18px; border-top: 1px solid var(--line); }
+  .doc .body > p, .doc .body li { color: var(--text-2); font-size: 15px; }
+  .doc .body ul { padding-left: 18px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 12px 0 0; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--text-2); }
+  th { font: 500 12px/1.3 var(--mono); color: var(--text-3); }
+  .scroll-x { overflow-x: auto; }
+  pre { margin: 12px 0 0; background: var(--code-bg); color: var(--code-text); border-radius: 12px; padding: 14px; overflow-x: auto; font: 12.5px/1.6 var(--mono); }
+  pre .d { color: var(--code-dim); }
+  pre .k2 { color: #8ab4ff; }
+  pre .s { color: #9be29b; }
+  .console-ctl { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; align-items: center; }
+  select, .console-ctl input { font: 14px var(--sans); color: var(--text); background: var(--surface-2); border: 1px solid var(--line-2); border-radius: 9px; padding: 8px 10px; }
+  .console-out { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .console-out pre { min-height: 150px; max-height: 320px; margin-top: 10px; white-space: pre-wrap; word-break: break-word; }
+  .console-out .lab { font: 500 12px/1 var(--mono); color: var(--text-3); margin-top: 12px; display: flex; justify-content: space-between; }
+  @media (max-width: 700px) { .console-out { grid-template-columns: 1fr; } }
+
+  /* about */
+  .about { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 24px; box-shadow: var(--shadow); margin-top: 20px; }
+  .about-top { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .about .avatar { width: 52px; height: 52px; font-size: 18px; }
+  .about h3 { font-size: 20px; margin: 0; }
+  .about p { color: var(--text-2); margin: 0 0 12px; }
+  .sig { font: 700 30px/1 Caveat, cursive; color: var(--text); margin: 6px 0 14px; }
+  .close-cta { text-align: center; padding: 64px 0 24px; }
+  .close-cta h2 { margin-bottom: 8px; }
+  footer { max-width: 720px; margin: 40px auto 0; padding: 22px 20px 80px; border-top: 1px solid var(--line); color: var(--text-3); font-size: 13px; display: grid; gap: 6px; }
+  .preview-ribbon { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 60; background: #16161a; color: #fff; font: 600 12.5px/1 var(--sans); padding: 8px 12px; border-radius: 999px; box-shadow: 0 10px 24px -10px rgba(0,0,0,.5); white-space: nowrap; pointer-events: none; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .typing i { animation: none; } }
+</style>
+</head>
+<body>
+<div class="preview-ribbon" aria-hidden="true">preview · calm version · live site unchanged</div>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="wordmark" href="#top"><svg aria-hidden="true" viewBox="0 0 64 64"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d8bff"/><stop offset="1" stop-color="#0a4fd0"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#lg)"/><g fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"><path stroke="#fff" d="M11 25 L17 18 L27.5 40"/><path stroke="#fff" d="M32 25 L38 18 L44 25"/><path stroke="#ffd24d" d="M27.5 40 L50 40"/><path stroke="#ffd24d" d="M44.5 34.5 L50 40 L44.5 45.5"/></g></svg>share-a-clicky</a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#why">why</a><a href="#found">found</a><a href="#decided">decided</a><a href="#try">try it</a><a href="#measure">measure</a><a href="#hood">under the hood</a><a href="#me">me</a>
+    </nav>
+    <div class="bar-right">
+      <a class="icon-btn" href="https://github.com/Mohit-Malviya-AI-PM/share-a-clicky" rel="noopener" aria-label="Code on GitHub" title="Code on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+      <a class="talk" href="#me">let's talk</a>
+      <button class="icon-btn menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu-panel" aria-label="Sections"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    </div>
+  </div>
+  <nav class="menu-panel" id="menu-panel" aria-label="Sections">
+    <a href="#why">why</a><a href="#found">found</a><a href="#decided">decided</a><a href="#try">try it</a><a href="#measure">measure</a><a href="#hood">under the hood</a><a href="#me">me</a><a href="#demo">demo</a>
+  </nav>
+</header>
+
+<main id="top">
+  <div class="wrap hero" id="hero">
+    <span class="kicker"><i></i>unofficial product bet<span class="k-long"> for HeyClicky</span> · tested live</span>
+    <h1>Start with a Clicky that <mark>already works</mark>.</h1>
+    <p class="lede">New Clickys start from a guess. I built a way to start from one a friend already runs for a real job. Copy its setup, paste it into New Clicky, and the sharer's invite link comes along.</p>
+    <div class="byline"><span class="avatar" aria-hidden="true">MM</span><span>Mohit Malviya · AI product manager who builds · Sep 25 to 29, 2026</span></div>
+    <div class="cta-row">
+      <a class="btn primary" href="#try">Try a shared Clicky</a>
+      <a class="btn" href="#demo">▶ Watch the 1-minute demo</a>
+    </div>
+    <div class="proof">
+      <div><b>Tested live on 1.0.52</b><span>In the real HeyClicky app, not a mockup</span></div>
+      <div><b>2 gaps found in the app</b><span>Each one changed what I built</span></div>
+      <div><b>50 test messages</b><span>Both connectors must answer the same</span></div>
+    </div>
+  </div>
+
+  <div class="wide demo" id="demo">
+    <div class="window">
+      <div class="window-top"><span class="dots"><i></i><i></i><i></i></span><span>share-a-clicky-demo.mp4 · 1:05 · sound on</span></div>
+      <video id="video" controls playsinline preload="metadata" poster="../img/video-poster.jpg">
+        <source src="../media/share-a-clicky-demo.mp4" type="video/mp4">
+        <track kind="captions" src="../media/share-a-clicky-demo.vtt" srclang="en" label="English" default>
+      </video>
+      <div class="chapters">
+        <span class="lbl">jump to</span>
+        <button class="chip" data-t="0"><b>0:00</b>the gap</button>
+        <button class="chip" data-t="16"><b>0:16</b>the build</button>
+        <button class="chip" data-t="28"><b>0:28</b>install</button>
+        <button class="chip" data-t="37"><b>0:37</b>connector</button>
+        <button class="chip" data-t="45"><b>0:45</b>2 gaps found</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wide log" aria-labelledby="log-h">
+    <div class="log-head"><h3 id="log-h" style="margin:0">Build log</h3><p>Five days, from first read to sent</p></div>
+    <div class="log-row" tabindex="0" aria-label="Build log, scroll sideways">
+      <article class="note"><p class="when"><b>01</b><span>Fri Sep 25</span></p><h3>Read everything first</h3><p>Changelog, pricing, GitHub issues, reviews. Listed 9 gaps and scored 7 on impact, reach, evidence and whether I could build it in a weekend.</p></article>
+      <article class="note"><p class="when"><b>02</b><span>Fri Sep 25</span></p><h3>Picked a trust layer</h3><p>Hide secrets before a screenshot leaves the Mac. It scored highest, 27 out of 30. Then, before writing code, I dropped it. It's the idea a lot of people would pitch.</p><span class="tag drop">dropped</span></article>
+      <article class="note"><p class="when"><b>03</b><span>the weekend</span></p><h3>Went back to the changelog</h3><p>Clickys relaunched Sep 12. The Skills library was paused. Invite &amp; Earn shipped Sep 24. Nobody can start from a Clicky a friend already runs.</p><span class="tag keep">kept</span></article>
+      <article class="note"><p class="when"><b>04</b><span>Mon Sep 28</span></p><h3>Built it, then broke it</h3><p>Share page and two connectors from one data file. Tested in HeyClicky 1.0.52. Message 2 on the local connector said "Transport closed." So I built the web one.</p></article>
+      <article class="note"><p class="when"><b>05</b><span>Tue Sep 29</span></p><h3>Measured, cut, sent</h3><p>Wrote down how I'd know it works, cut a 1-minute demo, tested the page on my phone, and sent it to Farza.</p></article>
+    </div>
+  </div>
+
+  <section id="why" class="wrap">
+    <p class="eyebrow"><span class="n">01</span>why build it</p>
+    <h2>The first Clicky decides if someone stays.</h2>
+    <p class="lede">Since the Sep 12 relaunch, Clickys are the product. A new user answers four questions and gets three Clickys made for them. Every routine a Clicky runs spends agent messages, the metered part of every plan.</p>
+    <p class="lede">So the first Clicky is two things at once. It's the moment someone decides HeyClicky is useful, and it's the path to Pro. Right now it starts from what HeyClicky guesses about you.</p>
+    <div class="facts">
+      <div class="fact"><b>4 questions</b><span>then 3 Clickys made for you, at onboarding</span></div>
+      <div class="fact"><b>25 / 150 / 1,000</b><span>agent messages a month on Free, Pro and Max</span></div>
+      <div class="fact"><b>25% + 25%</b><span>Invite &amp; Earn, for the sharer and the friend</span></div>
+    </div>
+    <p class="callout">So what would it take for someone's first Clicky to be one that already works?</p>
+  </section>
+
+  <hr class="rule">
+
+  <section id="found" class="wrap">
+    <p class="eyebrow"><span class="n">02</span>what I found</p>
+    <h2>Three from reading, three from shipping.</h2>
+    <p class="lede">The first three came from HeyClicky's changelog. The last three I only learned by putting this into the real app.</p>
+
+    <p class="group-lbl">from the changelog</p>
+    <div class="finding" id="f1"><span class="fid">F1</span><div><h3>Onboarding guesses</h3><p>New users get three Clickys from four questions. New Clicky runs a short interview. Both start from zero.</p><span class="src">changelog v1.0.49</span></div></div>
+    <div class="finding" id="f2"><span class="fid">F2</span><div><h3>Sharing went quiet</h3><p>The community Skills library, about 100 skills at launch, was paused on Sep 12. HeyClicky plans to bring skills back in a new form.</p><span class="src">changelog v1.0.33, v1.0.49</span></div></div>
+    <div class="finding" id="f3"><span class="fid">F3</span><div><h3>A reason to share, nothing to carry</h3><p>Invite &amp; Earn pays the sharer 25% of a friend's plan for up to 12 months. But the link just says "try this app."</p><span class="src">changelog v1.0.52</span></div></div>
+
+    <p class="group-lbl">from testing live on 1.0.52, Sep 28</p>
+    <div class="finding live" id="f4"><span class="fid">F4</span><div><h3>Local connectors stop at message 2</h3><p>A connector added as "Command on this Mac" answers once. The next message fails with "Transport closed," and HeyClicky never contacts the process again, though it's still running.</p></div></div>
+    <div class="finding live" id="f5"><span class="fid">F5</span><div><h3>A Clicky can't create a Clicky</h3><p>When I asked one to install a shared Clicky, it tried to click through HeyClicky's own screens and stalled.</p></div></div>
+    <div class="finding live" id="f6"><span class="fid">F6</span><div><h3>Daily routines need Pro</h3><p>A daily Clicky uses about 30 agent messages a month. Free has 25. Routines also repeat on an interval, not at a set time.</p></div></div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="decided" class="wrap">
+    <p class="eyebrow"><span class="n">03</span>what I decided</p>
+    <h2>Six calls, each traced to a finding.</h2>
+    <p class="lede">Nothing here is a style choice. Every decision points back to something I read or broke.</p>
+
+    <div class="decision"><div class="top"><span>D1</span><span class="because">because <a href="#f1">F1</a></span></div><h3>Build next to the app, not inside a copy of it</h3><p>HeyClicky's current code is private. The open-source Clicky repo is from April, months before Clickys relaunched. A change there would demo a product nobody uses today. So I built on what's public, New Clicky and custom connectors, and tested it in the app people actually have.</p></div>
+    <div class="decision"><div class="top"><span>D2</span><span class="because">because <a href="#f2">F2</a>, <a href="#f5">F5</a></span></div><h3>A setup is plain text you can read</h3><p>It's the one format New Clicky already accepts. It also hides nothing. A setup is instructions for an agent that can reach your email, so the full text sits on the page before you copy it.</p></div>
+    <div class="decision"><div class="top"><span>D3</span><span class="because">because <a href="#f5">F5</a></span></div><h3>One paste, not one click, for now</h3><p>Without a <code>create_clicky</code> tool, a one-click button would promise something the app can't do. The connector tells Clickys to hand the setup over instead of driving the app. A <code>heyclicky://new</code> link would turn Copy into Install.</p></div>
+    <div class="decision"><div class="top"><span>D4</span><span class="because">because <a href="#f4">F4</a></span></div><h3>Hand out the web connector</h3><p>The local one breaks on message 2. The web one runs on Cloudflare and answers every message. The local one stays in the repo so the bug is easy to reproduce.</p></div>
+    <div class="decision"><div class="top"><span>D5</span><span class="because">because <a href="#f6">F6</a></span></div><h3>Show the cost before install</h3><p>Every shared Clicky shows its monthly agent messages against Free, and says "needs Pro" above 25. A clear note up front beats a surprise limit mid-month.</p></div>
+    <div class="decision"><div class="top"><span>D6</span><span class="because">because <a href="#f3">F3</a></span></div><h3>Judge it by day 7, not by copies</h3><p>Copies are easy to get. A shared Clicky still running a week later, compared with one made in onboarding, is what tells you sharing works. <a href="#measure">How I'd measure it</a>.</p></div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="try" class="wide">
+    <div class="wrap" style="padding:0">
+      <p class="eyebrow"><span class="n">04</span>try it</p>
+      <h2>Pick one, copy, paste.</h2>
+      <p class="lede">Job Hunter is the Clicky I built for my own job search. The other two are labeled examples. Each shows what it costs in agent messages before you install it.</p>
+    </div>
+    <div class="gallery" id="gallery"><p class="muted">Loading shared Clickys…</p></div>
+
+    <div class="wrap" style="padding:0;margin-top:48px">
+      <h3>Or ask for them inside HeyClicky</h3>
+      <p class="muted" style="margin:0">Add the connector once. Then any Clicky can list shared Clickys and hand over a setup.</p>
+      <ol class="steps3">
+        <li><span>Open <span class="path"><span>Settings</span>›<span>Integrations</span>›<span>Add custom connector</span></span></span></li>
+        <li><span>Paste this as the Server URL and set Authentication to None.
+          <span class="urlbox"><code id="conn-url">https://share-a-clicky.malviyamohit58.workers.dev/mcp</code><button class="btn small" id="copy-url">Copy URL</button></span>
+          <span class="status" id="url-status" role="status"></span></span></li>
+        <li><span>In any Clicky, ask "What shared Clickys can I get?"</span></li>
+      </ol>
+
+      <div class="window play" id="play">
+        <div class="play-head">
+          <span class="t">two messages, two connectors</span>
+          <div class="seg" role="group" aria-label="Connector">
+            <button id="mode-web" aria-pressed="true">Web · live</button>
+            <button id="mode-local" aria-pressed="false">Local · replay</button>
+          </div>
+        </div>
+        <div class="chat" id="chat" aria-live="polite"></div>
+        <div class="play-foot">
+          <button class="btn small primary" id="send">Send message 1</button>
+          <button class="btn small" id="reset">Reset</button>
+          <span class="hint" id="hint">Web mode calls the real connector from your browser.</span>
+        </div>
+      </div>
+      <figure>
+        <img src="../img/02-two-turns.jpg" alt="Real HeyClicky 1.0.52 chat. At the top, the local connector returned Transport closed. Below, the web connector answers two messages in the same chat, listing shared Clickys and handing over the Weekly Wins setup." loading="lazy" width="1730" height="1862">
+        <figcaption>The real thing, HeyClicky 1.0.52 on Sep 28. Top, the local connector failing. Below, the web connector answering twice in the same chat. My other Clickys are hidden.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section id="measure" class="wrap">
+    <p class="eyebrow"><span class="n">05</span>how I'd measure it</p>
+    <h2>Is the bet working?</h2>
+    <p class="lede">One question matters. Do shared Clickys keep running longer than ones made in onboarding? Tap a step to see what I'd log and what could go wrong there.</p>
+    <div class="journey" role="tablist" aria-label="Install journey" id="journey"></div>
+    <div class="jpanel" id="jpanel" role="tabpanel" aria-live="polite"></div>
+    <div class="twocol">
+      <div class="box"><h3>also track</h3><ul><li>Invite signups per shared Clicky</li><li>Free to Pro within 14 days of a "needs Pro" install</li></ul></div>
+      <div class="box"><h3>guardrails, keep low</h3><ul><li>Surprise agent-limit hits</li><li>Shared Clickys archived or reported in week 1</li></ul></div>
+    </div>
+    <p class="muted small" style="margin-top:12px">No real data yet. Event names are my proposal. Tracking needs one "installed from a share" tag on each new Clicky.</p>
+  </section>
+
+  <hr class="rule">
+
+  <section id="hood" class="wrap">
+    <p class="eyebrow"><span class="n">06</span>under the hood</p>
+    <h2>How it's built, for the engineers.</h2>
+    <p class="lede">One data file feeds the page and both connectors, so they can't drift apart. Open any part below.</p>
+
+    <details class="doc">
+      <summary><span class="k">6.1</span>Architecture<span class="x"></span></summary>
+      <div class="body">
+        <picture><source media="(prefers-color-scheme: dark)" srcset="../img/diagram-built-dark.png"><img src="../img/diagram-built-light.png" alt="clickys.source.json feeds build.py, which generates the share page, the local connector and the web connector. The same 50 test messages go to both connectors." loading="lazy" style="width:100%;height:auto;border-radius:12px;border:1px solid var(--line);margin-top:14px"></picture>
+        <ul>
+          <li><code>data/clickys.source.json</code> is the only source. <code>build.py</code> validates it, computes setup text and message estimates once, and writes everything else.</li>
+          <li>Share page. Static, no framework. Each Clicky also gets a link page (<code>/c/job-hunter/</code>) whose preview names that Clicky.</li>
+          <li>Local connector. MCP over stdio, Python, no dependencies.</li>
+          <li>Web connector. MCP over Streamable HTTP, one file on Cloudflare Workers, data inlined at build time.</li>
+          <li><code>build.py --check</code> fails if any generated file is stale.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="doc">
+      <summary><span class="k">6.2</span>The connector contract<span class="x"></span></summary>
+      <div class="body">
+        <div class="scroll-x"><table>
+          <tr><th>tool</th><th>what it does</th><th>hints</th></tr>
+          <tr><td><code>list_shared_clickys</code></td><td>Lists every shared Clicky with its job, schedule and monthly messages</td><td>read-only, not destructive</td></tr>
+          <tr><td><code>get_shared_clicky(slug)</code></td><td>Returns the paste-ready setup. Takes the id or the name, any case or spacing</td><td>read-only, not destructive</td></tr>
+        </table></div>
+        <p>The server instructions tell every Clicky what it can't do, which is what fixed F5 in practice.</p>
+        <pre><span class="d">// initialize → result.instructions</span>
+<span class="s">"Share-a-Clicky lists Clickys other people shared and returns their setup. You cannot create Clickys yourself: give the person the setup to paste into New Clicky."</span></pre>
+      </div>
+    </details>
+
+    <details class="doc">
+      <summary><span class="k">6.3</span>Protocol edge cases it handles<span class="x"></span></summary>
+      <div class="body">
+        <ul>
+          <li>An unsupported protocol version in <code>initialize</code> falls back to the 2025-06-18 version.</li>
+          <li>An unsupported <code>MCP-Protocol-Version</code> header gets 400.</li>
+          <li>Batches are refused on 2025-06-18 and allowed on older versions.</li>
+          <li>Ids must be strings or integers. A missing method is -32600. An unknown tool is -32602.</li>
+          <li>Notifications and client responses get no reply (202 over HTTP).</li>
+          <li>Bodies over 64 KB get 413 without being read in full.</li>
+          <li>Unknown slugs return <code>isError: true</code> with the list of valid ids, so the Clicky can recover.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="doc">
+      <summary><span class="k">6.4</span>Tests<span class="x"></span></summary>
+      <div class="body">
+        <ul>
+          <li>Parity. The same 39 normal and malformed messages, plus 11 raw inputs (bad JSON, deep nesting, oversized bodies, batches), go to both connectors. They must answer the same.</li>
+          <li>Browser checks at phone and desktop widths, light and dark, including measured text contrast.</li>
+          <li>Build freshness. <code>./run_tests.sh</code> runs everything in one go.</li>
+        </ul>
+        <div class="scroll-x"><table>
+          <tr><th>live test in HeyClicky 1.0.52</th><th>result</th></tr>
+          <tr><td>Add the connector as a custom connector</td><td>✅ Connected</td></tr>
+          <tr><td>A Clicky lists shared Clickys and returns a setup</td><td>✅ 10 to 20 seconds, correct setup</td></tr>
+          <tr><td>Paste a setup into New Clicky</td><td>✅ Created with the right job in about 20 seconds</td></tr>
+          <tr><td>Ask a Clicky to create a Clicky</td><td>❌ No tool for it. It stalled</td></tr>
+          <tr><td>Second message, local connector</td><td>❌ "Transport closed"</td></tr>
+          <tr><td>Two messages, web connector</td><td>✅ Both answered (10s and 17s)</td></tr>
+        </table></div>
+      </div>
+    </details>
+
+    <details class="doc" id="console-doc">
+      <summary><span class="k">6.5</span>Raw MCP console, live<span class="x"></span></summary>
+      <div class="body">
+        <p>Send real JSON-RPC to the deployed connector and see exactly what comes back.</p>
+        <div class="console-ctl">
+          <select id="c-method" aria-label="Request">
+            <option value="initialize">initialize</option>
+            <option value="tools/list">tools/list</option>
+            <option value="list">tools/call list_shared_clickys</option>
+            <option value="get" selected>tools/call get_shared_clicky</option>
+            <option value="bad">unknown method (error case)</option>
+          </select>
+          <input id="c-slug" value="Weekly Wins" aria-label="slug" size="14">
+          <button class="btn small primary" id="c-send">Send</button>
+        </div>
+        <div class="console-out">
+          <div><div class="lab"><span>request</span></div><pre id="c-req"><span class="d">// pick a request and press Send</span></pre></div>
+          <div><div class="lab"><span>response</span><span id="c-time"></span></div><pre id="c-res"><span class="d">// the live answer shows here</span></pre></div>
+        </div>
+      </div>
+    </details>
+
+    <details class="doc">
+      <summary><span class="k">6.6</span>Known limits<span class="x"></span></summary>
+      <div class="body"><div class="scroll-x"><table>
+        <tr><th>limit</th><th>what HeyClicky could add</th></tr>
+        <tr><td>Install is one paste, not one click</td><td>A <code>create_clicky</code> tool, or a <code>heyclicky://new?setup=</code> link</td></tr>
+        <tr><td>New Clicky's interview can't use connectors</td><td>Let creation read a shared setup</td></tr>
+        <tr><td>Message counts are estimates for the routine alone</td><td>Real usage shown on each shared Clicky</td></tr>
+        <tr><td>A setup could ask for more than it says</td><td>List the apps and actions a setup touches at install, and review shared Clickys</td></tr>
+        <tr><td>Shared Clickys live in a JSON file, not uploads</td><td>A "Share this Clicky" button that publishes to your heyclicky.com/@username page</td></tr>
+      </table></div></div>
+    </details>
+  </section>
+
+  <hr class="rule">
+
+  <section id="me" class="wrap">
+    <p class="eyebrow"><span class="n">07</span>who built this</p>
+    <h2>Hi, I'm Mohit.</h2>
+    <div class="about">
+      <div class="about-top"><span class="avatar" aria-hidden="true">MM</span><div><h3>Mohit Malviya</h3><span class="muted small">AI product manager who builds · Cornell MBA · NYC</span></div></div>
+      <p>6.5 years in product management, most recently leading the beta of an AI triage agent in Jira during a PM internship at Atlassian. Computer science engineering degree, first job writing code as a full-stack product engineer at Wipro, and a fresh Cornell MBA in AI, Tech &amp; Product Management.</p>
+      <p>Think growth product engineer with product management depth. This page is how I work. Find the gap, make a bet, build it end to end, test it live, and know how to measure it.</p>
+      <p>Based in NYC. Open to remote, and happy to fly out to SF whenever it helps.</p>
+      <div class="tags" style="margin:4px 0 6px"><span class="tg">product discovery</span><span class="tg">metrics</span><span class="tg">AI agents</span><span class="tg">MCP</span><span class="tg">Cloudflare Workers</span><span class="tg">Python</span><span class="tg">JavaScript</span><span class="tg">testing</span></div>
+      <p class="sig" aria-hidden="true">mohit</p>
+      <div class="cta-row">
+        <a class="btn primary" href="mailto:mohit.malviya.cornell@gmail.com?subject=Share-a-Clicky">Email me</a>
+        <a class="btn" href="https://www.linkedin.com/in/malviyamohit/" rel="noopener">LinkedIn</a>
+        <a class="btn" href="https://github.com/Mohit-Malviya-AI-PM/share-a-clicky" rel="noopener">Code on GitHub</a>
+      </div>
+    </div>
+    <div class="close-cta">
+      <h2>If sharing is on your roadmap, let's talk.</h2>
+      <p class="muted" style="margin:0 0 18px">I'd love to help figure out what makes a first Clicky stick.</p>
+      <a class="btn primary" href="mailto:mohit.malviya.cornell@gmail.com?subject=Share-a-Clicky">mohit.malviya.cornell@gmail.com</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>An unofficial prototype by Mohit Malviya for <a href="https://www.heyclicky.com/" rel="noopener">HeyClicky</a>. Not affiliated with or endorsed by HeyClicky.</span>
+  <span>Message counts are estimates, about one agent message per routine run. Retries can add more. Routines run only while the Mac is awake and HeyClicky is open.</span>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var CONNECTOR = "https://share-a-clicky.malviyamohit58.workers.dev/mcp";
+  function $(id) { return document.getElementById(id); }
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      if (k === "text") n.textContent = attrs[k]; else if (k === "class") n.className = attrs[k]; else n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return n;
+  }
+
+  // Keep the last two words of each text block together, so no line ends with one word alone.
+  var SKIP = "pre, code, textarea, .urlbox, script, style, svg, .msg";
+  function glue(root) {
+    (root || document).querySelectorAll("p, li, h1, h2, h3, summary, figcaption, dd, dt, td, small, .kicker, .hint, footer span, .about-top span, .fact span, .proof span, .jstep b").forEach(function (b) {
+      if (b.closest(SKIP)) return;
+      var texts = [], w = document.createTreeWalker(b, NodeFilter.SHOW_TEXT, null);
+      while (w.nextNode()) if (!w.currentNode.parentElement.closest(SKIP)) texts.push(w.currentNode);
+      for (var i = texts.length - 1; i >= 0; i--) {
+        var t = texts[i], v = t.nodeValue, tr = v.replace(/\s+$/, "");
+        if (!tr) continue;
+        var at = tr.search(/[ \t\n]+\S+$/);
+        if (at > 0) { t.nodeValue = tr.slice(0, at) + " " + tr.slice(at).replace(/^[ \t\n]+/, "") + v.slice(tr.length); return; }
+        for (var j = i - 1; j >= 0; j--) {
+          var bf = texts[j].nodeValue;
+          if (/[ \t\n]+$/.test(bf)) { texts[j].nodeValue = bf.replace(/[ \t\n]+$/, " "); return; }
+          if (bf.trim()) return;
+        }
+        return;
+      }
+    });
+  }
+
+  function copy(text, status, ok, target) {
+    function fallback() {
+      if (target && target.select) { target.focus(); target.select(); }
+      status.className = "status warn"; status.textContent = "Couldn't copy automatically. The text is selected, press ⌘C.";
+    }
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(function () { status.className = "status"; status.textContent = ok; }, fallback);
+    else fallback();
+  }
+
+  // Menu
+  var mb = $("menu-btn"), mp = $("menu-panel");
+  mb.addEventListener("click", function () { var o = mp.classList.toggle("open"); mb.setAttribute("aria-expanded", o); });
+  mp.addEventListener("click", function (e) { if (e.target.tagName === "A") { mp.classList.remove("open"); mb.setAttribute("aria-expanded", "false"); } });
+
+  // Active section in nav
+  var links = document.querySelectorAll(".nav a");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        links.forEach(function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id); });
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    ["hero", "why", "found", "decided", "try", "measure", "hood", "me"].forEach(function (id) { io.observe($(id)); });
+  }
+
+  // Video chapters
+  var video = $("video");
+  document.querySelectorAll(".chapters .chip").forEach(function (b) {
+    b.addEventListener("click", function () { video.currentTime = +b.dataset.t; var p = video.play(); if (p && p.catch) p.catch(function () {}); });
+  });
+
+  // Connector URL
+  $("copy-url").addEventListener("click", function () { copy(CONNECTOR, $("url-status"), "Copied. Paste it as the Server URL.", null); });
+
+  // Gallery
+  var DATA = null;
+  function card(c, plans) {
+    var pct = Math.min(100, Math.round(c.estimated_agent_messages_per_month / 40 * 100));
+    var freeAt = Math.round(plans.free / 40 * 100);
+    var over = c.estimated_agent_messages_per_month > plans.free;
+    var ta = el("textarea", { class: "setup", readonly: "", "aria-label": c.name + " setup text" });
+    ta.value = c.setup_text;
+    var st = el("span", { class: "status", role: "status" });
+    var cp = el("button", { class: "btn small primary", text: "Copy setup" });
+    cp.addEventListener("click", function () { copy(c.setup_text, st, "Copied. In HeyClicky, click + and paste.", ta); });
+    var track = el("div", { class: "track" }, [el("div", { class: "fill" + (over ? " over" : ""), style: "width:" + pct + "%" }), el("div", { class: "free", style: "left:" + freeAt + "%", title: "Free plan limit, 25" })]);
+    return el("article", { class: "cl" }, [
+      el("div", { class: "cl-top" }, [el("span", { class: "cl-emoji", "aria-hidden": "true", text: c.emoji }), el("div", {}, [el("h3", { text: c.name }), el("span", { class: "by", text: "shared by " + c.shared_by })])]),
+      el("p", { text: c.one_line_job }),
+      el("div", { class: "tags" }, [
+        c.example ? el("span", { class: "tg ex", text: "Example" }) : el("span", { class: "tg", text: "I use this" }),
+        el("span", { class: "tg", text: c.routine.label }),
+        over ? el("span", { class: "tg pro", text: "needs Pro" }) : null
+      ].concat(c.apps.map(function (a) { return el("span", { class: "tg", text: a }); }))),
+      el("div", { class: "meter" }, [el("span", { text: "~" + c.estimated_agent_messages_per_month + " agent messages a month" }), track, el("span", { text: "line marks Free's 25" })]),
+      el("details", {}, [el("summary", { text: "See the full setup" }), ta, el("div", { class: "acts" }, [cp, el("a", { class: "btn small", href: c.get_heyclicky_url, rel: "noopener", text: "Get HeyClicky" })]), st])
+    ]);
+  }
+  fetch("../clickys.json").then(function (r) { return r.json(); }).then(function (d) {
+    DATA = d;
+    var g = $("gallery"); g.textContent = "";
+    d.clickys.forEach(function (c) { g.appendChild(card(c, d.plans)); });
+    glue(g);
+  }).catch(function () { $("gallery").innerHTML = '<p class="muted">Couldn\'t load shared Clickys. They are also in <a href="../clickys.json">clickys.json</a>.</p>'; });
+
+  // MCP call
+  var rid = 0;
+  function mcp(body) {
+    var t0 = performance.now();
+    return fetch(CONNECTOR, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json, text/event-stream" }, body: JSON.stringify(body) })
+      .then(function (r) { return r.text().then(function (txt) { var j = null; try { j = JSON.parse(txt); } catch (e) {} return { status: r.status, json: j, text: txt, ms: Math.round(performance.now() - t0) }; }); });
+  }
+  function toolCall(name, args) { return { jsonrpc: "2.0", id: ++rid, method: "tools/call", params: { name: name, arguments: args || {} } }; }
+
+  // Playground: two messages, two connectors
+  var chat = $("chat"), send = $("send"), hint = $("hint"), mode = "web", turn = 0;
+  var Q = ["What shared Clickys can I get?", "Give me the Weekly Wins setup."];
+  function add(cls, text, meta) {
+    var m = el("div", { class: "msg " + cls }, [text]);
+    if (meta) m.appendChild(el("span", { class: "meta", text: meta }));
+    chat.appendChild(m); chat.scrollTop = chat.scrollHeight; return m;
+  }
+  function typing() { var m = el("div", { class: "msg bot" }, [el("span", { class: "typing", "aria-label": "Thinking" }, [el("i"), el("i"), el("i")])]); chat.appendChild(m); chat.scrollTop = chat.scrollHeight; return m; }
+  function resetChat() {
+    turn = 0; chat.textContent = "";
+    add("sys", mode === "web" ? "web connector · Cloudflare Workers · live calls from your browser" : "local connector · replay of my Sep 28 test in HeyClicky 1.0.52");
+    send.disabled = false; send.textContent = "Send message 1";
+    hint.textContent = mode === "web" ? "Web mode calls the real connector from your browser." : "Local mode replays what HeyClicky did. It can't run a Mac process from a web page.";
+    glue(hint.parentNode);
+  }
+  function setMode(m) { mode = m; $("mode-web").setAttribute("aria-pressed", m === "web"); $("mode-local").setAttribute("aria-pressed", m === "local"); resetChat(); }
+  $("mode-web").addEventListener("click", function () { setMode("web"); });
+  $("mode-local").addEventListener("click", function () { setMode("local"); });
+  $("reset").addEventListener("click", resetChat);
+  send.addEventListener("click", function () {
+    if (turn > 1) return;
+    var t = turn; turn++;
+    send.disabled = true;
+    add("me", Q[t]);
+    var ty = typing();
+    if (mode === "local") {
+      setTimeout(function () {
+        ty.remove();
+        if (t === 0) add("bot", DATA ? DATA.list_text : "Shared Clickys you can install…", "local connector · answered · replayed");
+        else add("bot err", "The Share-a-Clicky connection returned “Transport closed.” I couldn't retrieve the setup.", "local connector · message 2 · the process is still running, HeyClicky never calls it");
+        after(t);
+      }, 900);
+      return;
+    }
+    var req = t === 0 ? toolCall("list_shared_clickys") : toolCall("get_shared_clicky", { slug: "weekly-wins" });
+    mcp(req).then(function (r) {
+      ty.remove();
+      var res = r.json && r.json.result, txt = res && res.content && res.content[0] && res.content[0].text;
+      if (txt) add("bot", txt, "web connector · answered live in " + r.ms + " ms · " + req.params.name);
+      else add("bot err", "The connector didn't answer as expected (HTTP " + r.status + ").", "web connector");
+      after(t);
+    }, function () { ty.remove(); add("bot err", "Couldn't reach the connector from this network.", "web connector"); after(t); });
+  });
+  function after(t) {
+    if (t === 0) { send.disabled = false; send.textContent = "Send message 2"; }
+    else { send.textContent = "Done"; add("sys", mode === "web" ? "both answered · this is why the page hands out the web connector" : "stopped at message 2 · switch to Web to compare"); }
+  }
+  resetChat();
+
+  // Measure journey
+  var STEPS = [
+    { n: "1", t: "Sees a shared Clicky", does: "Opens a shared link from a friend, or browses the page.", log: "share_page_viewed {clicky, sharer}", risk: "The card doesn't make the job clear in one line.", fix: "Test the one-line job and the \"I use this\" label against the example ones." },
+    { n: "2", t: "Copies the setup", does: "Reads the setup and taps Copy.", log: "setup_copied {clicky, needs_pro}", risk: "\"Needs Pro\" scares people off.", fix: "Compare copy rate for Clickys over and under Free's 25 messages." },
+    { n: "3", t: "Creates the Clicky", does: "Clicks + (New Clicky) and pastes.", log: "clicky_created {source: share, clicky}", risk: "The interview rewrites the job, or the paste fails.", fix: "This needs the one tag HeyClicky would add. Check the created job matches the setup." },
+    { n: "4", t: "Turns on its routine", does: "Connects apps and lets the Clicky set up its routine.", log: "routine_enabled {clicky}", risk: "It's a separate step today, so this is likely the biggest drop.", fix: "The setup already asks the new Clicky to set up its routine right away. Next, make it part of creation.", tag: "likely biggest drop", cls: "drop" },
+    { n: "★", t: "Still running on day 7", does: "The routine has run all week and the person kept it.", log: "clicky_active_day_7 {source}", risk: "People install for the novelty and archive it.", fix: "Compare with Clickys made in onboarding. This is the north star.", tag: "north star", cls: "ns", star: true }
+  ];
+  var jr = $("journey"), jp = $("jpanel");
+  function pick(i) {
+    Array.prototype.forEach.call(jr.children, function (b, k) { b.setAttribute("aria-selected", k === i); b.tabIndex = k === i ? 0 : -1; });
+    var s = STEPS[i];
+    jp.textContent = "";
+    jp.appendChild(el("h3", { text: s.t }));
+    jp.appendChild(el("dl", {}, [
+      el("dt", { text: "what they do" }), el("dd", { text: s.does }),
+      el("dt", { text: "what I'd log" }), el("dd", {}, [el("code", { text: s.log })]),
+      el("dt", { text: "what could go wrong" }), el("dd", { text: s.risk }),
+      el("dt", { text: "what I'd try" }), el("dd", { text: s.fix })
+    ]));
+    glue(jp);
+  }
+  STEPS.forEach(function (s, i) {
+    var b = el("button", { class: "jstep" + (s.star ? " star" : ""), role: "tab", "aria-selected": "false", id: "js" + i }, [el("span", { class: "jdot", text: s.n }), el("b", { text: s.t }), s.tag ? el("small", { class: s.cls, text: s.tag }) : null]);
+    b.addEventListener("click", function () { pick(i); });
+    b.addEventListener("keydown", function (e) { var d = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0; if (d) { e.preventDefault(); var k = (i + d + STEPS.length) % STEPS.length; pick(k); jr.children[k].focus(); } });
+    jr.appendChild(b);
+  });
+  pick(3);
+  glue(jr);
+
+  // Raw MCP console
+  var cm = $("c-method"), cs = $("c-slug");
+  function syncSlug() { cs.style.display = cm.value === "get" ? "" : "none"; }
+  cm.addEventListener("change", syncSlug); syncSlug();
+  $("c-send").addEventListener("click", function () {
+    var v = cm.value, body;
+    if (v === "initialize") body = { jsonrpc: "2.0", id: ++rid, method: "initialize", params: { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "share-a-clicky-page", version: "1" } } };
+    else if (v === "tools/list") body = { jsonrpc: "2.0", id: ++rid, method: "tools/list" };
+    else if (v === "list") body = toolCall("list_shared_clickys");
+    else if (v === "get") body = toolCall("get_shared_clicky", { slug: cs.value });
+    else body = { jsonrpc: "2.0", id: ++rid, method: "clicky/create" };
+    $("c-req").textContent = "POST /mcp\n" + JSON.stringify(body, null, 2);
+    $("c-res").textContent = "…"; $("c-time").textContent = "";
+    mcp(body).then(function (r) {
+      $("c-time").textContent = "HTTP " + r.status + " · " + r.ms + " ms";
+      $("c-res").textContent = r.json ? JSON.stringify(r.json, null, 2) : (r.text || "(empty body)");
+    }, function () { $("c-res").textContent = "Couldn't reach the connector from this network."; });
+  });
+
+  glue(document);
+})();
+</script>
+</body>
+</html>
