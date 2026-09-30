@@ -167,6 +167,7 @@ def main():
                 else:
                     check(f"every section has stickers [{tag}]", page.evaluate("['shared','how','connector','findings','metrics','faq','builder'].every(id => document.querySelector('#' + id + ' .sec-sticker'))"))
                 check(f"footer tile wordmark drawn [{tag}]", page.locator("#tiles rect").count() > 100)
+                check(f"email chip in about me [{tag}]", page.locator("#builder a[href='mailto:mohit.malviya.cornell@gmail.com']").count() == 1)
                 page.evaluate("document.fonts.ready")
                 widows = page.evaluate(WIDOWS_JS)
                 check(f"no one-word last lines on the gallery [{tag}] {widows[:3]}", not widows)
