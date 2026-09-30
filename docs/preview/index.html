@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>share-a-clicky (preview)</title>
+<title>share-a-clicky</title>
 <meta name="description" content="Unofficial prototype, not affiliated with HeyClicky. Share a Clicky that already does a real job: copy its setup, paste it into New Clicky.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="share-a-clicky: start with a Clicky that already works">
@@ -518,56 +518,66 @@
     .hero-row { align-items: flex-start; }
   }
   @media (prefers-reduced-motion: reduce) { .card, .btn { transition: none; } html { scroll-behavior: auto; } }
-
-  /* ---- v2 layout ---- */
-  .byline { margin: 14px auto 0; font-size: 14px; color: var(--text-3); }
-  .byline a { font-weight: 600; }
-  .hero .demo { margin-top: 28px; }
-  .steps-line { list-style: none; padding: 0; margin: 0 auto 18px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-  .steps-line li { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px 7px 7px; font-size: 14.5px; font-weight: 500; box-shadow: var(--shadow-sm); }
-  .steps-line b { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 12.5px; }
-  .why-list { max-width: 760px; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
-  .why-list > div { display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start; padding: 18px 20px; }
-  .why-list > div + div { border-top: 1px solid var(--line); }
-  .why-list .badge { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; font-size: 22px; background: var(--surface-2); }
-  .why-list b { display: block; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 2px; }
-  .why-list span { color: var(--text-2); font-size: 15px; }
-  .measure { max-width: 760px; margin: 22px auto 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 20px; }
-  .measure .north { margin: 0 0 14px; font-size: 15.5px; }
-  .measure .guard { margin: 14px 0 0; font-size: 14px; color: var(--text-2); }
-  .funnel { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-  .funnel li { position: relative; padding: 8px 0 12px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 0 8px; align-items: baseline; }
-  .funnel li::after { content: ""; position: absolute; left: 0; right: 0; bottom: 2px; height: 5px; border-radius: 999px; background: var(--surface-2); }
-  .funnel .fbar { position: absolute; left: 0; bottom: 2px; height: 5px; border-radius: 999px; background: linear-gradient(90deg, var(--sky), var(--mint)); z-index: 1; }
-  .funnel b { font-weight: 600; }
-  .funnel span { color: var(--text-2); }
-  .faq { margin-top: 28px; }
-  @media (max-width: 640px) {
-    section { padding-top: 52px; }
-    .section-head { margin-bottom: 20px; }
-    .card { display: grid; grid-template-columns: 44px 1fr; column-gap: 12px; padding: 16px; }
-    .card .emoji { width: 44px; height: 44px; font-size: 24px; margin: 0; grid-row: span 2; }
-    .card h3 { margin: 0; align-self: center; }
-    .card p { margin: 2px 0 0; }
-    .card .meta { grid-column: 1 / -1; margin-top: 10px; }
-    .finding { padding: 18px 18px 20px; }
-    .note-body { padding: 20px 20px 22px; gap: 12px; }
-    .note-body .avatar { width: 48px; height: 48px; font-size: 17px; }
-    .note-body .sig { display: none; }
+  /* ---- nav on phones and tablets: every link visible, no sideways scrolling ---- */
+  @media (max-width: 1200px) {
+    .mb-links { flex-wrap: wrap; justify-content: center; overflow: visible; margin: 0; padding: 2px 0 4px; row-gap: 2px; }
+    .mb-links a.active { box-shadow: 0 0 0 1px var(--line); }
   }
-  .faq-title { margin: 0 0 4px; text-align: center; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  @media (max-width: 640px) {
+    /* The link rows float just under the top bar, so hiding them never shifts the page. */
+    .menubar .mb-row { padding: 8px 14px; }
+    .mb-links { position: absolute; left: 0; right: 0; top: 100%; font-size: 13.5px; padding: 4px 10px 7px; gap: 2px 0;
+      background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: saturate(1.6) blur(14px); -webkit-backdrop-filter: saturate(1.6) blur(14px);
+      border-bottom: 1px solid var(--line); transition: transform .25s ease, opacity .2s ease; }
+    .mb-links a { padding: 4px 9px; }
+    .menubar.tuck .mb-links { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+    .wrap { padding-top: 58px; }
+    section[id], #demo { scroll-margin-top: 116px; }
+  }
+  @media (max-width: 640px) and (prefers-reduced-motion: reduce) { .mb-links { transition: none; } }
+
+  /* ---- "is the bet working?": journey to the north star ---- */
+  .measure { max-width: 980px; margin: 0 auto; }
+  .journey { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; position: relative; }
+  .journey::before { content: ""; position: absolute; top: 28px; left: 10%; right: 10%; border-top: 2px dashed var(--text-3); opacity: .35; }
+  .journey li { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+  .journey .dot { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-size: 24px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-sm); position: relative; z-index: 1; }
+  .journey b { display: block; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; text-wrap: balance; }
+  .journey small { display: inline-block; margin-top: 6px; font-size: 12.5px; font-weight: 600; line-height: 1.25; padding: 4px 9px; border-radius: 999px; }
+  .journey .drop small { background: rgba(232,116,74,.16); color: var(--text); }
+  .journey .north .dot { background: var(--sun); border-color: transparent; box-shadow: 0 0 0 6px rgba(242,193,78,.28); }
+  .journey .north small { background: rgba(242,193,78,.28); color: var(--text); }
+  .journey .sub-note { display: block; font-style: normal; font-size: 13px; color: var(--text-2); margin-top: 5px; }
+  .watch { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 28px; }
+  .watch > div { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow-sm); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .watch h3 { flex-basis: 100%; margin: 0 0 2px; font: 500 12.5px/1.2 var(--mono); color: var(--text-2); }
+  .watch span { font-size: 14px; padding: 6px 11px; border-radius: 999px; background: var(--surface-2); }
+  .measure .fine { text-align: center; font-size: 13.5px; color: var(--text-2); margin: 16px 0 0; }
+  @media (max-width: 760px) {
+    .journey { grid-template-columns: 1fr; gap: 0; max-width: 420px; margin: 0 auto; }
+    .journey::before { top: 36px; bottom: 36px; left: 27px; right: auto; border-top: 0; border-left: 2px dashed var(--text-3); }
+    .journey li { flex-direction: row; text-align: left; gap: 14px; padding: 8px 0; }
+    .journey .dot { flex: none; }
+    .journey b { text-wrap: pretty; }
+    .journey small { margin-top: 4px; }
+    .watch { grid-template-columns: 1fr; max-width: 420px; margin-inline: auto; }
+  }
+
+  /* ---- no one-word last lines (with keepLastWordsTogether in the script as a fallback) ---- */
+  p, li, dd, dt, blockquote, figcaption, summary, footer span, .finding span, .idea-card span, .step span, .metric span, .tldr span, .flow-note { text-wrap: pretty; }
+  h1, h2, h3, .kicker, .sub, .rotator, .section-head p, .faq summary, .ask, .by, .card p, .tldr span, .btn { text-wrap: balance; }
   .preview-ribbon { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 60; background: #16161a; color: #fff; font: 600 12.5px/1 Inter, system-ui, sans-serif; padding: 8px 12px; border-radius: 999px; box-shadow: 0 10px 24px -10px rgba(0,0,0,.5); white-space: nowrap; pointer-events: none; }
 </style>
 </head>
 <body>
-<div class="preview-ribbon" aria-hidden="true">preview · new one-page layout · live site unchanged</div>
+<div class="preview-ribbon" aria-hidden="true">preview · fixes to review · live site unchanged</div>
 <header class="menubar">
   <div class="mb-row">
     <div class="mb-left">
       <a class="wordmark" href="./"><svg class="logo" aria-hidden="true" viewBox="0 0 64 64"><defs><linearGradient id="sac-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d8bff"/><stop offset="1" stop-color="#0a4fd0"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#sac-bg)"/><g fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"><path stroke="#fff" d="M11 25 L17 18 L27.5 40"/><path stroke="#fff" d="M32 25 L38 18 L44 25"/><path stroke="#ffd24d" d="M27.5 40 L50 40"/><path stroke="#ffd24d" d="M44.5 34.5 L50 40 L44.5 45.5"/></g></svg>share-a-clicky</a>
     </div>
     <nav class="mb-links" aria-label="Sections">
-      <a href="./#demo">demo</a><a href="./#shared">clickys</a><a href="./#connector">connector</a><a href="./#idea">why</a><a href="./#findings">findings</a><a href="./#builder">about me</a>
+      <a href="./#idea">idea</a><a href="./#shared">clickys</a><a href="./#how">how it works</a><a href="./#connector">connector</a><a href="./#findings">findings</a><a href="./#metrics">metrics</a><a href="./#faq">faq</a><a href="./#builder">about me</a>
     </nav>
     <div class="top-right">
       <div class="radio" role="group" aria-label="Radio">
@@ -623,6 +633,32 @@
   function normalizeSlug(value) {
     return String(value || "").trim().toLowerCase()
       .replace(/[ _‐-―−]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+  }
+
+  // Glue the last two words of every text block with a no-break space, so a line never ends
+  // with one word on its own. Works in every browser; CSS text-wrap only helps where supported.
+  // Skips anything people copy (connector URL, setup text) so copied text stays exact.
+  var NO_GLUE = "textarea, .code, .term-body, script, style, svg, .marquee, .vp-cap, .np-toast, .sticker, .drag-hint, .kaomoji, #tiles, noscript";
+  function keepLastWordsTogether(root) {
+    var blocks = (root || document.body).querySelectorAll("p, li, dd, dt, h1, h2, h3, summary, figcaption, blockquote, .kicker, .ask, .rotator, a.btn, footer span, .finding span, .idea-card span, .step span, .metric span, .tldr span, .journey b, .journey small, .journey .sub-note, .watch span");
+    Array.prototype.forEach.call(blocks, function (block) {
+      if (block.closest(NO_GLUE)) return;
+      var texts = [], walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, null);
+      while (walker.nextNode()) { if (!walker.currentNode.parentElement.closest(NO_GLUE)) texts.push(walker.currentNode); }
+      for (var i = texts.length - 1; i >= 0; i--) {
+        var t = texts[i], value = t.nodeValue, trimmed = value.replace(/\s+$/, "");
+        if (!trimmed) continue;
+        var at = trimmed.search(/[ \t\n]+\S+$/);
+        if (at > 0) { t.nodeValue = trimmed.slice(0, at) + "\u00a0" + trimmed.slice(at).replace(/^[ \t\n]+/, "") + value.slice(trimmed.length); return; }
+        // the last node is one word (e.g. inside <b> or <mark>): glue the space before it instead
+        for (var j = i - 1; j >= 0; j--) {
+          var before = texts[j].nodeValue;
+          if (/[ \t\n]+$/.test(before)) { texts[j].nodeValue = before.replace(/[ \t\n]+$/, "\u00a0"); return; }
+          if (before.trim()) return;
+        }
+        return;
+      }
+    });
   }
 
   function requestedValue() {
@@ -693,7 +729,7 @@
   }
 
   function renderGallery(data) {
-    document.title = "share-a-clicky (preview)";
+    document.title = "share-a-clicky";
     var connectorStatus = el("div", { class: "status", role: "status" });
     var connectorCode = el("div", { class: "code", text: data.connector_url });
     var copyConnector = el("button", { class: "btn secondary", type: "button", text: "Copy URL" });
@@ -701,40 +737,71 @@
       copyWithFallback(data.connector_url, connectorStatus, "Copied. Paste it as the Server URL in HeyClicky's Add custom connector.", connectorCode);
       celebrate(copyConnector);
     });
+    var rotating = el("b", { text: "job hunting" });
+    var marqueeItems = ["share a Clicky", "copy the setup", "paste into New Clicky", "ready in about 20 seconds", "invite link rides along", "works as a connector", "start with one that works"];
+    function marqueeRow() { var out = []; marqueeItems.forEach(function (m) { out.push(el("span", { text: m })); out.push(el("span", {}, [el("em", { text: "✦" })])); }); return out; }
 
     app.replaceChildren(
-      // ---- 1. hero: what it is, the demo, who built it ----
+      // ---- hero ----
       el("div", { class: "hero" }, [
         el("span", { class: "sticker tile", style: "left:3%;top:40px;--r:-10deg", "aria-hidden": "true", text: "💼" }),
         el("span", { class: "sticker tile", style: "right:5%;top:70px;--r:8deg;animation-delay:-2s", "aria-hidden": "true", text: "📬" }),
         el("span", { class: "sticker tag", style: "right:4%;top:170px;--r:-6deg;animation-delay:-1s", "aria-hidden": "true", text: "shared by @mohit" }),
         el("span", { class: "sticker live", style: "left:2%;top:205px;--r:-4deg;animation-delay:-2.5s", "aria-hidden": "true", text: "tested live ✓" }),
+        el("span", { class: "sticker stamp go", style: "right:5%;top:290px;--r:7deg;animation-delay:-3.5s", "aria-hidden": "true", text: "free to share" }),
         el("span", { class: "drag-hint", style: "left:2%;top:172px", "aria-hidden": "true", text: "psst, drag these anywhere ↓" }),
+        el("span", { class: "kaomoji", style: "right:3%;top:20px", "aria-hidden": "true", text: "(＾▽＾)/" }),
         el("div", { class: "kicker" }, [el("span", { class: "dot", "aria-hidden": "true" }), "an unofficial product bet for HeyClicky, built and tested live"]),
         el("h1", {}, [el("span", { class: "line", text: "start with a clicky" }), " ", el("span", { class: "line" }, ["that ", el("mark", { class: "hl", text: "already works" })])]),
-        el("p", { class: "sub", text: "Share a Clicky you've set up for a real job. A friend pastes its setup into HeyClicky and starts from something that already works. Your invite link comes along." }),
+        el("p", { class: "rotator", "aria-hidden": "true" }, ["a shared Clicky for ", rotating]),
+        el("p", { class: "sub", text: "Share a Clicky you've set up for a real job. A friend pastes its setup into HeyClicky, connects their apps, and starts from something that already works. The sharer's invite link comes along." }),
         el("div", { class: "cta" }, [
           el("a", { class: "btn", href: "#shared", text: "Browse shared Clickys" }),
-          el("a", { class: "btn secondary", href: "#connector", text: "Add the connector" })
+          el("a", { class: "btn secondary", href: "#demo", text: "▶ Watch the 1-minute demo" })
         ]),
-        el("p", { class: "byline" }, ["Built by Mohit Malviya, AI product manager who builds · ", el("a", { href: "#builder", text: "about me ↓" })]),
-        demoPlayer()
+        demoPlayer(),
+        el("div", { class: "tldr" }, [
+          el("div", {}, [el("b", { text: "what" }), el("span", { text: "Share a Clicky you already use. A friend pastes its setup into New Clicky." })]),
+          el("div", {}, [el("b", { text: "why" }), el("span", { text: "New Clickys start from a guess. Shared ones start from something that works, and the invite link comes along." })]),
+          el("div", {}, [el("b", { text: "proof" }), el("span", { text: "Built it, tested it live on HeyClicky 1.0.52, and found 2 gaps along the way." })])
+        ])
+      ]),
+      el("div", { class: "marquee", "aria-hidden": "true" }, [el("div", { class: "track" }, marqueeRow().concat(marqueeRow()))]),
+
+      // ---- the idea (product lens) ----
+      el("section", { id: "idea", class: "sky" }, [
+        el("span", { class: "cloud", style: "top:22px;animation-delay:-6s", "aria-hidden": "true" }),
+        el("span", { class: "cloud", style: "top:70%;animation-delay:-24s;transform:scale(.8)", "aria-hidden": "true" }),
+        sectionHead("the idea", "why sharing, why now", "The product thinking behind the build: the gap, the bet, and why it fits where HeyClicky is headed."),
+        el("div", { class: "idea" }, [
+          el("div", { class: "idea-card reveal" }, [el("span", { class: "badge", style: "background:rgba(232,116,74,.16)", "aria-hidden": "true", text: "🧩" }), el("b", { text: "The gap" }),
+            el("span", { text: "A new Clicky comes from four onboarding questions or a short interview. There's no way to start from a Clicky a friend already runs for a real job." })]),
+          el("div", { class: "idea-card reveal" }, [el("span", { class: "badge", style: "background:rgba(31,111,232,.14)", "aria-hidden": "true", text: "🎯" }), el("b", { text: "The bet" }),
+            el("span", { text: "A Clicky from someone you trust, for a job they really have, makes a strong first Clicky. It sits right next to HeyClicky's own suggestions." })]),
+          el("div", { class: "idea-card reveal" }, [el("span", { class: "badge", style: "background:rgba(95,174,104,.16)", "aria-hidden": "true", text: "🚀" }), el("b", { text: "Why it fits now" }),
+            el("span", { text: "Invite & Earn (Sep 24) gives people a reason to share. A shared Clicky gives the invite link something specific to carry." })])
+        ])
       ]),
 
-      // ---- 2. try it ----
+      // ---- gallery ----
       el("section", { id: "shared" }, [
-        sectionHead("shared clickys", "pick one, copy, paste", "Job Hunter is the one I use for my own job search. The other two are examples. Each shows its monthly agent messages, so you know before installing if it needs Pro."),
-        el("ol", { class: "steps-line reveal", id: "how", "aria-label": "How it works" }, [
-          el("li", {}, [el("b", { text: "1" }), " Open a Clicky"]),
-          el("li", {}, [el("b", { text: "2" }), " Copy setup"]),
-          el("li", {}, [el("b", { text: "3" }), " In HeyClicky, click + and paste"])
-        ]),
+        sectionHead("shared clickys", "pick one, copy, paste", "Job Hunter is the one I built for my own job search. The other two are examples. Each shows an estimate of the agent messages its routine uses, so it's clear before install whether it needs Pro."),
         el("div", { class: "grid" }, data.clickys.map(clickyCard))
       ]),
 
-      // ---- 3. proof it works inside the real app ----
+      // ---- how it works ----
+      el("section", { id: "how" }, [
+        sectionHead("how it works", "three steps, one paste"),
+        el("div", { class: "steps" }, [
+          el("div", { class: "step reveal" }, [el("span", { class: "n", text: "1" }), el("b", { text: "Pick" }), el("span", { text: "Open a Clicky someone shared and see what it does, when it runs, and what it costs in messages." })]),
+          el("div", { class: "step reveal" }, [el("span", { class: "n", text: "2" }), el("b", { text: "Copy" }), el("span", { text: "Click Copy setup. The full text is on the page, so nothing is hidden." })]),
+          el("div", { class: "step reveal" }, [el("span", { class: "n", text: "3" }), el("b", { text: "Paste" }), el("span", { text: "Click + (New Clicky), paste, connect its apps, and let it set up its routine." })])
+        ])
+      ]),
+
+      // ---- connector ----
       el("section", { id: "connector" }, [
-        sectionHead("inside heyclicky", "works inside heyclicky today", "Add the connector once. Then any Clicky can list shared Clickys and hand over a setup."),
+        sectionHead("inside heyclicky", "ask any Clicky for shared Clickys", "Add the connector once. After that, any Clicky can list shared Clickys and hand over a setup."),
         el("div", { class: "panel narrow reveal" }, [
           el("ol", { class: "howto", style: "margin-top:0" }, [
             el("li", {}, [el("span", { class: "num", "aria-hidden": "true", text: "1" }), el("div", { class: "body" }, [
@@ -765,43 +832,53 @@
         ])
       ]),
 
-      // ---- 4. the product thinking ----
-      el("section", { id: "idea" }, [
-        sectionHead("the idea", "why I built it"),
-        el("div", { class: "why-list reveal" }, [
-          el("div", {}, [el("span", { class: "badge", "aria-hidden": "true", text: "🧩" }), el("div", {}, [el("b", { text: "The gap" }),
-            el("span", { text: "A new Clicky starts from four onboarding questions or a short interview. You can't start from one a friend already runs." })])]),
-          el("div", {}, [el("span", { class: "badge", "aria-hidden": "true", text: "🎯" }), el("div", {}, [el("b", { text: "The bet" }),
-            el("span", { text: "A Clicky from someone you trust, for a job they really have, is a stronger first Clicky. It sits next to HeyClicky's own suggestions." })])]),
-          el("div", {}, [el("span", { class: "badge", "aria-hidden": "true", text: "🚀" }), el("div", {}, [el("b", { text: "Why now" }),
-            el("span", { text: "Invite & Earn (Sep 24) gives people a reason to share. A shared Clicky gives the invite link something specific to carry." })])])
-        ])
-      ]),
-
-      // ---- 5. what shipping it taught me, and how I'd measure it ----
+      // ---- findings ----
       el("section", { id: "findings" }, [
-        sectionHead("found while testing it live", "what I found, and how I'd measure it", "Three things I only learned by shipping it into the real app. Then the numbers I'd watch."),
+        sectionHead("found while testing it live", "what it taught me about HeyClicky", "Three things I only learned by shipping this into the real app."),
         el("div", { class: "findings" }, [
-          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "bug" }), el("b", { text: "Local connectors stop at message 2" }), el("span", { text: "A local connector (“Command on this Mac”) answers once, then fails with “Transport closed.” I built the web connector to get around it. The real fix is inside HeyClicky: keep the local session open." })]),
+          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "bug" }), el("b", { text: "Local connectors stop at message 2" }), el("span", { text: "A local connector (added with “Command on this Mac”) answers once. The second message fails with “Transport closed.” I built the web connector here to get around it. The real fix is inside HeyClicky: keep the local session open between messages." })]),
           el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "missing hook" }), el("b", { text: "A Clicky can't create a Clicky" }), el("span", { text: "So install is one paste, not one click. A create_clicky tool or a heyclicky://new link would close the gap." })]),
           el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "upgrade moment" }), el("b", { text: "Daily routines need Pro" }), el("span", { text: "Job Hunter uses about 30 agent messages a month, more than Free's 25. Saying so up front beats a surprise limit." })])
-        ]),
-        el("div", { class: "measure reveal", id: "metrics" }, [
-          el("p", { class: "north" }, [el("b", { text: "North star " }), "Shared Clickys still running a week after install, vs Clickys made in onboarding."]),
-          el("ol", { class: "funnel" }, [
-            funnelStep("Views to copies", "does the page make people want it?", 100),
-            funnelStep("Copies to created", "does the paste work?", 82),
-            funnelStep("Created to routine on", "a separate step today, likely the biggest drop", 64),
-            funnelStep("Invite signups", "new users per shared Clicky", 46),
-            funnelStep("Free to Pro", "within 14 days of a “needs Pro” install", 30)
-          ]),
-          el("p", { class: "guard" }, [el("b", { text: "Guardrails " }), "Fewer surprise agent-limit hits, and few shared Clickys archived or reported in week one. Tracking needs one “installed from a share” tag. No real data yet, this is the plan."])
         ])
       ]),
 
-      // ---- 6. who built it, plus quick questions ----
+      // ---- metrics: the journey to a Clicky that sticks, then what else to watch ----
+      el("section", { id: "metrics" }, [
+        sectionHead("how I'd measure it", "is the bet working?"),
+        el("div", { class: "measure reveal" }, [
+          el("ol", { class: "journey", "aria-label": "From a shared page to a Clicky that sticks" }, [
+            journeyStep("👀", "Sees a shared Clicky"),
+            journeyStep("📋", "Copies the setup"),
+            journeyStep("✨", "Creates the Clicky"),
+            journeyStep("⏰", "Turns on its routine", "likely the biggest drop", "drop"),
+            journeyStep("⭐", "Still running on day 7", "north star", "north", "vs Clickys made in onboarding")
+          ]),
+          el("div", { class: "watch" }, [
+            el("div", {}, [el("h3", { text: "also track" }), el("span", { text: "Invite signups per share" }), el("span", { text: "Free → Pro within 14 days" })]),
+            el("div", {}, [el("h3", { text: "guardrails, keep low" }), el("span", { text: "Surprise limit hits" }), el("span", { text: "Reported or archived in week 1" })])
+          ]),
+          el("p", { class: "fine", text: "No real data yet. Tracking needs one “installed from a share” tag." })
+        ])
+      ]),
+
+      // ---- faq ----
+      el("section", { id: "faq" }, [
+        sectionHead("faq", "questions you might have"),
+        el("div", { class: "faq" }, [
+          el("details", { class: "reveal" }, [el("summary", { text: "Is this made by HeyClicky?" }), el("p", { text: "No. It's an unofficial prototype I built on my own to show how sharing could work. It isn't affiliated with or endorsed by HeyClicky." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "What's a Clicky?" }), el("p", { text: "HeyClicky's name for an AI helper that lives in the Mac's notch. Each one does a job for you, like a daily inbox check. Farza's latest update also calls them agent buddies." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "What's a “setup”?" }), el("p", { text: "The text you copy from this page. It tells New Clicky the Clicky's name, job, personality, apps and routine." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "Does installing one use agent messages?" }), el("p", { text: "Making a Clicky on the New Clicky page doesn't use a credit. Its routine does. Every shared Clicky shows roughly how many agent messages its routine uses a month. It says “needs Pro” when that's more than Free's 25." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "Is it safe to paste a setup?" }), el("p", { text: "A setup is instructions for an agent that can reach your apps, so read it first. The full text is on the page before you copy it, and these setups never send email without asking. A real version should also list the apps and actions a setup touches, and review shared ones." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "Why a web connector and a local connector?" }), el("p", { text: "Both let a Clicky list shared Clickys. The local one runs on the Mac and stops after the first message, a bug I found in HeyClicky. The web one runs on Cloudflare and works on every message, so it's the one this page gives you." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "Why isn't install one click?" }), el("p", { text: "A Clicky can't create another Clicky today. With a create_clicky tool or a heyclicky://new link, the Copy setup button could become an Install button." })]),
+          el("details", { class: "reveal" }, [el("summary", { text: "Where's the code?" }), el("p", { text: "On GitHub, MIT licensed, with the tests and a full log of what I tested live." })])
+        ])
+      ]),
+
+      // ---- who built this ----
       el("section", { id: "builder" }, [
-        sectionHead("who built this", "about me"),
+        sectionHead("who built this", "hi, I'm Mohit"),
         el("div", { class: "note-card reveal" }, [
           el("div", { class: "win-bar", "aria-hidden": "true" }, [el("i", { style: "background:#ff5f57" }), el("i", { style: "background:#febc2e" }), el("i", { style: "background:#28c840" }), el("span", { text: "note-from-mohit.txt" })]),
           el("div", { class: "note-body" }, [
@@ -815,35 +892,32 @@
               el("div", { class: "skills" }, ["product discovery", "metrics", "AI agents", "MCP", "Cloudflare Workers", "Python", "JavaScript", "testing"].map(function (s) { return el("span", { text: s }); })),
               el("div", { class: "sig", "aria-hidden": "true", text: "mohit" }),
               el("div", { class: "note-links" }, [
-                el("a", { href: "mailto:mohit.malviya.cornell@gmail.com", text: "Email me" }),
                 el("a", { href: "https://www.linkedin.com/in/malviyamohit/", rel: "noopener", text: "LinkedIn" }),
                 el("a", { class: "alt", href: "https://github.com/Mohit-Malviya-AI-PM/share-a-clicky", rel: "noopener", text: "Code on GitHub" })
               ])
             ])
           ])
-        ]),
-        el("div", { class: "faq", id: "faq" }, [
-          el("h3", { class: "faq-title", text: "quick questions" }),
-          el("details", { class: "reveal" }, [el("summary", { text: "Is this made by HeyClicky?" }), el("p", { text: "No. It's an unofficial prototype I built on my own to show how sharing could work. It isn't affiliated with or endorsed by HeyClicky." })]),
-          el("details", { class: "reveal" }, [el("summary", { text: "Does installing one use agent messages?" }), el("p", { text: "Making a Clicky on the New Clicky page doesn't use a credit. Its routine does. Every shared Clicky shows roughly how many agent messages its routine uses a month, and says “needs Pro” when that's more than Free's 25." })]),
-          el("details", { class: "reveal" }, [el("summary", { text: "Is it safe to paste a setup?" }), el("p", { text: "A setup is instructions for an agent that can reach your apps, so read it first. The full text is on the page before you copy it, and these setups never send email without asking. A real version should also list the apps and actions a setup touches, and review shared ones." })]),
-          el("details", { class: "reveal" }, [el("summary", { text: "Where's the code?" }), el("p", { text: "On GitHub, MIT licensed, with the tests and a full log of what I tested live." })])
         ])
       ])
     );
 
+    var words = ["job hunting", "email follow-ups", "a weekly recap"], wi = 0;
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setInterval(function () { wi = (wi + 1) % words.length; var b = el("b", { text: words[wi].replace(/ (\S+)$/, "\u00a0$1") }); rotating.replaceWith(b); rotating = b; }, 2400);
+    }
     setupReveal();
     enableStickers();
     enablePlayer();
     trackSections();
   }
 
-  function funnelStep(title, why, width) {
-    return el("li", {}, [
-      el("span", { class: "fbar", style: "width:" + width + "%", "aria-hidden": "true" }),
-      el("b", { text: title }), el("span", { text: why })
+  function journeyStep(icon, title, note, kind, sub) {
+    return el("li", { class: kind || "" }, [
+      el("span", { class: "dot", "aria-hidden": "true", text: icon }),
+      el("div", {}, [el("b", { text: title }), note ? el("small", { text: note }) : null, sub ? el("i", { class: "sub-note", text: sub }) : null])
     ]);
   }
+
   function metric(title, why, width) {
     return el("div", { class: "metric reveal" }, [
       el("div", { class: "bar", style: "width:" + width + "%", "aria-hidden": "true" }),
@@ -959,6 +1033,7 @@
   }
 
   function renderLoadError() {
+    setTimeout(function () { keepLastWordsTogether(app); }, 0);
     app.replaceChildren(
       el("div", { class: "hero" }, [
         el("h1", { text: "Couldn't load shared Clickys" }),
@@ -971,9 +1046,11 @@
     if (data.repo_url) document.getElementById("repo-link").href = data.repo_url;
     var requested = requestedValue();
     var wanted = normalizeSlug(requested);
-    if (!wanted) return renderGallery(data);
-    var clicky = data.clickys.find(function (c) { return c.slug === wanted || normalizeSlug(c.name) === wanted; });
-    return clicky ? renderClicky(data, clicky) : renderNotFound(data, requested);
+    var clicky = wanted && data.clickys.find(function (c) { return c.slug === wanted || normalizeSlug(c.name) === wanted; });
+    if (!wanted) renderGallery(data);
+    else if (clicky) renderClicky(data, clicky);
+    else renderNotFound(data, requested);
+    keepLastWordsTogether(app);
   }
 
   function scrollToHash() {
@@ -1166,7 +1243,15 @@
   }
 
   // ---------- stickers across the page (same feel as the hero, one theme per section) ----------
-  var SECTION_STICKERS = {};
+  var SECTION_STICKERS = {
+    shared:    [["tile keep", "📋", "left:0;top:38px;--r:-8deg"]],
+    how:       [["tile keep", "⚡\ufe0f", "right:0;top:30px;--r:9deg;animation-delay:-1s"]],
+    connector: [["tile keep", "🔌", "left:0;top:34px;--r:-6deg;animation-delay:-2.5s"]],
+    findings:  [["stamp keep-text", "bug found", "right:0;top:52px;--r:8deg;animation-delay:-3s"]],
+    metrics:   [["tile keep", "📈", "left:0;top:40px;--r:-7deg;animation-delay:-1s"]],
+    faq:       [["tile keep", "💬", "right:0;top:26px;--r:8deg;animation-delay:-2s"]],
+    builder:   [["stamp keep-text", "open to remote", "left:0;top:44px;--r:-6deg;animation-delay:-2.2s"]]
+  };
   function decorateSections() {
     Object.keys(SECTION_STICKERS).forEach(function (id) {
       var sec = document.getElementById(id);
@@ -1233,11 +1318,26 @@
         if (!e.isIntersecting) return;
         links.forEach(function (a) { a.classList.remove("active"); a.removeAttribute("aria-current"); });
         var a = byId[e.target.id];
-        if (a) { a.classList.add("active"); a.setAttribute("aria-current", "true"); if (window.innerWidth <= 1200) a.parentNode.scrollLeft = a.offsetLeft - 40; }
+        if (a) { a.classList.add("active"); a.setAttribute("aria-current", "true"); }
       });
     }, { rootMargin: "-45% 0px -50% 0px" });
     Object.keys(byId).forEach(function (id) { var sec = document.getElementById(id); if (sec) io.observe(sec); });
   }
+
+  // ---------- phones: the nav rows slide away while scrolling down, back on any scroll up ----------
+  (function tuckNav() {
+    var bar = document.querySelector(".menubar"), small = window.matchMedia("(max-width: 640px)");
+    if (!bar) return;
+    var lastY = window.scrollY;
+    window.addEventListener("scroll", function () {
+      var y = window.scrollY, moved = y - lastY;
+      if (y < 80) { bar.classList.remove("tuck"); lastY = y; return; }
+      if (Math.abs(moved) < 12) return;
+      bar.classList.toggle("tuck", small.matches && moved > 0);
+      lastY = y;
+    }, { passive: true });
+    bar.addEventListener("focusin", function () { bar.classList.remove("tuck"); });
+  })();
 
   // ---------- mohit's radio: off by default, ducks while any video plays with sound ----------
   // Music: Kevin MacLeod (incompetech.com), CC BY 4.0. Credits are in the footer.
@@ -1497,6 +1597,7 @@
     io.observe(svg);
   })();
 
+  keepLastWordsTogether(document.querySelector("footer"));
   fetch("../clickys.json", { cache: "no-cache" })
     .then(function (response) {
       if (!response.ok) throw new Error("HTTP " + response.status);
