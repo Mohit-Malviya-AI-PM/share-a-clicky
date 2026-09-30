@@ -522,18 +522,27 @@
     .mb-links { flex-wrap: wrap; justify-content: center; overflow: visible; margin: 0; padding: 2px 0 4px; row-gap: 2px; }
     .mb-links a.active { box-shadow: 0 0 0 1px var(--line); }
   }
+  /* Phones: one clean top row. The sections open from a menu button as a 2-column panel. */
+  .mb-menu { display: none; }
   @media (max-width: 640px) {
-    /* The link rows float just under the top bar, so hiding them never shifts the page. */
-    .menubar .mb-row { padding: 8px 14px; }
-    .mb-links { position: absolute; left: 0; right: 0; top: 100%; font-size: 13.5px; padding: 4px 10px 7px; gap: 2px 0;
-      background: color-mix(in srgb, var(--bg) 94%, transparent); backdrop-filter: saturate(1.6) blur(14px); -webkit-backdrop-filter: saturate(1.6) blur(14px);
-      border-bottom: 1px solid var(--line); transition: transform .25s ease, opacity .2s ease; }
-    .mb-links a { padding: 4px 9px; }
-    .menubar.tuck .mb-links { transform: translateY(-100%); opacity: 0; pointer-events: none; }
-    .wrap { padding-top: 58px; }
-    section[id], #demo { scroll-margin-top: 116px; }
+    .menubar .mb-row { padding: 8px 14px; flex-wrap: nowrap; }
+    .menubar .top-right { gap: 8px; }
+    .mb-menu { display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); cursor: pointer; }
+    .mb-menu svg { width: 16px; height: 16px; }
+    .mb-menu .ic-close { display: none; }
+    .menubar.open .mb-menu .ic-open { display: none; }
+    .menubar.open .mb-menu .ic-close { display: block; }
+    .mb-menu:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+    .mb-links { position: absolute; left: 0; right: 0; top: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 14px 16px; margin: 0;
+      font-size: 15px; background: var(--bg); border-bottom: 1px solid var(--line); box-shadow: 0 18px 30px -18px rgba(0,0,0,.35);
+      opacity: 0; transform: translateY(-6px); pointer-events: none; visibility: hidden; transition: opacity .15s ease, transform .15s ease, visibility 0s .15s; }
+    .menubar.open .mb-links { opacity: 1; transform: none; pointer-events: auto; visibility: visible; transition: opacity .15s ease, transform .15s ease; }
+    .mb-links a { display: block; padding: 11px 14px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); color: var(--text); white-space: nowrap; }
+    .mb-links a.active { background: var(--surface); color: var(--accent); font-weight: 600; box-shadow: inset 0 0 0 1.5px var(--accent); }
+    section[id], #demo { scroll-margin-top: 64px; }
   }
-  @media (max-width: 640px) and (prefers-reduced-motion: reduce) { .mb-links { transition: none; } }
+  @media (max-width: 640px) and (prefers-reduced-motion: reduce) { .mb-links, .menubar.open .mb-links { transition: none; } }
+  @media (max-width: 350px) { .menubar .gh { display: none; } } /* smallest phones: GitHub stays in about me and the FAQ */
 
   /* ---- "is the bet working?": journey to the north star ---- */
   .measure { max-width: 980px; margin: 0 auto; }
@@ -562,9 +571,14 @@
     .watch { grid-template-columns: 1fr; max-width: 420px; margin-inline: auto; }
   }
 
+  /* ---- kicker: always one line ---- */
+  .kicker { white-space: nowrap; max-width: 100%; }
+  .kicker .k-short { display: none; }
+  @media (max-width: 640px) { .kicker .k-long { display: none; } .kicker .k-short { display: inline; } .kicker { font-size: clamp(12px, 3.6vw, 13.5px); } }
+
   /* ---- no one-word last lines (with keepLastWordsTogether in the script as a fallback) ---- */
   p, li, dd, dt, blockquote, figcaption, summary, footer span, .finding span, .idea-card span, .step span, .metric span, .tldr span, .flow-note { text-wrap: pretty; }
-  h1, h2, h3, .kicker, .sub, .rotator, .section-head p, .faq summary, .ask, .by, .card p, .tldr span, .btn { text-wrap: balance; }
+  h1, h2, h3, .sub, .rotator, .section-head p, .faq summary, .ask, .by, .card p, .tldr span, .btn { text-wrap: balance; }
 </style>
 </head>
 <body>
@@ -573,7 +587,7 @@
     <div class="mb-left">
       <a class="wordmark" href="./"><svg class="logo" aria-hidden="true" viewBox="0 0 64 64"><defs><linearGradient id="sac-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d8bff"/><stop offset="1" stop-color="#0a4fd0"/></linearGradient></defs><rect x="2" y="2" width="60" height="60" rx="17" fill="url(#sac-bg)"/><g fill="none" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"><path stroke="#fff" d="M11 25 L17 18 L27.5 40"/><path stroke="#fff" d="M32 25 L38 18 L44 25"/><path stroke="#ffd24d" d="M27.5 40 L50 40"/><path stroke="#ffd24d" d="M44.5 34.5 L50 40 L44.5 45.5"/></g></svg>share-a-clicky</a>
     </div>
-    <nav class="mb-links" aria-label="Sections">
+    <nav class="mb-links" id="mb-links" aria-label="Sections">
       <a href="./#idea">idea</a><a href="./#shared">clickys</a><a href="./#how">how it works</a><a href="./#connector">connector</a><a href="./#findings">findings</a><a href="./#metrics">metrics</a><a href="./#faq">faq</a><a href="./#builder">about me</a>
     </nav>
     <div class="top-right">
@@ -589,6 +603,7 @@
         <div class="np-toast" role="status" aria-live="polite"></div>
       </div>
       <a class="gh" id="repo-link" href="https://github.com/Mohit-Malviya-AI-PM/share-a-clicky" rel="noopener" aria-label="Code on GitHub" title="Code on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+      <button class="mb-menu" type="button" aria-label="Sections" aria-expanded="false" aria-controls="mb-links"><svg class="ic-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg><svg class="ic-close" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
     </div>
   </div>
 </header>
@@ -637,7 +652,7 @@
   // Skips anything people copy (connector URL, setup text) so copied text stays exact.
   var NO_GLUE = "textarea, .code, .term-body, script, style, svg, .marquee, .vp-cap, .np-toast, .sticker, .drag-hint, .kaomoji, #tiles, noscript";
   function keepLastWordsTogether(root) {
-    var blocks = (root || document.body).querySelectorAll("p, li, dd, dt, h1, h2, h3, summary, figcaption, blockquote, .kicker, .ask, .rotator, a.btn, footer span, .finding span, .idea-card span, .step span, .metric span, .tldr span, .journey b, .journey small, .journey .sub-note, .watch span");
+    var blocks = (root || document.body).querySelectorAll("p, li, dd, dt, h1, h2, h3, summary, figcaption, blockquote, .ask, .rotator, a.btn, footer span, .finding span, .idea-card span, .step span, .metric span, .tldr span, .journey b, .journey small, .journey .sub-note, .watch span");
     Array.prototype.forEach.call(blocks, function (block) {
       if (block.closest(NO_GLUE)) return;
       var texts = [], walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, null);
@@ -748,7 +763,7 @@
         el("span", { class: "sticker stamp go", style: "right:5%;top:290px;--r:7deg;animation-delay:-3.5s", "aria-hidden": "true", text: "free to share" }),
         el("span", { class: "drag-hint", style: "left:2%;top:172px", "aria-hidden": "true", text: "psst, drag these anywhere ↓" }),
         el("span", { class: "kaomoji", style: "right:3%;top:20px", "aria-hidden": "true", text: "(＾▽＾)/" }),
-        el("div", { class: "kicker" }, [el("span", { class: "dot", "aria-hidden": "true" }), "an unofficial product bet for HeyClicky, built and tested live"]),
+        el("div", { class: "kicker" }, [el("span", { class: "dot", "aria-hidden": "true" }), el("span", { class: "k-long", text: "an unofficial product bet for HeyClicky, built and tested live" }), el("span", { class: "k-short", text: "unofficial product bet · tested live" })]),
         el("h1", {}, [el("span", { class: "line", text: "start with a clicky" }), " ", el("span", { class: "line" }, ["that ", el("mark", { class: "hl", text: "already works" })])]),
         el("p", { class: "rotator", "aria-hidden": "true" }, ["a shared Clicky for ", rotating]),
         el("p", { class: "sub", text: "Share a Clicky you've set up for a real job. A friend pastes its setup into HeyClicky, connects their apps, and starts from something that already works. The sharer's invite link comes along." }),
@@ -1321,19 +1336,20 @@
     Object.keys(byId).forEach(function (id) { var sec = document.getElementById(id); if (sec) io.observe(sec); });
   }
 
-  // ---------- phones: the nav rows slide away while scrolling down, back on any scroll up ----------
-  (function tuckNav() {
-    var bar = document.querySelector(".menubar"), small = window.matchMedia("(max-width: 640px)");
-    if (!bar) return;
-    var lastY = window.scrollY;
-    window.addEventListener("scroll", function () {
-      var y = window.scrollY, moved = y - lastY;
-      if (y < 80) { bar.classList.remove("tuck"); lastY = y; return; }
-      if (Math.abs(moved) < 12) return;
-      bar.classList.toggle("tuck", small.matches && moved > 0);
-      lastY = y;
-    }, { passive: true });
-    bar.addEventListener("focusin", function () { bar.classList.remove("tuck"); });
+  // ---------- phones: sections open from the menu button ----------
+  (function sectionsMenu() {
+    var bar = document.querySelector(".menubar"), button = document.querySelector(".mb-menu"), nav = document.getElementById("mb-links");
+    if (!bar || !button || !nav) return;
+    function setOpen(open) {
+      bar.classList.toggle("open", open);
+      button.setAttribute("aria-expanded", open ? "true" : "false");
+      button.setAttribute("aria-label", open ? "Close sections" : "Sections");
+    }
+    button.addEventListener("click", function () { setOpen(!bar.classList.contains("open")); });
+    nav.addEventListener("click", function (e) { if (e.target.closest("a")) setOpen(false); });
+    document.addEventListener("click", function (e) { if (!bar.contains(e.target)) setOpen(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && bar.classList.contains("open")) { setOpen(false); button.focus(); } });
+    window.matchMedia("(max-width: 640px)").addEventListener("change", function () { setOpen(false); });
   })();
 
   // ---------- mohit's radio: off by default, ducks while any video plays with sound ----------

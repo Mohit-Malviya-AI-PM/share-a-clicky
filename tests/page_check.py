@@ -175,9 +175,13 @@ def main():
                           page.locator("#metrics .journey li").count() == 5 and page.locator("#metrics .journey li.north").count() == 1
                           and page.locator("#metrics .metric, #metrics .flow").count() == 0 and page.locator("#metrics .watch > div").count() == 2)
                     check(f"metrics stays short (under 90 words incl. emoji and heading, was 126) [{tag}]", len(txt(page, "#metrics").split()) < 90)
-                nav_fits = page.evaluate("""[...document.querySelectorAll('.mb-links a')].every(a => { const r = a.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.width > 0; })
-                    && document.querySelector('.mb-links').scrollWidth <= document.querySelector('.mb-links').clientWidth + 1""")
-                check(f"every nav link is on screen, no sideways scroll [{tag}]", nav_fits)
+                if label == "desktop":
+                    nav_fits = page.evaluate("""[...document.querySelectorAll('.mb-links a')].every(a => { const r = a.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth && r.width > 0; })
+                        && document.querySelector('.mb-links').scrollWidth <= document.querySelector('.mb-links').clientWidth + 1""")
+                    check(f"every nav link is on screen, no sideways scroll [{tag}]", nav_fits)
+                else:
+                    check(f"phone: sections sit behind the menu button [{tag}]",
+                          page.is_visible(".mb-menu") and not page.is_visible(".mb-links a"))
                 if shots:
                     page.screenshot(path=os.path.join(shots, f"gallery-{scheme}-{label}.png"), full_page=True)
 
@@ -265,7 +269,7 @@ def main():
             page.wait_for_selector("h1")
             check(f"share link /c/{clicky['slug']}/ forwards to its detail view", txt(page, "h1") == clicky["name"])
             context.close()
-        # Phone sizes: nav fits at every common width, and slides away / back while scrolling.
+        # Phone sizes: one-row top bar, one-line kicker, working sections menu, no one-word lines.
         for width in (320, 360, 375, 390, 393, 402, 414, 430):
             context = browser.new_context(viewport={"width": width, "height": 800}, is_mobile=True, has_touch=True)
             route_fonts(context)
@@ -273,17 +277,33 @@ def main():
             page.goto(home)
             page.wait_for_selector(".card")
             page.evaluate("document.fonts.ready")
-            fits = page.evaluate("""[...document.querySelectorAll('.mb-links a')].every(a => { const r = a.getBoundingClientRect(); return r.left >= 0 && r.right <= innerWidth; })""")
-            covers = page.evaluate("""(() => { const nav = document.querySelector('.mb-links').getBoundingClientRect(); const k = document.querySelector('.kicker').getBoundingClientRect(); return k.top >= nav.bottom; })()""")
+            bar = page.evaluate("""(() => {
+                const shown = [...document.querySelectorAll('.wordmark, .radio, .gh, .mb-menu')].filter(e => e.offsetWidth).map(e => e.getBoundingClientRect());
+                const apart = shown.every((r, i) => i === 0 || r.left >= shown[i - 1].right);
+                const k = document.querySelector('.kicker'), line = parseFloat(getComputedStyle(k).fontSize) * 1.8;
+                return { oneRow: document.querySelector('.menubar').getBoundingClientRect().height < 60, apart, inside: shown.every(r => r.left >= 0 && r.right <= innerWidth),
+                         kickerOneLine: k.getBoundingClientRect().height < line + 14 && k.getBoundingClientRect().right <= innerWidth };
+            })()""")
             widows = page.evaluate(WIDOWS_JS)
-            check(f"phone {width}px: all 8 nav links on screen, none hides the page top, no one-word lines {widows[:2]}", fits and covers and not widows)
+            check(f"phone {width}px: top bar one row, nothing overlaps, kicker on one line, no one-word lines {bar} {widows[:2]}",
+                  all(bar.values()) and not widows)
+            page.tap(".mb-menu")
+            page.wait_for_timeout(250)
+            opened = page.evaluate("""[...document.querySelectorAll('.mb-links a')].every(a => { const r = a.getBoundingClientRect(); return r.width > 0 && r.left >= 0 && r.right <= innerWidth && r.height >= 40; })""")
+            check(f"phone {width}px: menu shows all 8 sections, on screen, easy to tap", opened and page.locator(".mb-links a").count() == 8)
             if width == 390:
-                for y in (1500, 1900):
-                    page.evaluate(f"window.scrollTo({{top: {y}, behavior: 'instant'}})"); page.wait_for_timeout(300)
-                tucked = page.evaluate("document.querySelector('.menubar').classList.contains('tuck')")
-                page.evaluate("window.scrollTo({top: 1700, behavior: 'instant'})"); page.wait_for_timeout(300)
-                back = not page.evaluate("document.querySelector('.menubar').classList.contains('tuck')")
-                check("phone: nav rows slide away scrolling down and come back scrolling up", tucked and back)
+                check("phone: menu button says it is open", page.get_attribute(".mb-menu", "aria-expanded") == "true")
+                page.tap(".mb-links a[href$='#metrics']")
+                page.wait_for_timeout(900)
+                closed = not page.evaluate("document.querySelector('.menubar').classList.contains('open')")
+                landed = abs(page.evaluate("document.getElementById('metrics').getBoundingClientRect().top") - 64) < 30
+                check("phone: tapping a section closes the menu and lands on it", closed and landed)
+                page.tap(".mb-menu"); page.wait_for_timeout(200)
+                page.keyboard.press("Escape"); page.wait_for_timeout(200)
+                check("phone: Escape closes the menu", not page.evaluate("document.querySelector('.menubar').classList.contains('open')"))
+                page.tap(".mb-menu"); page.wait_for_timeout(200)
+                page.tap("#metrics h2"); page.wait_for_timeout(200)
+                check("phone: tapping outside closes the menu", not page.evaluate("document.querySelector('.menubar').classList.contains('open')"))
             context.close()
         browser.close()
 
