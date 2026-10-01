@@ -478,6 +478,29 @@
   .sticker.stamp { font: 800 15px/1 Inter, sans-serif; letter-spacing: .06em; color: #c2382a; border: 3px solid #c2382a; border-radius: 8px; padding: 6px 10px; background: rgba(255,250,240,.95); text-transform: uppercase; }
   .sticker.stamp.go { color: #2f7a45; border-color: #2f7a45; }
   .sticker.live { font: 700 22px/1 Caveat, cursive; color: #fff; background: #2f7a45; padding: 8px 14px; border-radius: 999px; box-shadow: 0 10px 22px -10px rgba(0,0,0,.45); }
+
+  /* PRD note next to the hero buttons: words pop in, then a pen-drawn arrow */
+  .cta { position: relative; }
+  .prd-note { position: absolute; left: calc(50% + 232px); top: -20px; width: 290px; text-align: left; font: 700 22px/1.2 Caveat, cursive; color: var(--text-2); transform: rotate(-3deg); z-index: 2; }
+  .prd-note .words { display: block; transform-origin: 0 50%; }
+  .prd-note a { color: var(--coral); text-decoration: underline wavy; text-decoration-thickness: 1.5px; text-underline-offset: 5px; }
+  .prd-note a:hover { color: var(--text); }
+  .prd-note svg { display: block; width: 132px; height: 98px; margin: 2px 0 0 0; overflow: visible; }
+  .prd-note path { fill: none; stroke: var(--coral); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .prd-note .words { opacity: 0; animation: prd-pop .6s cubic-bezier(.2,1.6,.4,1) .5s forwards, prd-wiggle .7s ease-in-out 2.15s; }
+  .prd-note .shaft { animation: prd-draw .9s cubic-bezier(.6,.1,.3,1) 1s forwards; }
+  .prd-note .head { animation: prd-draw .22s ease-out 1.85s forwards; }
+  @keyframes prd-pop { 0% { opacity: 0; transform: scale(.55) rotate(-12deg) translateY(10px); } 100% { opacity: 1; transform: none; } }
+  @keyframes prd-wiggle { 0%, 100% { transform: none; } 25% { transform: rotate(-3deg) scale(1.03); } 75% { transform: rotate(2.5deg); } }
+  @keyframes prd-draw { to { stroke-dashoffset: 0; } }
+  @media (max-width: 1000px) {
+    .prd-note { position: static; width: auto; margin: 14px auto 0; text-align: center; transform: rotate(-2deg); font-size: 22px; }
+    .prd-note .words { transform-origin: 50% 50%; }
+    .prd-note svg { width: 90px; height: 66px; margin: 4px auto 0; }
+    .prd-note .loop { display: none; }
+  }
+  @media (min-width: 1001px) { .prd-note .down { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .prd-note .words, .prd-note path { animation: none; opacity: 1; stroke-dashoffset: 0; } }
   .drag-hint { position: absolute; font: 700 20px/1 Caveat, cursive; color: var(--text-3); user-select: none; pointer-events: none; }
 
   /* tl;dr card */
@@ -674,7 +697,7 @@
   // Glue the last two words of every text block with a no-break space, so a line never ends
   // with one word on its own. Works in every browser; CSS text-wrap only helps where supported.
   // Skips anything people copy (connector URL, setup text) so copied text stays exact.
-  var NO_GLUE = "textarea, .code, .term-body, script, style, svg, .marquee, .vp-cap, .np-toast, .sticker, .drag-hint, .kaomoji, #tiles, noscript";
+  var NO_GLUE = ".prd-note, textarea, .code, .term-body, script, style, svg, .marquee, .vp-cap, .np-toast, .sticker, .drag-hint, .kaomoji, #tiles, noscript";
   function keepLastWordsTogether(root) {
     var blocks = (root || document.body).querySelectorAll("p, li, dd, dt, h1, h2, h3, summary, figcaption, blockquote, .ask, .rotator, a.btn, footer span, .finding span, .idea-card span, .step span, .metric span, .tldr span, .journey b, .journey small, .journey .sub-note, .watch span");
     Array.prototype.forEach.call(blocks, function (block) {
@@ -747,6 +770,20 @@
     return span;
   }
 
+  function prdNote() {
+    var note = el("div", { class: "prd-note" }, [
+      el("span", { class: "words" }, ["psst, this page is the PRD.", el("br"),
+        el("a", { href: "https://github.com/Mohit-Malviya-AI-PM/share-a-clicky#for-engineers-how-its-built-tests-and-running-it", target: "_blank", rel: "noopener", text: "Engineering specs are on GitHub ↗" })])
+    ]);
+    var svg = '<svg viewBox="0 0 120 90" aria-hidden="true">'
+      + '<g class="loop"><path class="shaft" pathLength="1" d="M70 4 C 92 20, 94 46, 70 49 C 50 51, 49 30, 65 31 C 82 32, 72 64, 30 80"/>'
+      + '<path class="head" pathLength="1" d="M37.4 70.6 L30 80 L41.9 81.7"/></g>'
+      + '<g class="down"><path class="shaft" pathLength="1" d="M60 4 C 50 22, 72 34, 60 58 C 56 68, 58 76, 60 84"/>'
+      + '<path class="head" pathLength="1" d="M51 75 L60 85 L69 75"/></g></svg>';
+    note.insertAdjacentHTML("beforeend", svg);
+    return note;
+  }
+
   function clickyCard(clicky) {
     return el("a", { class: "card", href: "?c=" + encodeURIComponent(clicky.slug) }, [
       el("div", { class: "emoji", "aria-hidden": "true", text: clicky.emoji }),
@@ -800,7 +837,8 @@
         el("p", { class: "sub", text: "Share a Clicky you've set up for a real job. A friend pastes its setup into HeyClicky, connects their apps, and starts from something that already works. The sharer's invite link comes along." }),
         el("div", { class: "cta" }, [
           el("a", { class: "btn", href: "#shared", text: "Browse shared Clickys" }),
-          el("a", { class: "btn secondary", href: "#demo", text: "▶ Watch the 1-minute demo" })
+          el("a", { class: "btn secondary", href: "#demo", text: "▶ Watch the 1-minute demo" }),
+          prdNote()
         ]),
         demoPlayer(),
         el("div", { class: "tldr" }, [
