@@ -804,6 +804,13 @@
       note.style.display = "";
       note.style.top = Math.round(r.bottom + 2) + "px";
       note.style.right = Math.max(8, Math.round(window.innerWidth - r.right - 4)) + "px";
+      // keep the (＾▽＾)/ clear of this note: slide it left if they touch
+      var k = document.querySelector(".hero .kaomoji");
+      if (k) {
+        k.style.transform = "";
+        var kr = k.getBoundingClientRect(), nr = note.getBoundingClientRect();
+        if (kr.width && nr.width && kr.right + 16 > nr.left && kr.left < nr.right && kr.top < nr.bottom && kr.bottom > nr.top) k.style.transform = "translateX(" + Math.round(nr.left - 16 - kr.right) + "px)";
+      }
     }
     function onScroll() { note.classList.toggle("gone", window.scrollY > 40 || !document.querySelector(".hero")); }
     place(); onScroll();
