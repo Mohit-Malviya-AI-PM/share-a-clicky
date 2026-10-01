@@ -853,12 +853,12 @@
       // ---- hero ----
       el("div", { class: "hero" }, [
         el("span", { class: "sticker tile", style: "left:3%;top:40px;--r:-10deg", "aria-hidden": "true", text: "💼" }),
-        el("span", { class: "sticker tile", style: "right:5%;top:70px;--r:8deg;animation-delay:-2s", "aria-hidden": "true", text: "📬" }),
-        el("span", { class: "sticker tag", style: "right:4%;top:170px;--r:-6deg;animation-delay:-1s", "aria-hidden": "true", text: "shared by @mohit" }),
+        el("span", { class: "sticker tile", style: "left:min(calc(50% + 328px), calc(100% - 80px));top:514px;--r:8deg;animation-delay:-2s", "aria-hidden": "true", text: "📬" }),
+        el("span", { class: "sticker tag", style: "left:min(calc(50% + 386px), calc(100% - 180px));top:189px;--r:-6deg;animation-delay:-1s", "aria-hidden": "true", text: "shared by @mohit" }),
         el("span", { class: "sticker live", style: "left:2%;top:205px;--r:-4deg;animation-delay:-2.5s", "aria-hidden": "true", text: "tested live ✓" }),
-        el("span", { class: "sticker stamp go", style: "right:5%;top:290px;--r:7deg;animation-delay:-3.5s", "aria-hidden": "true", text: "free to share" }),
+        el("span", { class: "sticker stamp go", style: "left:min(calc(50% + 349px), calc(100% - 175px));top:313px;--r:7deg;animation-delay:-3.5s", "aria-hidden": "true", text: "free to share" }),
         el("span", { class: "drag-hint", style: "left:2%;top:172px", "aria-hidden": "true", text: "psst, drag these anywhere ↓" }),
-        el("span", { class: "kaomoji", style: "right:3%;top:20px", "aria-hidden": "true", text: "(＾▽＾)/" }),
+        el("span", { class: "kaomoji", style: "right:max(3%, calc(50% - 470px));top:20px", "aria-hidden": "true", text: "(＾▽＾)/" }),
         el("div", { class: "kicker" }, [el("span", { class: "dot", "aria-hidden": "true" }), el("span", { class: "k-long", text: "an unofficial product bet for HeyClicky, built and tested live" }), el("span", { class: "k-short", text: "unofficial product bet · tested live" })]),
         el("h1", {}, [el("span", { class: "line", text: "start with a clicky" }), " ", el("span", { class: "line" }, ["that ", el("mark", { class: "hl", text: "already works" })])]),
         el("p", { class: "rotator", "aria-hidden": "true" }, ["a shared Clicky for ", rotating]),
