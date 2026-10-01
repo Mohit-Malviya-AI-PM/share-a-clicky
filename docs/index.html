@@ -1239,7 +1239,21 @@
     });
     q(".vp-full").addEventListener("click", fullscreen);
     q(".tl-green").addEventListener("click", fullscreen);
-    q(".tl-red").addEventListener("click", function () { video.pause(); seek(0); frame.classList.remove("started"); cap.textContent = ""; cap.classList.remove("show"); });
+    // Red dot: stop and go back to the title screen (poster, big play button), like a fresh page load
+    q(".tl-red").addEventListener("click", function () {
+      if (document.pictureInPictureElement) document.exitPictureInPicture().catch(function () {});
+      if (isFull()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      video.pause();
+      try { video.currentTime = 0; } catch (e) {}
+      video.load(); // drops the current frame so the poster shows again
+      video.playbackRate = 1; speedBtn.textContent = "1×"; speedBtn.setAttribute("aria-label", "Playback speed 1x");
+      cap.textContent = ""; cap.classList.remove("show");
+      frame.classList.remove("started", "idle"); frame.classList.add("paused");
+      fill.style.width = "0%"; knob.style.left = "0%"; buf.style.width = "0%";
+      q(".vp-cur").textContent = fmt(0);
+      chips.forEach(function (c) { c.classList.remove("now"); });
+      playBtn.innerHTML = ICON.play; playBtn.setAttribute("aria-label", "Play");
+    });
     var yellow = q(".tl-yellow");
     if (document.pictureInPictureEnabled && video.requestPictureInPicture) {
       yellow.addEventListener("click", function () {
