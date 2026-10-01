@@ -155,12 +155,13 @@
   .card:hover { transform: translateY(-3px); text-decoration: none; box-shadow: var(--shadow-lg); }
   .card { position: relative; }
   .card:hover, .card:focus-visible { border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
-  .card .go { position: absolute; top: 29px; right: 20px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--line); color: var(--text); transition: background .18s ease, color .18s ease, transform .18s ease, border-color .18s ease; }
+  .card .go { position: absolute; top: 29px; right: 20px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); border: 1px solid var(--accent); color: #fff; transition: background .18s ease, color .18s ease, transform .18s ease, border-color .18s ease; }
   .card .go svg { width: 16px; height: 16px; }
-  .card:hover .go, .card:focus-visible .go { background: var(--accent); border-color: var(--accent); color: #fff; transform: translate(2px, -2px); }
+  .card:hover .go, .card:focus-visible .go { transform: translate(2px, -2px) scale(1.08); }
   .card:active { transform: translateY(-1px) scale(.99); }
   .card .emoji { font-size: 30px; line-height: 1; width: 52px; height: 52px; display: grid; place-items: center; background: var(--surface-2); border-radius: 14px; margin-bottom: 14px; }
-  .card p { margin: 0 0 16px; color: var(--text-2); font-size: 15px; flex: 1; }
+  .card p { margin: 0 0 16px; color: var(--text-2); font-size: 15px; line-height: 1.55; min-height: 3.1em; text-wrap: wrap; }
+  .card .meta { margin-top: auto; }
   .meta { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip { font-size: 12.5px; background: var(--surface-2); border-radius: 999px; padding: 3px 10px; color: var(--text-2); }
   .chip.example { background: rgba(15,111,255,.1); color: var(--accent); font-weight: 500; }
@@ -635,7 +636,7 @@
 
   /* ---- no one-word last lines (with keepLastWordsTogether in the script as a fallback) ---- */
   p, li, dd, dt, blockquote, figcaption, summary, footer span, .finding span, .idea-card span, .step span, .metric span, .tldr span, .flow-note { text-wrap: pretty; }
-  h1, h2, h3, .sub, .rotator, .section-head p, .faq summary, .ask, .by, .card p, .tldr span, .btn { text-wrap: balance; }
+  h1, h2, h3, .sub, .rotator, .section-head p, .faq summary, .ask, .by, .tldr span, .btn { text-wrap: balance; }
 </style>
 </head>
 <body>
@@ -857,7 +858,7 @@
         el("span", { class: "sticker live", style: "left:2%;top:205px;--r:-4deg;animation-delay:-2.5s", "aria-hidden": "true", text: "tested live ✓" }),
         el("span", { class: "sticker stamp go", style: "right:5%;top:290px;--r:7deg;animation-delay:-3.5s", "aria-hidden": "true", text: "free to share" }),
         el("span", { class: "drag-hint", style: "left:2%;top:172px", "aria-hidden": "true", text: "psst, drag these anywhere ↓" }),
-        el("span", { class: "kaomoji", style: "left:16%;top:30px", "aria-hidden": "true", text: "(＾▽＾)/" }),
+        el("span", { class: "kaomoji", style: "right:3%;top:20px", "aria-hidden": "true", text: "(＾▽＾)/" }),
         el("div", { class: "kicker" }, [el("span", { class: "dot", "aria-hidden": "true" }), el("span", { class: "k-long", text: "an unofficial product bet for HeyClicky, built and tested live" }), el("span", { class: "k-short", text: "unofficial product bet · tested live" })]),
         el("h1", {}, [el("span", { class: "line", text: "start with a clicky" }), " ", el("span", { class: "line" }, ["that ", el("mark", { class: "hl", text: "already works" })])]),
         el("p", { class: "rotator", "aria-hidden": "true" }, ["a shared Clicky for ", rotating]),
