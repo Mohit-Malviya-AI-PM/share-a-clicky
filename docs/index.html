@@ -140,10 +140,12 @@
   .builder .links { display: flex; flex-wrap: wrap; gap: 16px; font-size: 14.5px; font-weight: 500; }
 
   /* sections */
-  section { padding: 64px 0 0; }
+  section { padding: 112px 0 0; }
+  @media (max-width: 700px) { section { padding-top: 84px; } }
   .eyebrow { font-family: var(--mono); font-size: 12px; text-transform: lowercase; color: var(--text-3); letter-spacing: 0; margin-bottom: 10px; }
   .section-head { text-align: center; margin-bottom: 26px; }
-  .section-head p { color: var(--text-2); margin: 0 auto; max-width: 560px; }
+  .section-head p { color: var(--text-2); margin: 0 auto; max-width: 500px; line-height: 1.65; }
+  .section-head { margin-bottom: 36px; }
 
   /* clicky cards */
   .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
@@ -747,6 +749,8 @@
     return span;
   }
 
+  function firstSentence(text) { var m = String(text).match(/^.*?[.!?](?=\s|$)/); return m ? m[0] : text; }
+
   function clickyCard(clicky) {
     return el("a", { class: "card", href: "?c=" + encodeURIComponent(clicky.slug) }, [
       el("div", { class: "emoji", "aria-hidden": "true", text: clicky.emoji }),
@@ -797,17 +801,12 @@
         el("div", { class: "kicker" }, [el("span", { class: "dot", "aria-hidden": "true" }), el("span", { class: "k-long", text: "an unofficial product bet for HeyClicky, built and tested live" }), el("span", { class: "k-short", text: "unofficial product bet · tested live" })]),
         el("h1", {}, [el("span", { class: "line", text: "start with a clicky" }), " ", el("span", { class: "line" }, ["that ", el("mark", { class: "hl", text: "already works" })])]),
         el("p", { class: "rotator", "aria-hidden": "true" }, ["a shared Clicky for ", rotating]),
-        el("p", { class: "sub", text: "Share a Clicky you've set up for a real job. A friend pastes its setup into HeyClicky, connects their apps, and starts from something that already works. The sharer's invite link comes along." }),
+        el("p", { class: "sub", text: "Share a Clicky you already use, and a friend starts from something that works." }),
         el("div", { class: "cta" }, [
           el("a", { class: "btn", href: "#shared", text: "Browse shared Clickys" }),
           el("a", { class: "btn secondary", href: "#demo", text: "▶ Watch the 1-minute demo" })
         ]),
-        demoPlayer(),
-        el("div", { class: "tldr" }, [
-          el("div", {}, [el("b", { text: "what" }), el("span", { text: "Share a Clicky you already use. A friend pastes its setup into New Clicky." })]),
-          el("div", {}, [el("b", { text: "why" }), el("span", { text: "New Clickys start from a guess. Shared ones start from something that works, and the invite link comes along." })]),
-          el("div", {}, [el("b", { text: "proof" }), el("span", { text: "Built it, tested it live on HeyClicky 1.0.52, and found 2 gaps along the way." })])
-        ])
+        demoPlayer()
       ]),
       el("div", { class: "marquee", "aria-hidden": "true" }, [el("div", { class: "track" }, marqueeRow().concat(marqueeRow()))]),
 
@@ -815,20 +814,20 @@
       el("section", { id: "idea", class: "sky" }, [
         el("span", { class: "cloud", style: "top:22px;animation-delay:-6s", "aria-hidden": "true" }),
         el("span", { class: "cloud", style: "top:70%;animation-delay:-24s;transform:scale(.8)", "aria-hidden": "true" }),
-        sectionHead("the idea", "why sharing, why now", "The product thinking behind the build: the gap, the bet, and why it fits where HeyClicky is headed."),
+        sectionHead("the idea", "why sharing, why now"),
         el("div", { class: "idea" }, [
           el("div", { class: "idea-card reveal" }, [el("span", { class: "badge", style: "background:rgba(232,116,74,.16)", "aria-hidden": "true", text: "🧩" }), el("b", { text: "The gap" }),
-            el("span", { text: "A new Clicky comes from four onboarding questions or a short interview. There's no way to start from a Clicky a friend already runs for a real job." })]),
+            el("span", { text: "New Clickys start from four questions, never from one a friend already runs." })]),
           el("div", { class: "idea-card reveal" }, [el("span", { class: "badge", style: "background:rgba(31,111,232,.14)", "aria-hidden": "true", text: "🎯" }), el("b", { text: "The bet" }),
-            el("span", { text: "A Clicky from someone you trust, for a job they really have, makes a strong first Clicky. It sits right next to HeyClicky's own suggestions." })]),
+            el("span", { text: "A Clicky a friend really uses makes a stronger first Clicky." })]),
           el("div", { class: "idea-card reveal" }, [el("span", { class: "badge", style: "background:rgba(95,174,104,.16)", "aria-hidden": "true", text: "🚀" }), el("b", { text: "Why it fits now" }),
-            el("span", { text: "Invite & Earn (Sep 24) gives people a reason to share. A shared Clicky gives the invite link something specific to carry." })])
+            el("span", { text: "Invite & Earn gives people a reason to share. This gives the link something to carry." })])
         ])
       ]),
 
       // ---- gallery ----
       el("section", { id: "shared" }, [
-        sectionHead("shared clickys", "pick one, copy, paste", "Job Hunter is the one I built for my own job search. The other two are examples. Click one to see its full setup and what it costs."),
+        sectionHead("shared clickys", "pick one, copy, paste", "Click one to see its full setup and what it costs."),
         el("div", { class: "grid" }, data.clickys.map(clickyCard))
       ]),
 
@@ -877,11 +876,11 @@
 
       // ---- findings ----
       el("section", { id: "findings" }, [
-        sectionHead("found while testing it live", "what it taught me about HeyClicky", "Three things I only learned by shipping this into the real app."),
+        sectionHead("found while testing it live", "what it taught me about HeyClicky"),
         el("div", { class: "findings" }, [
-          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "bug" }), el("b", { text: "Local connectors stop at message 2" }), el("span", { text: "A local connector (added with “Command on this Mac”) answers once. The second message fails with “Transport closed.” I built the web connector here to get around it. The real fix is inside HeyClicky: keep the local session open between messages." })]),
-          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "missing hook" }), el("b", { text: "A Clicky can't create a Clicky" }), el("span", { text: "So install is one paste, not one click. A create_clicky tool or a heyclicky://new link would close the gap." })]),
-          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "upgrade moment" }), el("b", { text: "Daily routines need Pro" }), el("span", { text: "Job Hunter uses about 30 agent messages a month, more than Free's 25. Saying so up front beats a surprise limit." })])
+          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "bug" }), el("b", { text: "Local connectors stop at message 2" }), el("span", { text: "The second message fails with “Transport closed.” So I built a web connector that works." })]),
+          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "missing hook" }), el("b", { text: "A Clicky can't create a Clicky" }), el("span", { text: "So install is one paste. A create_clicky tool would make it one click." })]),
+          el("div", { class: "finding reveal" }, [el("span", { class: "k", text: "upgrade moment" }), el("b", { text: "Daily routines need Pro" }), el("span", { text: "Job Hunter needs about 30 agent messages a month. Free has 25." })])
         ])
       ]),
 
@@ -929,9 +928,8 @@
             el("div", {}, [
               el("h3", { text: "Mohit Malviya" }),
               el("div", { class: "roles" }, [el("span", { class: "role", text: "AI product manager who builds" }), el("span", { class: "role alt", text: "Cornell MBA" })]),
-              el("p", { text: "6.5 years in product management, most recently leading the beta of an AI triage agent in Jira during a PM internship at Atlassian. Computer science engineering degree, first job writing code as a full-stack product engineer at Wipro, and a fresh Cornell MBA in AI, Tech & Product Management." }),
-              el("p", { text: "Think growth product engineer with product management depth. Share-a-Clicky shows how I work. Find the gap, make a bet, build it end to end, test it live, and know how to measure it." }),
-              el("p", { text: "Based in NYC. Open to remote, and happy to fly out to SF whenever it helps." }),
+              el("p", { text: "6.5 years in product management, most recently leading the beta of an AI triage agent in Jira as a PM intern at Atlassian. I started as a full-stack product engineer at Wipro." }),
+              el("p", { text: "Think growth product engineer with PM depth. Based in NYC, open to remote, happy to fly to SF." }),
               el("div", { class: "skills" }, ["product discovery", "metrics", "AI agents", "MCP", "Cloudflare Workers", "Python", "JavaScript", "testing"].map(function (s) { return el("span", { text: s }); })),
               el("div", { class: "sig", "aria-hidden": "true", text: "mohit" }),
               el("div", { class: "note-links" }, [
@@ -1022,8 +1020,8 @@
         ]),
         el("div", { class: "panel detail-panel" }, [
           clicky.example
-            ? el("p", { style: "margin:0", class: "muted", text: clicky.why_i_use_it })
-            : el("blockquote", {}, [clicky.why_i_use_it, el("cite", { text: clicky.shared_by })])
+            ? el("p", { style: "margin:0", class: "muted", text: firstSentence(clicky.why_i_use_it) })
+            : el("blockquote", {}, [firstSentence(clicky.why_i_use_it), el("cite", { text: clicky.shared_by })])
         ]),
         el("div", { class: "panel detail-panel" }, [
           el("h2", { text: "what it does" }),
@@ -1153,7 +1151,7 @@
     return el("figure", { class: "demo", id: "demo" }, [
       el("div", { class: "win-frame vp paused" }, [bar, stage]),
       chips,
-      el("figcaption", {}, ["The whole idea in one minute.", el("span", { class: "vp-keys", text: " Keys: space to play, ← → to skip, M mute, C captions, F full screen." })])
+      el("figcaption", {}, ["The whole idea in one minute."])
     ]);
   }
 
@@ -1289,11 +1287,8 @@
   // ---------- stickers across the page (same feel as the hero, one theme per section) ----------
   var SECTION_STICKERS = {
     shared:    [["tile keep", "📋", "left:0;top:38px;--r:-8deg"]],
-    how:       [["tile keep", "⚡\ufe0f", "right:0;top:30px;--r:9deg;animation-delay:-1s"]],
     connector: [["tile keep", "🔌", "left:0;top:34px;--r:-6deg;animation-delay:-2.5s"]],
-    findings:  [["stamp keep-text", "bug found", "right:0;top:52px;--r:8deg;animation-delay:-3s"]],
     metrics:   [["tile keep", "📈", "left:0;top:40px;--r:-7deg;animation-delay:-1s"]],
-    faq:       [["tile keep", "💬", "right:0;top:26px;--r:8deg;animation-delay:-2s"]],
     builder:   [["stamp keep-text", "open to remote", "left:0;top:44px;--r:-6deg;animation-delay:-2.2s"]]
   };
   function decorateSections() {

@@ -165,7 +165,7 @@ def main():
                     check(f"v2: email link in about me [{tag}]", page.locator("#builder a[href^='mailto:']").count() == 1)
                     check(f"v2: proof screenshot loads [{tag}]", page.evaluate("new Promise(r => { const i = document.querySelector('.proof img'); i.loading = 'eager'; if (i.complete && i.naturalWidth) r(true); i.onload = () => r(i.naturalWidth > 0); i.onerror = () => r(false); setTimeout(() => r(i.naturalWidth > 0), 8000); })"))
                 else:
-                    check(f"every section has stickers [{tag}]", page.evaluate("['shared','how','connector','findings','metrics','faq','builder'].every(id => document.querySelector('#' + id + ' .sec-sticker'))"))
+                    check(f"every other section has a sticker [{tag}]", page.evaluate("['shared','connector','metrics','builder'].every(id => document.querySelector('#' + id + ' .sec-sticker'))"))
                 check(f"footer tile wordmark drawn [{tag}]", page.locator("#tiles rect").count() > 100)
                 check(f"email chip in about me [{tag}]", page.locator("#builder a[href='mailto:mohit.malviya.cornell@gmail.com']").count() == 1)
                 page.evaluate("document.fonts.ready")
