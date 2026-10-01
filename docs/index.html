@@ -1153,7 +1153,7 @@
   }
 
   function route(data) {
-    if (data.repo_url) document.getElementById("repo-link").href = data.repo_url;
+    if (data.repo_url) document.getElementById("repo-link").href = data.repo_url.replace(/\/$/, "") + "#for-engineers-how-its-built-tests-and-running-it";
     var requested = requestedValue();
     var wanted = normalizeSlug(requested);
     var clicky = wanted && data.clickys.find(function (c) { return c.slug === wanted || normalizeSlug(c.name) === wanted; });
