@@ -152,6 +152,12 @@
     box-shadow: var(--shadow-md); border: 1px solid var(--line); transition: transform .18s ease, box-shadow .18s ease;
   }
   .card:hover { transform: translateY(-3px); text-decoration: none; box-shadow: var(--shadow-lg); }
+  .card { position: relative; }
+  .card:hover, .card:focus-visible { border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+  .card .go { position: absolute; top: 29px; right: 20px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--line); color: var(--text); transition: background .18s ease, color .18s ease, transform .18s ease, border-color .18s ease; }
+  .card .go svg { width: 16px; height: 16px; }
+  .card:hover .go, .card:focus-visible .go { background: var(--accent); border-color: var(--accent); color: #fff; transform: translate(2px, -2px); }
+  .card:active { transform: translateY(-1px) scale(.99); }
   .card .emoji { font-size: 30px; line-height: 1; width: 52px; height: 52px; display: grid; place-items: center; background: var(--surface-2); border-radius: 14px; margin-bottom: 14px; }
   .card p { margin: 0 0 16px; color: var(--text-2); font-size: 15px; flex: 1; }
   .meta { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -162,7 +168,7 @@
 
   /* steps */
   .steps { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); counter-reset: step; }
-  .step { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-sm); }
+  .step { position: relative; padding: 0 6px 0 0; }
   .step .n { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
   .step b { display: block; font-weight: 600; margin: 4px 0 2px; }
   .step span { color: var(--text-2); font-size: 15px; }
@@ -338,6 +344,8 @@
   .step:nth-child(2) .n { background: #b9471f; }
   .step:nth-child(3) .n { background: #2f7a45; }
   .step b { font-size: 18px; margin-top: 12px; }
+  .step:not(:last-child)::after { content: ""; position: absolute; top: 17px; left: 46px; right: -2px; height: 2px; border-radius: 2px; background: var(--line); }
+  @media (max-width: 760px) { .step:not(:last-child)::after { display: none; } }
 
   /* findings as sticky notes */
   .findings { gap: 22px; }
@@ -717,9 +725,16 @@
     }));
   }
 
+  function goArrow() {
+    var span = el("span", { class: "go", "aria-hidden": "true" });
+    span.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11 11 5M6 5h5v5"/></svg>';
+    return span;
+  }
+
   function clickyCard(clicky) {
     return el("a", { class: "card", href: "?c=" + encodeURIComponent(clicky.slug) }, [
       el("div", { class: "emoji", "aria-hidden": "true", text: clicky.emoji }),
+      goArrow(),
       el("h3", { text: clicky.name }),
       el("p", { text: clicky.one_line_job }),
       el("div", { class: "meta" }, [
@@ -797,7 +812,7 @@
 
       // ---- gallery ----
       el("section", { id: "shared" }, [
-        sectionHead("shared clickys", "pick one, copy, paste", "Job Hunter is the one I built for my own job search. The other two are examples. Each shows an estimate of the agent messages its routine uses, so it's clear before install whether it needs Pro."),
+        sectionHead("shared clickys", "pick one, copy, paste", "Job Hunter is the one I built for my own job search. The other two are examples. Click one to see its full setup and what it costs."),
         el("div", { class: "grid" }, data.clickys.map(clickyCard))
       ]),
 
